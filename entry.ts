@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import { renderToStaticMarkup, renderToString } from 'react-dom/server';
 import { StaticRouter, BrowserRouter, Switch } from 'react-router-dom';
 
-import Root from './components/Root';
+import Root from './Root';
 import routes from './routes';
 
 const serverRender = (locals : any) => {
