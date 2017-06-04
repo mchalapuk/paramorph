@@ -1,9 +1,8 @@
-export { default as Page } from './Page'
-export { default as CurrentPage } from './CurrentPage'
-export { default as Category } from './Category'
-export { default as Collection } from './Collection'
-export { default as Layout } from './Layout'
-export { default as Include } from './Include'
-export { default as MenuEntry } from './MenuEntry'
-export { default as SiteConfig } from './SiteConfig'
-export { default as PageConfig } from './PageConfig'
+export { default as Page } from './Page';
+export { default as CurrentPage } from './CurrentPage';
+export { default as Category } from './Category';
+export { default as Collection } from './Collection';
+export { default as Layout } from './Layout';
+export { default as Include } from './Include';
+export { default as MenuEntry } from './MenuEntry';
+export { default as Website } from './Website';

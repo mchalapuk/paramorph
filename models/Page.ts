@@ -2,7 +2,6 @@ import { ComponentClass, StatelessComponent } from 'react';
 
 import Layout from './Layout';
 import Category from './Category';
-import PageConfig from './PageConfig';
 
 export type ComponentType<T> = ComponentClass<T> | StatelessComponent<T>;
 

@@ -10,7 +10,7 @@ interface HashTable<T> {
   [key: string]: T;
 }
 
-export default class SiteConfig {
+export default class Website {
   title : string;
   baseUrl : string;
   timezone : string;

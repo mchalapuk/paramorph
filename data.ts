@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Page, Category, Collection, Layout, Include, MenuEntry, SiteConfig, PageConfig } from './models';
+import { Page, Category, Collection, Layout, Include, MenuEntry, Website } from './models';
 
 const Context = require('./requireContext');
 const rawConfig = require('../_config.yml');
@@ -51,33 +51,33 @@ const ROOT_COLLECTION_KEY = '$root';
 const ROOT_COLLECTION_TITLE = 'Root Pages';
 const DEFAULT_LAYOUT_NAME = 'default';
 
-const config = new PageConfig();
+const website = new Website();
 
 requireDirectory(Context.LAYOUTS)
   .forEach((module : Module) => {
     const name = module.name.replace(/^\.\//, '').replace(/\.tsx$/, '');
-    config.addLayout(new Layout(name, module.exports.default));
+    website.addLayout(new Layout(name, module.exports.default));
   });
 
 requireDirectory(Context.INCLUDES)
   .forEach((module : Module) => {
     const name = module.name.replace(/^\.\//, '').replace(/\.tsx$/, '');
 
-    config.addInclude(new Include(name, module.exports.default));
+    website.addInclude(new Include(name, module.exports.default));
   });
 
 function createCategory(key : string, raw : any) {
   const title = (raw.title && checkIsString(raw.title, `categories[${key}].title`)) || key;
   const url = (raw.url && checkIsString(raw.url, `categories[${key}].url`)) || `/${title.replace(/ /g, '-')}`;
   const layoutName = (raw.layout && checkIsString(raw.layout, `categories[${key}].layout`)) || DEFAULT_LAYOUT_NAME;
-  const layout = config.getLayoutOfName(layoutName, `category ${title}`);
+  const layout = website.getLayoutOfName(layoutName, `category ${title}`);
   const category = new Category(title, url, layout, () => React.createElement('div'));
   return category;
 }
 
 Object.keys(rawConfig.categories)
   .map((key : string) => createCategory(key, rawConfig.categories[key]))
-  .forEach((category : Category) => config.addCategory(category))
+  .forEach((category : Category) => website.addCategory(category))
 ;
 
 function titleFromUrl(url : string, requiredBy : string) {
@@ -100,7 +100,7 @@ function getCategories(frontMatter : any) {
   }
 
   return categoryNames.map((name : string) => {
-    const category = config.categories[name];
+    const category = website.categories[name];
     if (category == undefined) {
       throw new Error(`couldn't find category of name ${name} required by page ${frontMatter.name}`);
     }
@@ -110,13 +110,13 @@ function getCategories(frontMatter : any) {
 
 function createCollection(key : string, raw : any, context : RequireContext) {
   const title = raw.title || titleFromUrl(key, `collection ${key}`);
-  const layout = config.getLayoutOfName(raw.layout || DEFAULT_LAYOUT_NAME, `collection ${key}`);
+  const layout = website.getLayoutOfName(raw.layout || DEFAULT_LAYOUT_NAME, `collection ${key}`);
   const collection = new Collection(title, layout, raw.output != false);
 
   collection.pages = requireDirectory(context).map((module : Module, key : number) => {
     const frontMatter = module.exports.frontMatter;
     const name = module.name.replace(/\.markdown$/, '').replace(/^\.\//, '');
-    const layout = config.getLayoutOfName(frontMatter.layout || collection.layout.name, `page ${name}`);
+    const layout = website.getLayoutOfName(frontMatter.layout || collection.layout.name, `page ${name}`);
     const body = module.exports.component;
     const url = frontMatter.permalink || `/${name}`;
     const title = frontMatter.title || titleFromUrl(url, `page ${name}`);
@@ -128,14 +128,14 @@ function createCollection(key : string, raw : any, context : RequireContext) {
     categories.forEach((category : Category) => category.pages.push(page));
     page.categories = categories;
 
-    config.addPage(page);
+    website.addPage(page);
     return page;
   });
 
   return collection;
 }
 
-config.collections = [].concat.call([
+website.collections = [].concat.call([
   createCollection(ROOT_COLLECTION_KEY, { title : ROOT_COLLECTION_TITLE }, Context.ROOT),
   Object.keys(rawConfig.collections)
     .filter((key : string) => {
@@ -152,13 +152,13 @@ config.collections = [].concat.call([
 const isLocalUrl = (url : string) => url.charAt(0) == '/' && url.charAt(1) != '/';
 
 function warnIfNotAPageOrCategory(url : string, requiredBy : string) {
-  if (isLocalUrl(url) && config.pages[url] == undefined && config.categories[url] == undefined) {
+  if (isLocalUrl(url) && website.pages[url] == undefined && website.categories[url] == undefined) {
     console.warn(`page of url \'${url}\' required by ${requiredBy} is not defined`);
   }
   return url;
 }
 
-config.menu = rawConfig.menu.map((raw : any, i : number) => {
+website.menu = rawConfig.menu.map((raw : any, i : number) => {
   return new MenuEntry(
     checkIsString(raw.title, `menu[${i}].title`),
     checkIsString(raw.short, `menu[${i}].short`),
@@ -167,9 +167,9 @@ config.menu = rawConfig.menu.map((raw : any, i : number) => {
   );
 });
 
-if (config.pages['/'] == undefined) {
+if (website.pages['/'] == undefined) {
   throw new Error('page of url \'/\' must be defined to create index.html');
 }
 
-export default config;
+export default website;
 
