@@ -1,5 +1,4 @@
 export { default as Page } from './Page';
-export { default as CurrentPage } from './CurrentPage';
 export { default as Category } from './Category';
 export { default as Collection } from './Collection';
 export { default as Layout } from './Layout';

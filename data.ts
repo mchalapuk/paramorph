@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Page, Category, Collection, Layout, Include, MenuEntry, Website } from './models';
 
 const Context = require('./requireContext');
-const rawConfig = require('../_config.yml');
+const config = require('../_config.yml');
 
 function checkIsObject(value : any, name : string) {
   if (typeof value != 'object') {
@@ -24,9 +24,9 @@ function checkIsString(value : any, name : string) {
   return value;
 }
 
-checkIsObject(rawConfig.collections, 'rawConfig.collections');
-checkIsObject(rawConfig.categories, 'rawConfig.categories');
-checkIsArray(rawConfig.menu, 'rawConfig.menu');
+checkIsObject(config.collections, 'config.collections');
+checkIsObject(config.categories, 'config.categories');
+checkIsArray(config.menu, 'config.menu');
 
 interface Module {
   name : string;
@@ -66,17 +66,17 @@ requireDirectory(Context.INCLUDES)
     website.addInclude(new Include(name, module.exports.default));
   });
 
-function createCategory(key : string, raw : any) {
-  const title = (raw.title && checkIsString(raw.title, `categories[${key}].title`)) || key;
-  const url = (raw.url && checkIsString(raw.url, `categories[${key}].url`)) || `/${title.replace(/ /g, '-')}`;
-  const layoutName = (raw.layout && checkIsString(raw.layout, `categories[${key}].layout`)) || DEFAULT_LAYOUT_NAME;
+function createCategory(key : string, cfg : any) {
+  const title = (cfg.title && checkIsString(cfg.title, `categories[${key}].title`)) || key;
+  const url = (cfg.url && checkIsString(cfg.url, `categories[${key}].url`)) || `/${title.replace(/ /g, '-')}`;
+  const layoutName = (cfg.layout && checkIsString(cfg.layout, `categories[${key}].layout`)) || DEFAULT_LAYOUT_NAME;
   const layout = website.getLayoutOfName(layoutName, `category ${title}`);
   const category = new Category(title, url, layout, () => React.createElement('div'));
   return category;
 }
 
-Object.keys(rawConfig.categories)
-  .map((key : string) => createCategory(key, rawConfig.categories[key]))
+Object.keys(config.categories)
+  .map((key : string) => createCategory(key, config.categories[key]))
   .forEach((category : Category) => website.addCategory(category))
 ;
 
@@ -108,10 +108,10 @@ function getCategories(frontMatter : any) {
   });
 }
 
-function createCollection(key : string, raw : any, context : RequireContext) {
-  const title = raw.title || titleFromUrl(key, `collection ${key}`);
-  const layout = website.getLayoutOfName(raw.layout || DEFAULT_LAYOUT_NAME, `collection ${key}`);
-  const collection = new Collection(title, layout, raw.output != false);
+function createCollection(key : string, cfg : any, context : RequireContext) {
+  const title = cfg.title || titleFromUrl(key, `collection ${key}`);
+  const layout = website.getLayoutOfName(cfg.layout || DEFAULT_LAYOUT_NAME, `collection ${key}`);
+  const collection = new Collection(title, layout, cfg.output != false);
 
   collection.pages = requireDirectory(context).map((module : Module, key : number) => {
     const frontMatter = module.exports.frontMatter;
@@ -137,7 +137,7 @@ function createCollection(key : string, raw : any, context : RequireContext) {
 
 website.collections = [].concat.call([
   createCollection(ROOT_COLLECTION_KEY, { title : ROOT_COLLECTION_TITLE }, Context.ROOT),
-  Object.keys(rawConfig.collections)
+  Object.keys(config.collections)
     .filter((key : string) => {
       const context = Context.hasOwnProperty(key.toUpperCase());
       if (!context) {
@@ -146,7 +146,7 @@ website.collections = [].concat.call([
       return context;
     })
     .forEach((key : string) =>
-      createCollection(key, rawConfig.collections[key], Context[key.toUpperCase()])),
+      createCollection(key, config.collections[key], Context[key.toUpperCase()])),
 ]);
 
 const isLocalUrl = (url : string) => url.charAt(0) == '/' && url.charAt(1) != '/';
@@ -158,12 +158,12 @@ function warnIfNotAPageOrCategory(url : string, requiredBy : string) {
   return url;
 }
 
-website.menu = rawConfig.menu.map((raw : any, i : number) => {
+website.menu = config.menu.map((cfg : any, i : number) => {
   return new MenuEntry(
-    checkIsString(raw.title, `menu[${i}].title`),
-    checkIsString(raw.short, `menu[${i}].short`),
-    warnIfNotAPageOrCategory(checkIsString(raw.url, `menu[${i}].url`), `menu entry '${raw.title}'`),
-    raw.icon && checkIsString(raw.icon, `menu[${i}].icon`),
+    checkIsString(cfg.title, `menu[${i}].title`),
+    checkIsString(cfg.short, `menu[${i}].short`),
+    warnIfNotAPageOrCategory(checkIsString(cfg.url, `menu[${i}].url`), `menu entry '${cfg.title}'`),
+    cfg.icon && checkIsString(cfg.icon, `menu[${i}].icon`),
   );
 });
 
