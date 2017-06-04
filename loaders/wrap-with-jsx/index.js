@@ -14,7 +14,7 @@ module.exports = function wrapWithJsxLoader(source) {
 	}
 
   const template = 'import * as React from \'react\';\n'
-    + 'export const component = props => (<div>%WRAPPED%</div>)\n';
+    + 'export const component = data => (<div>%WRAPPED%</div>)\n';
 
   const sources = template.replace('%WRAPPED%', wrapped)
     + Object.keys(exports).map(key =>

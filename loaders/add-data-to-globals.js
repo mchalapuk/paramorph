@@ -9,10 +9,12 @@ module.exports = function addDataToGlobalsLoader(source) {
       + 'of type string; got ' + typeof opts.data);
 	}
 
-  const data = this.exec('module.exports = require(\'paramorph/data/'+ opts.data +'\');', this.resource);
-
-  return 'const data = require(\'paramorph/data/'+ opts.data +'\');\n'
-    + data.map(entry => 'const '+ entry.name +' = data.'+ entry.name +';\n').join('')
-    + sources;
+  return 'global.__data = require(\'paramorph/data/'+ opts.data +'\').default;\n\n'
+    + 'const code = global.__data\n'
+    + '  .map((entry, index) => `var ${entry.name} = this.__data[${index}].component;`)\n'
+    + '  .join(\'\')\n;'
+    + 'eval.call(null, code);\n'
+    + 'delete global.__data;\n\n'
+    + source;
 };
 

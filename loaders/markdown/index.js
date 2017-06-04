@@ -13,7 +13,10 @@ module.exports = function markdownLoader(source) {
 			+ typeof exports.body);
 	}
 
-  const body = md.render(exports.body);
+  const body = md.render(exports.body)
+    .replace('&lt;', '<')
+    .replace('&gt;', '>')
+    .replace('…', '...');
 
   return 'module.exports = '+ JSON.stringify({ frontMatter: exports.attributes, body: body });
 };
