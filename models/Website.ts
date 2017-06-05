@@ -56,6 +56,20 @@ export default class Website {
     this.categories[category.url] = category;
   }
 
+  addCollection(collection : Collection) {
+    if (this.collections[collection.title] != undefined) {
+      throw new Error(`collection of title ${collection.title} is already added to the config`);
+    }
+    this.collections[collection.title] = collection;
+  }
+  getCollectionOfTitle(collectionTitle : string, requiredBy : string) {
+    const collection = this.collections[collectionTitle];
+    if (collection == undefined) {
+      throw new Error(`couldn't find collection of title ${collectionTitle} required by ${requiredBy}`);
+    }
+    return collection;
+  }
+
   addPage(page : Page) {
     this.addUrl(page.url, page);
     this.pages[page.url] = page;

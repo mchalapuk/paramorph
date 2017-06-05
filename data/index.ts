@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Page, Category, Layout, Include, Website } from '../models';
+import { Page, Category, Collection, Layout, Include, Website } from '../models';
 
 import layouts from './layouts';
 import includes from './includes';
@@ -12,7 +12,7 @@ const website = new Website();
 layouts.forEach((layout : Layout) => website.addLayout(layout));
 includes.forEach((include : Include) => website.addInclude(include));
 categories.forEach((category : Category) => website.addCategory(category));
-website.collections = collections;
+collections.forEach((collection : Collection) => website.addCollection(collection));
 pages.forEach((page : Page) => website.addPage(page));
 website.menu = menu;
 
