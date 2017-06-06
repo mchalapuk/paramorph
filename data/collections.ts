@@ -39,7 +39,7 @@ const ROOT_COLLECTION_TITLE = 'Root Pages';
 const DEFAULT_LAYOUT_NAME = 'default';
 
 function titleFromUrl(url : string, requiredBy : string) {
-  const title = `${url.charAt(1).toUpperCase()}${url.substring(2).replace(/-/g, ' ')}`;
+  const title = `${url.charAt(0).toUpperCase()}${url.substring(1).replace(/-/g, ' ')}`;
   console.warn(`title field is not defined in ${requiredBy}; defaulting to ${title}`);
   return title;
 }
