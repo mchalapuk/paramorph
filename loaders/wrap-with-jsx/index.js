@@ -13,7 +13,7 @@ module.exports = function wrapWithJsxLoader(source) {
       + '\nopts=' + JSON.stringify(opts));
 	}
 
-  const template = 'import * as React from \'react\';\n'
+  const template = 'import React from \'react\';\n'
     + 'export const component = data => (<div>%WRAPPED%</div>)\n';
 
   const sources = template.replace('%WRAPPED%', wrapped)
