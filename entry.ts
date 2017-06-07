@@ -2,6 +2,7 @@ import { createElement } from 'react';
 import { render } from 'react-dom';
 import { renderToStaticMarkup, renderToString } from 'react-dom/server';
 import { StaticRouter, BrowserRouter, Switch } from 'react-router-dom';
+import { AppContainer } from 'react-hot-loader';
 
 import Root from './Root';
 import routes from './routes';
@@ -24,7 +25,8 @@ const clientRender = () => {
   const container = document.getElementById('root');
   const child = createElement(Switch, {}, routes);
   const router = createElement(BrowserRouter, {}, child);
-  render(router, container);
+  const app = createElement(AppContainer, {}, router);
+  render(app, container);
 }
 
 if (typeof window !== 'undefined') {
@@ -32,4 +34,8 @@ if (typeof window !== 'undefined') {
 }
 
 export default serverRender;
+
+if (module.hot) {
+  module.hot.accept('./routes', clientRender);
+}
 

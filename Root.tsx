@@ -3,9 +3,10 @@ import * as React from 'react';
 interface Props {
   title : string;
   path : string;
+  scripts : string[];
 }
 
-export default ({ title, path } : Props) => (
+export default ({ title, path, scripts } : Props) => (
   <html>
     <head>
       <title>{ title }</title>
@@ -15,7 +16,9 @@ export default ({ title, path } : Props) => (
       <div id="root">
         %%%BODY%%%
       </div>
-      <script type="text/javascript" src="/bundle.js"></script>
+      { scripts.map((src, key) => (
+        <script type={ 'text/javascript '} src={ src } key={ key }></script>
+      )) }
     </body>
   </html>
 );
