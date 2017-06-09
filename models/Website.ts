@@ -6,7 +6,7 @@ import Category from './Category';
 import Collection from './Collection';
 import MenuEntry from './MenuEntry';
 
-interface HashTable<T> {
+export interface HashTable<T> {
   [key: string]: T;
 }
 
@@ -21,18 +21,16 @@ export default class Website {
   pages : HashTable<Page> = {};
   menu : MenuEntry[];
 
-  private urls : HashTable<any> = {};
-
   addLayout(layout : Layout) {
     if (this.layouts[layout.name] != undefined) {
       throw new Error(`layout of name ${layout.name} is already added to the config`);
     }
     this.layouts[layout.name] = layout;
   }
-  getLayoutOfName(layoutName : string, requiredBy : string) {
-    const layout = this.layouts[layoutName];
+  getLayoutOfName(name : string, requiredBy : string) {
+    const layout = this.layouts[name];
     if (layout == undefined) {
-      throw new Error(`couldn't find layout of name ${layoutName} required by ${requiredBy}`);
+      throw new Error(`couldn't find layout of name ${name} required by ${requiredBy}`);
     }
     return layout;
   }
@@ -43,17 +41,14 @@ export default class Website {
     }
     this.includes[include.name] = include;
   }
-  getIncludeOfName(includeName : string, requiredBy : string) {
-    const include = this.includes[includeName];
+  getIncludeOfName(name : string, requiredBy ?: string) {
+    const include = this.includes[name];
     if (include == undefined) {
-      throw new Error(`couldn't find include of name ${includeName} required by ${requiredBy}`);
+      throw new Error(`couldn't find include of name ${name}${
+        requiredBy ? ' required by ' + requiredBy : ''
+      }`);
     }
     return include;
-  }
-
-  addCategory(category : Category) {
-    this.addUrl(category.url, category);
-    this.categories[category.url] = category;
   }
 
   addCollection(collection : Collection) {
@@ -62,32 +57,48 @@ export default class Website {
     }
     this.collections[collection.title] = collection;
   }
-  getCollectionOfTitle(collectionTitle : string, requiredBy : string) {
-    const collection = this.collections[collectionTitle];
+  getCollectionOfTitle(title : string, requiredBy : string) {
+    const collection = this.collections[title];
     if (collection == undefined) {
-      throw new Error(`couldn't find collection of title ${collectionTitle} required by ${requiredBy}`);
+      throw new Error(`couldn't find collection of title '${title}'${
+        requiredBy ? ' required by ' + requiredBy : ''
+      }`);
     }
     return collection;
   }
 
   addPage(page : Page) {
-    this.addUrl(page.url, page);
-    this.pages[page.url] = page;
+    const url = page.url;
+    const previous = this.pages[url];
+    if (previous != undefined) {
+      throw new Error(`detected two pages with the same url (${url}): ${previous} and ${page}`);
+    }
+    this.pages[url] = page;
   }
   getPageOfUrl(url : string) {
     const page = this.pages[url];
     if (page == undefined) {
-      throw new Error(`couldn't find page of url ${url}`);
+      throw new Error(`couldn't find page of url '${url}'`);
     }
     return page;
   }
 
-  private addUrl(url : string, entity : any) {
-    const previous = this.urls[url];
+  addCategory(category : Category) {
+    const title = category.title;
+    const previous = this.categories[title];
     if (previous != undefined) {
-      throw new Error(`detected two entities with the same url (${url}): ${previous} and ${entity}`);
+      throw new Error(`detected two categories of the same title ('${title}'): ${previous} and ${category}`);
     }
-    this.urls[url] = entity;
+    this.categories[title] = category;
+  }
+  getCategoryOfTitle(title : string, requiredBy ?: string) {
+    const category = this.categories[title];
+    if (category == undefined) {
+      throw new Error(`couldn't find category of title '${title}'${
+        requiredBy ? ' required by ' + requiredBy : ''
+      }`);
+    }
+    return category;
   }
 }
 
