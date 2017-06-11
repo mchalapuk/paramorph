@@ -6,10 +6,12 @@ import { AppContainer } from 'react-hot-loader';
 
 import Root from './Root';
 import routes from './routes';
+import website from './data';
 
 const serverRender = (locals : any) => {
   // site skeleton rendered without react ids
-  const root = createElement(Root, locals);
+  const tags = (website.pages[locals.path] || { tags: [] }).tags;
+  const root = createElement(Root, Object.assign(locals, { tags }));
   const html = renderToStaticMarkup(root);
 
   // react root contents rendered with react ids

@@ -3,14 +3,16 @@ import * as React from 'react';
 interface Props {
   title : string;
   path : string;
+  tags : string[];
   scripts : string[];
 }
 
-export default ({ title, path, scripts } : Props) => (
+export default ({ title, path, tags, scripts } : Props) => (
   <html>
     <head>
       <title>{ title }</title>
       <meta name="path" content={ path }/>
+      <meta name="keywords" content={ tags.join(', ') } />
     </head>
     <body>
       <div id="root">
