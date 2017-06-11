@@ -16,7 +16,7 @@ includes.forEach((include : Include) => website.addInclude(include));
 collections.forEach((collection : Collection) => website.addCollection(collection));
 pages.forEach((page : Page) => website.addPage(page));
 categories.forEach((category : Category) => website.addCategory(category));
-tags.forEach((category : Category) => website.addTag(category));
+tags.forEach((tag : Tag) => website.addTag(tag));
 website.menu = menu;
 
 // add pages to categories and tags

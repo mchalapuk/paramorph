@@ -106,7 +106,7 @@ export default class Website {
   }
 
   addTag(tag : Tag) {
-    const title = tag.title;
+    const title = tag.originalTitle;
     const previous = this.tags[title];
     if (previous != undefined) {
       throw new Error(`detected two tags of the same title ('${title}'): ${previous} and ${tag}`);
