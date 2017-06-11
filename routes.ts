@@ -41,7 +41,8 @@ routes.push(
     error404.layout,
     error404.body,
     error404.date,
-    error404.categories
+    error404.categories,
+    error404.tags
   ), false)
 );
 

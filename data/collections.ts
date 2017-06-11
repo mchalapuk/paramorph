@@ -70,17 +70,18 @@ function parsePage(name : string, body: ComponentType<any>, frontMatter: any, de
     frontMatter.permalink || urlFromTitle(name, requiredBy),
     `${requiredBy}.url`
   );
-  const date = frontMatter.date;
+  const date = frontMatter.date || null;
   const role = checkIsString(frontMatter.role || 'page', `${requiredBy}.role`);
 
   const categoryTitles = checkIsArray(frontMatter.categories || [], `${requiredBy}.categories`);
   if (frontMatter.category != undefined) {
     categoryTitles.push(checkIsString(frontMatter.category, `${requiredBy}.category`));
   }
+  const tags = checkIsArray(frontMatter.tags || [], `${requiredBy}.tags`);
 
   switch (role) {
-    case 'page': return new Page(title, url, layout, body, date, categoryTitles);
-    case 'category': return new Category(title, url, layout, body, date, categoryTitles);
+    case 'page': return new Page(title, url, layout, body, date, categoryTitles, tags);
+    case 'category': return new Category(title, url, layout, body, date, categoryTitles, tags);
     default: throw new Error(`unrecognized role: ${role} in ${requiredBy}`);
   }
 }

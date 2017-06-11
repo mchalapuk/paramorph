@@ -3,6 +3,7 @@ import Layout from './Layout';
 import Include from './Include';
 import Page from './Page';
 import Category from './Category';
+import Tag from './Tag';
 import Collection from './Collection';
 import MenuEntry from './MenuEntry';
 
@@ -18,6 +19,7 @@ export default class Website {
   includes : HashTable<Include> = {};
   collections : HashTable<Collection> = {};
   categories : HashTable<Category> = {};
+  tags : HashTable<Tag> = {};
   pages : HashTable<Page> = {};
   menu : MenuEntry[];
 
@@ -99,6 +101,24 @@ export default class Website {
       }`);
     }
     return category;
+  }
+
+  addTag(tag : Tag) {
+    const title = tag.title;
+    const previous = this.tags[title];
+    if (previous != undefined) {
+      throw new Error(`detected two tags of the same title ('${title}'): ${previous} and ${tag}`);
+    }
+    this.tags[title] = tag;
+  }
+  getTagOfTitle(title : string, requiredBy ?: string) {
+    const tag = this.tags[title];
+    if (tag == undefined) {
+      throw new Error(`couldn't find tag of title '${title}'${
+        requiredBy ? ' required by ' + requiredBy : ''
+      }`);
+    }
+    return tag;
   }
 }
 
