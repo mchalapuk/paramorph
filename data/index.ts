@@ -24,6 +24,11 @@ pages.forEach((page : Page) => {
   const requiredBy = `pages['${page.url}']`;
   page.categories.forEach((title : string) =>
     website.getCategoryOfTitle(title, requiredBy).pages.push(page));
+
+  if (page.url == '/' || page instanceof Category) {
+    return;
+  }
+
   page.tags.forEach((title : string) =>
     website.getTagOfTitle(title, requiredBy).pages.push(page));
 });
