@@ -77,10 +77,12 @@ export default class Website {
     }
     this.pages[url] = page;
   }
-  getPageOfUrl(url : string) {
+  getPageOfUrl(url : string, requiredBy ?: string) {
     const page = this.pages[url];
     if (page == undefined) {
-      throw new Error(`couldn't find page of url '${url}'`);
+      throw new Error(`couldn't find page of url '${url}'${
+        requiredBy ? ' required by ' + requiredBy : ''
+      }`);
     }
     return page;
   }

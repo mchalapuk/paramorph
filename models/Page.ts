@@ -10,16 +10,18 @@ export class Page {
   url : string;
   layout : Layout;
   body : ComponentType<any>;
+  output : boolean;
   date : string | null;
   categories : string[];
   tags : string[];
 
   constructor(title : string, url : string, layout : Layout, body : ComponentType<any>,
-    date : string | null, categories : string[], tags : string[]) {
+    output : boolean, date : string | null, categories : string[], tags : string[]) {
     this.title = title;
     this.url = url;
     this.layout = layout;
     this.body = body;
+    this.output = output;
     this.date = date;
     this.categories = categories;
     this.tags = tags;

@@ -72,6 +72,7 @@ function parsePage(name : string, body: ComponentType<any>, frontMatter: any, de
   );
   const date = frontMatter.date || null;
   const role = checkIsString(frontMatter.role || 'page', `${requiredBy}.role`);
+  const output = frontMatter.output != false;
 
   const categoryTitles = checkIsArray(frontMatter.categories || [], `${requiredBy}.categories`);
   if (frontMatter.category != undefined) {
@@ -80,8 +81,8 @@ function parsePage(name : string, body: ComponentType<any>, frontMatter: any, de
   const tags = checkIsArray(frontMatter.tags || [], `${requiredBy}.tags`);
 
   switch (role) {
-    case 'page': return new Page(title, url, layout, body, date, categoryTitles, tags);
-    case 'category': return new Category(title, url, layout, body, date, categoryTitles, tags);
+    case 'page': return new Page(title, url, layout, body, output, date, categoryTitles, tags);
+    case 'category': return new Category(title, url, layout, body, output, date, categoryTitles, tags);
     default: throw new Error(`unrecognized role: ${role} in ${requiredBy}`);
   }
 }
