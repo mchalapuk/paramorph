@@ -7,17 +7,13 @@ import { Website, Page, Layout } from './models';
 
 type ComponentType<T> = ComponentClass<T> | StatelessComponent<T>;
 
-interface Routable extends Page {
-  exact ?: boolean;
-}
-
 const NOT_FOUND_URL = '/404';
 
 let key = 0;
 
-function createRoute(page : Routable) {
+function createRoute(page : Page, exact = true) {
   const component = () => createElement(page.layout.component as any, { website, page });
-  const routeProps = { path: page.url, exact: page.exact != false, key: key++, component };
+  const routeProps = { path: page.url, exact, key: key++, component };
   const route = createElement(Route, routeProps);
   return route;
 }
@@ -38,11 +34,16 @@ if (error404 == undefined) {
 }
 
 // not found page
-routes.push(createRoute(Object.assign({}, error404, {
-  url: '/',
-  exact: false,
-  title: 'Not Found',
-})));
+routes.push(
+  createRoute(new Page(
+    error404.title,
+    '/',
+    error404.layout,
+    error404.body,
+    error404.date,
+    error404.categories
+  ), false)
+);
 
 export default routes;
 
