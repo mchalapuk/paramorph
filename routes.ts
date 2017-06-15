@@ -16,9 +16,9 @@ if (error404 == undefined) {
 
 let key = 0;
 
-function createRoute(page : Page, exact = true) {
+function createRoute(page : Page, path = page.url, exact = true) {
   const component = () => createElement(page.layout.component as any, { website, page });
-  const routeProps = { path: page.url, exact, key: key++, component };
+  const routeProps = { path, exact, key: key++, component };
   const route = createElement(Route, routeProps);
   return route;
 }
@@ -42,17 +42,8 @@ const routes = [].concat.call(
 
   // 404 with exact = false (must be at the end)
   [
-    createRoute(new Page(
-      error404.title,
-      '/',
-      error404.layout,
-      error404.body,
-      true,
-      error404.date,
-      error404.categories,
-      error404.tags
-    ), false)
-  ]
+    createRoute(error404, '/', false),
+  ],
 );
 
 export default routes;
