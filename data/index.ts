@@ -22,15 +22,8 @@ website.menu = menu;
 // add pages to categories and tags
 pages.forEach((page : Page) => {
   const requiredBy = `pages['${page.url}']`;
-  page.categories.forEach((title : string) =>
-    website.getCategoryOfTitle(title, requiredBy).pages.push(page));
-
-  if (page.url == '/' || page instanceof Category) {
-    return;
-  }
-
-  page.tags.forEach((title : string) =>
-    website.getTagOfTitle(title, requiredBy).pages.push(page));
+  page.categories.forEach(title => website.getCategoryOfTitle(title, requiredBy).pages.push(page));
+  page.tags.forEach(title => website.getTagOfTitle(title, requiredBy).pages.push(page));
 });
 
 if (website.pages['/'] == undefined) {
