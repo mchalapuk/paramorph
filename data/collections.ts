@@ -66,6 +66,7 @@ function parsePage(name : string, body: ComponentType<any>, frontMatter: any, de
     frontMatter.title || titleFromUrl(name, requiredBy),
     `${requiredBy}.title`
   );
+  const description = checkIsString(frontMatter.description || '', `${requiredBy}.description`);
   const url = checkIsString(
     frontMatter.permalink || urlFromTitle(name, requiredBy),
     `${requiredBy}.url`
@@ -81,8 +82,8 @@ function parsePage(name : string, body: ComponentType<any>, frontMatter: any, de
   const tags = checkIsArray(frontMatter.tags || [], `${requiredBy}.tags`);
 
   switch (role) {
-    case 'page': return new Page(title, url, layout, body, output, date, categoryTitles, tags);
-    case 'category': return new Category(title, url, layout, body, output, date, categoryTitles, tags);
+    case 'page': return new Page(title, description, url, layout, body, output, date, categoryTitles, tags);
+    case 'category': return new Category(title, description, url, layout, body, output, date, categoryTitles, tags);
     default: throw new Error(`unrecognized role: ${role} in ${requiredBy}`);
   }
 }

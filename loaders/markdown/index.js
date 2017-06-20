@@ -18,6 +18,10 @@ module.exports = function markdownLoader(source) {
     .replace('&gt;', '>')
     .replace('…', '...');
 
-  return 'module.exports = '+ JSON.stringify({ frontMatter: exports.attributes, body: body });
+  return 'module.exports = '+ JSON.stringify({
+    frontMatter: exports.attributes,
+    body,
+    raw: exports.body
+  });
 };
 

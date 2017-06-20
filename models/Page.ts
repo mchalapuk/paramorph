@@ -7,6 +7,7 @@ export type ComponentType<T> = ComponentClass<T> | StatelessComponent<T>;
 
 export class Page {
   title : string;
+  description : string;
   url : string;
   layout : Layout;
   body : ComponentType<any>;
@@ -15,8 +16,9 @@ export class Page {
   categories : string[];
   tags : string[];
 
-  constructor(title : string, url : string, layout : Layout, body : ComponentType<any>,
-    output : boolean, date : string | null, categories : string[], tags : string[]) {
+  constructor(title : string, description : string, url : string, layout : Layout,
+    body : ComponentType<any>, output : boolean, date : string | null,
+    categories : string[], tags : string[]) {
     this.title = title;
     this.url = url;
     this.layout = layout;
