@@ -12,9 +12,13 @@ module.exports = function wrapWithJsxLoader(source) {
       + ' property of type string; got ' + typeof wrapped
       + '\nopts=' + JSON.stringify(opts));
 	}
+  const limit = exports.limit || opts.limit || 132;
 
   const template = 'import React from \'react\';\n'
-    + 'export const component = data => (<div>%WRAPPED%</div>)\n';
+    + 'import ContentLimiter from \'paramorph/components/ContentLimiter\';'
+    + 'export const component = data => (\n'
+    + '  <ContentLimiter limit={'+ limit +'} {...data}>%WRAPPED%</ContentLimiter>\n'
+    + ');\n';
 
   const sources = template.replace('%WRAPPED%', wrapped)
     + Object.keys(exports).map(key =>
