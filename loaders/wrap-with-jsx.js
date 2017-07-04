@@ -12,7 +12,7 @@ module.exports = function wrapWithJsxLoader(source) {
       + ' property of type string; got ' + typeof wrapped
       + '\nopts=' + JSON.stringify(opts));
 	}
-  const limit = exports.limit || opts.limit || 132;
+  const limit = exports.frontMatter.limit || opts.limit || 132;
 
   const template = 'import React from \'react\';\n'
     + 'import ContentLimiter from \'paramorph/components/ContentLimiter\';'

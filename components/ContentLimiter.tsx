@@ -6,7 +6,7 @@ interface Props {
   limit ?: number;
 }
 
-export const ContentLimiter = ({ children, limit, ...props } : Props) => {
+export function ContentLimiter({ children, limit, ...props } : Props) {
   if (!limit) {
     return <div>{ children }</div>;
   }
@@ -47,20 +47,21 @@ function limitReactElement(
 ) {
   let characters = limit;
 
-  for (const child of asReactElementArray(children)) {
+  asReactElementArray(children).forEach((child, key) => {
     if (characters === 0) {
-      break;
+      return;
     }
     const newChildren = [] as ReactNode[];
-    characters = limitContent(child.props.children, characters, props, newChildren)
-    output.push(cloneElement(child, props, newChildren));
-  }
+    characters = limitContent(child.props.children, characters, props, newChildren);
+    const newProps : any = typeof child.type === 'object'? { ...props, key } : { key };
+    output.push(cloneElement(child, newProps, newChildren));
+  });
 
   return characters;
 }
 
 function asReactElementArray(children ?: ReactNode) {
-  if (typeof children === 'undefined') {
+  if (children === undefined) {
     return [] as ReactElement<any>[];
   }
   if (typeof children !== 'object') {
