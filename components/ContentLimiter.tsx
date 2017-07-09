@@ -4,10 +4,11 @@ import { ReactNode, ReactElement, cloneElement } from 'react';
 interface Props {
   children ?: ReactNode;
   limit ?: number;
+  respectLimit ?: boolean;
 }
 
-export function ContentLimiter({ children, limit, ...props } : Props) {
-  if (!limit) {
+export function ContentLimiter({ children, limit, respectLimit, ...props } : Props) {
+  if (!limit || !respectLimit) {
     return <div>{ children }</div>;
   }
 
@@ -26,7 +27,8 @@ function limitContent(
     case 'undefined':
       return limit;
     case 'number':
-      return limitString(Number(children as number).toString(), limit, output);
+      output.push(children);
+      return limit;
     case 'string':
       return limitString(children as string, limit, output);
     default:
@@ -35,8 +37,18 @@ function limitContent(
 }
 
 function limitString(child : string, limit : number, output : ReactNode[]) {
-  output.push(child.substring(0, limit));
-  return Math.max(0, limit - child.length);
+  let previuos = 0;
+  let current;
+
+  const sentences = sentencize(child);
+  if (sentences.length < limit) {
+    output.push(child);
+    return limit - sentences.length;
+  }
+
+  sentences.slice(0, limit)
+    .forEach(sentence => output.push(sentence));
+  return 0;
 }
 
 function limitReactElement(
@@ -68,6 +80,18 @@ function asReactElementArray(children ?: ReactNode) {
     throw new Error(`unexpected value: ${children}`);
   }
   return ([] as ReactElement<any>[]).concat(children as ReactElement<any>[]);
+}
+
+function sentencize(child : string) {
+  const sentenceRegexp = /[^.!?…]*[.!?…]/g;
+  const matches = [];
+
+  let match;
+  while ((match = sentenceRegexp.exec(child)) !== null) {
+    matches.push(match[0]);
+  }
+
+  return matches;
 }
 
 export default ContentLimiter;
