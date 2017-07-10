@@ -10,7 +10,7 @@ export class Page {
   description : string;
   url : string;
   layout : Layout;
-  body : ComponentType<any>;
+  body : any;
   output : boolean;
   date : string | null;
   categories : string[];
@@ -23,7 +23,7 @@ export class Page {
     this.description = description;
     this.url = url;
     this.layout = layout;
-    this.body = body;
+    this.body = body as any;
     this.output = output;
     this.date = date;
     this.categories = categories;

@@ -1,4 +1,3 @@
-
 import { Page, Layout, Category, Collection, Website, ComponentType } from '../models';
 
 import requireDirectory, { Module, RequireContext } from './requireDirectory';
@@ -55,37 +54,46 @@ function parseCollection(key : string, cfg : any) {
   return new Collection(title, layout, cfg.output != false);
 }
 
+function createPage(role: string, title : string, description : string, url : string,
+  layout : Layout, body : ComponentType<any>, output : boolean, date : string,
+  categoryTitles : string[], tags : string[], requiredBy : string) {
+
+  switch (role) {
+    case 'page':
+      return new Page(title, description, url, layout, body, output, date, categoryTitles, tags);
+    case 'category':
+      return new Category(title, description, url, layout, body, output, date, categoryTitles, tags);
+    default:
+      throw new Error(`unrecognized role: ${role} in ${requiredBy}`);
+  }
+}
+
 function parsePage(name : string, body: ComponentType<any>, frontMatter: any, defaultLayout : string) {
   const requiredBy = `pages['${name}']`;
 
-  const layout = website.getLayoutOfName(
-    checkIsString(frontMatter.layout || defaultLayout, `${requiredBy}.layout`),
+  const page = createPage(
+    checkIsString(frontMatter.role || 'page', `${requiredBy}.role`),
+    checkIsString(frontMatter.title || titleFromUrl(name, requiredBy), `${requiredBy}.title`),
+    checkIsString(frontMatter.description || '', `${requiredBy}.description`),
+    checkIsString(frontMatter.permalink || urlFromTitle(name, requiredBy), `${requiredBy}.url`),
+    website.getLayoutOfName(
+      checkIsString(frontMatter.layout || defaultLayout, `${requiredBy}.layout`),
+      requiredBy
+    ),
+    body,
+    frontMatter.output != false,
+    frontMatter.date || null,
+    checkIsArray(frontMatter.categories || [], `${requiredBy}.categories`)
+      .concat(
+        frontMatter.category !== undefined
+          ? [ checkIsString(frontMatter.category, `${requiredBy}.category`) ]
+          : []
+      ),
+    checkIsArray(frontMatter.tags || [], `${requiredBy}.tags`),
     requiredBy
   );
-  const title = checkIsString(
-    frontMatter.title || titleFromUrl(name, requiredBy),
-    `${requiredBy}.title`
-  );
-  const description = checkIsString(frontMatter.description || '', `${requiredBy}.description`);
-  const url = checkIsString(
-    frontMatter.permalink || urlFromTitle(name, requiredBy),
-    `${requiredBy}.url`
-  );
-  const date = frontMatter.date || null;
-  const role = checkIsString(frontMatter.role || 'page', `${requiredBy}.role`);
-  const output = frontMatter.output != false;
 
-  const categoryTitles = checkIsArray(frontMatter.categories || [], `${requiredBy}.categories`);
-  if (frontMatter.category != undefined) {
-    categoryTitles.push(checkIsString(frontMatter.category, `${requiredBy}.category`));
-  }
-  const tags = checkIsArray(frontMatter.tags || [], `${requiredBy}.tags`);
-
-  switch (role) {
-    case 'page': return new Page(title, description, url, layout, body, output, date, categoryTitles, tags);
-    case 'category': return new Category(title, description, url, layout, body, output, date, categoryTitles, tags);
-    default: throw new Error(`unrecognized role: ${role} in ${requiredBy}`);
-  }
+  return page;
 }
 
 function createCollection(key : string, cfg : any, context : RequireContext) {

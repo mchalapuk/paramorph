@@ -1,4 +1,8 @@
-import * as React from 'react';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { StaticRouter } from 'react-router-dom';
+
+import { stripTags } from '../utils';
 
 import { Page, Category, Tag, Collection, Layout, Include, Website, HashTable } from '../models';
 
@@ -19,6 +23,11 @@ categories.forEach((category : Category) => website.addCategory(category));
 tags.forEach((tag : Tag) => website.addTag(tag));
 website.menu = menu;
 
+const index = website.pages['/'];
+if (index === undefined) {
+  throw new Error('page of url \'/\' must be defined to create index.html');
+}
+
 // add pages to categories and tags
 pages.forEach((page : Page) => {
   const requiredBy = `pages['${page.url}']`;
@@ -26,15 +35,19 @@ pages.forEach((page : Page) => {
   page.tags.forEach(title => website.getTagOfTitle(title, requiredBy).pages.push(page));
 });
 
-const index = website.getPageOfUrl('/');
-
+pages.forEach((page : Page) => {
+  if (!page.description) {
+    const element = createElement(page.body, { website, page, respectLimit: true })
+    const router = createElement(StaticRouter, { location: page.url, context: {}}, element);
+    Object.defineProperty(page, 'description', {
+      get: () => stripTags(renderToStaticMarkup(router)),
+      set: () => { throw new Error('Page.description is readonly'); }
+    });
+  }
+});
 tags.forEach((tag: Tag) => {
   tag.description = `${index.title} ${tag.title}: ${tag.pages.map(page => page.title).join(', ')}`;
 });
-
-if (website.pages['/'] == undefined) {
-  throw new Error('page of url \'/\' must be defined to create index.html');
-}
 
 export default website;
 
