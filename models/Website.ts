@@ -112,6 +112,7 @@ export default class Website {
       throw new Error(`detected two tags of the same title ('${title}'): ${previous} and ${tag}`);
     }
     this.tags[title] = tag;
+    this.addPage(tag);
   }
   getTagOfTitle(title : string, requiredBy ?: string) {
     const tag = this.tags[title];

@@ -26,6 +26,12 @@ pages.forEach((page : Page) => {
   page.tags.forEach(title => website.getTagOfTitle(title, requiredBy).pages.push(page));
 });
 
+const index = website.getPageOfUrl('/');
+
+tags.forEach((tag: Tag) => {
+  tag.description = `${index.title} ${tag.title}: ${tag.pages.map(page => page.title).join(', ')}`;
+});
+
 if (website.pages['/'] == undefined) {
   throw new Error('page of url \'/\' must be defined to create index.html');
 }
