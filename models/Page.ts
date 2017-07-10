@@ -20,6 +20,7 @@ export class Page {
     body : ComponentType<any>, output : boolean, date : string | null,
     categories : string[], tags : string[]) {
     this.title = title;
+    this.description = description;
     this.url = url;
     this.layout = layout;
     this.body = body;

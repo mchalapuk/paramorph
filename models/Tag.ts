@@ -9,9 +9,5 @@ export default class Tag extends Page {
     super('#'+ title, '', url, layout, body, true, null, [], []);
     this.originalTitle = title;
   }
-
-  get description() {
-    return this.pages.map(page => `* ${page.title}`).join(' ');
-  }
 }
 
