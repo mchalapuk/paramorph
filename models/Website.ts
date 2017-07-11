@@ -21,6 +21,7 @@ export default class Website {
   categories : HashTable<Category> = {};
   tags : HashTable<Tag> = {};
   pages : HashTable<Page> = {};
+  entities : HashTable<Page> = {};
   menu : MenuEntry[];
 
   addLayout(layout : Layout) {
@@ -70,12 +71,15 @@ export default class Website {
   }
 
   addPage(page : Page) {
-    const url = page.url;
-    const previous = this.pages[url];
-    if (previous != undefined) {
-      throw new Error(`detected two pages with the same url (${url}): ${previous} and ${page}`);
+    if (page instanceof Category) {
+      throw new Error(`page '${page.title}' is a category`);
     }
-    this.pages[url] = page;
+    if (page instanceof Tag) {
+      throw new Error(`page '${page.title}' is a tag`);
+    }
+    this.addEntity(page);
+
+    this.pages[page.url] = page;
   }
   getPageOfUrl(url : string, requiredBy ?: string) {
     const page = this.pages[url];
@@ -88,6 +92,8 @@ export default class Website {
   }
 
   addCategory(category : Category) {
+    this.addEntity(category);
+
     const title = category.title;
     const previous = this.categories[title];
     if (previous != undefined) {
@@ -106,13 +112,14 @@ export default class Website {
   }
 
   addTag(tag : Tag) {
+    this.addEntity(tag);
+
     const title = tag.originalTitle;
     const previous = this.tags[title];
     if (previous != undefined) {
       throw new Error(`detected two tags of the same title ('${title}'): ${previous} and ${tag}`);
     }
     this.tags[title] = tag;
-    this.addPage(tag);
   }
   getTagOfTitle(title : string, requiredBy ?: string) {
     const tag = this.tags[title];
@@ -122,6 +129,25 @@ export default class Website {
       }`);
     }
     return tag;
+  }
+
+  private addEntity(page : Page) {
+    const url = page.url;
+    const previous = this.entities[url];
+    if (previous != undefined) {
+      throw new Error(`detected two pages with the same url (${
+        url}): '${previous.title}' and '${page.title}'`);
+    }
+    this.entities[url] = page;
+  }
+  getEntityOfUrl(url : string, requiredBy ?: string) {
+    const entity = this.entities[url];
+    if (entity == undefined) {
+      throw new Error(`couldn't find entity of url '${url}'${
+        requiredBy ? ' required by ' + requiredBy : ''
+      }`);
+    }
+    return entity;
   }
 }
 

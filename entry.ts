@@ -10,7 +10,7 @@ import website from './data';
 
 const serverRender = (locals : any) => {
   // site skeleton rendered without react ids
-  const page = (website.pages[locals.path] || { tags: [], description: '' });
+  const page = (website.entities[locals.path] || { tags: [], description: '' });
   const root = createElement(Root, Object.assign(locals, page));
   const html = renderToStaticMarkup(root);
 

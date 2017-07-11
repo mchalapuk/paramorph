@@ -29,25 +29,43 @@ if (index === undefined) {
 }
 
 // add pages to categories and tags
-pages.forEach((page : Page) => {
+pages.concat(categories).forEach((page : Page) => {
   const requiredBy = `pages['${page.url}']`;
   page.categories.forEach(title => website.getCategoryOfTitle(title, requiredBy).pages.push(page));
   page.tags.forEach(title => website.getTagOfTitle(title, requiredBy).pages.push(page));
 });
 
+// generate descriptions for pages, categories and tags
 pages.forEach((page : Page) => {
-  if (!page.description) {
-    const element = createElement(page.body, { website, page, respectLimit: true })
-    const router = createElement(StaticRouter, { location: page.url, context: {}}, element);
-    Object.defineProperty(page, 'description', {
-      get: () => stripTags(renderToStaticMarkup(router)),
-      set: () => { throw new Error('Page.description is readonly'); }
-    });
+  if (page.description) {
+    return;
   }
+  Object.defineProperty(page, 'description', {
+    get: () => descriptionFromContent(page),
+    set: () => { throw new Error('Page.description is readonly'); }
+  });
+});
+categories.forEach((category : Category) => {
+  if (category.description) {
+    return;
+  }
+  Object.defineProperty(category, 'description', {
+    get: () => descriptionFromContent(category) || descriptionFromPages(category),
+    set: () => { throw new Error('Page.description is readonly'); }
+  });
 });
 tags.forEach((tag: Tag) => {
-  tag.description = `${index.title} ${tag.title}: ${tag.pages.map(page => page.title).join(', ')}`;
+  tag.description = descriptionFromPages(tag);
 });
+
+function descriptionFromContent(page : Page) {
+  const element = createElement(page.body, { website, page, respectLimit: true })
+  const router = createElement(StaticRouter, { location: page.url, context: {}}, element);
+  return stripTags(renderToStaticMarkup(router))
+}
+function descriptionFromPages(page : Tag | Category) {
+  return `${index.title} ${page.title}: ${page.pages.map(p => p.title).join(', ')}`;
+}
 
 export default website;
 

@@ -1,10 +1,11 @@
 import * as React from 'react';
 
-import { Website, Page, Category } from '../models';
+import { Website, Collection, Page, Category } from '../models';
 
-import pages from './pages';
+import collections from './collections';
 
-const categories = pages.filter((page : Page) => page instanceof Category);
+const categories = collections.reduce((p : Page[], c : Collection) => p.concat(c.pages), [])
+  .filter((page: Page) => page instanceof Category);
 
-export default categories;
+export default categories as Category[];
 
