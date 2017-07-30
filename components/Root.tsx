@@ -7,9 +7,10 @@ interface Props {
   description : string;
   css : string[];
   scripts : string[];
+  stylesheets : string[];
 }
 
-export default ({ title, path, tags, description, css, scripts } : Props) => (
+export default ({ title, path, tags, description, css, scripts, stylesheets } : Props) => (
   <html>
     <head>
       <title>{ title }</title>
@@ -22,8 +23,11 @@ export default ({ title, path, tags, description, css, scripts } : Props) => (
       <div id="root">
         %%%BODY%%%
       </div>
-      { scripts.map((src, key) => (
-        <script type={ 'text/javascript '} src={ src } key={ key }></script>
+      { scripts.map(src => (
+        <script type='text/javascript' src={ src } key={ src }></script>
+      )) }
+      { stylesheets.map(src => (
+        <link type='text/css' rel='stylesheet' href={ src } key={ src } />
       )) }
     </body>
   </html>
