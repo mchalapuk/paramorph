@@ -9,7 +9,7 @@ export default class Category extends Page {
     body : ComponentType<any>, output : boolean, date : string | null,
     categories : string[], tags : string[]) {
 
-    super(title, description, url, layout, body, output, date, categories, tags);
+    super(title, description, url, layout, body, output, date, categories, tags, false);
   }
 }
 

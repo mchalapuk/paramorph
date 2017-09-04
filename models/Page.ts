@@ -15,10 +15,11 @@ export class Page {
   date : string | null;
   categories : string[];
   tags : string[];
+  feed : boolean;
 
   constructor(title : string, description : string, url : string, layout : Layout,
     body : ComponentType<any>, output : boolean, date : string | null,
-    categories : string[], tags : string[]) {
+    categories : string[], tags : string[], feed : boolean) {
     this.title = title;
     this.description = description;
     this.url = url;
@@ -28,6 +29,7 @@ export class Page {
     this.date = date;
     this.categories = categories;
     this.tags = tags;
+    this.feed = feed;
   }
 
   getCrumbs(website : Website) : Page[][] {

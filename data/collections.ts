@@ -25,6 +25,15 @@ function checkIsString(value : any, name : string) {
   }
   return value;
 }
+function checkIsOptionalBoolean(value : any, defaultValue : boolean, name : string) {
+  if (typeof value === 'undefined') {
+    return defaultValue;
+  }
+  if (typeof value !== 'boolean') {
+    throw new Error(`${name} must be a boolean; got ${typeof value}`);
+  }
+  return value;
+}
 
 checkIsObject(config.collections, 'config.collections');
 
@@ -56,11 +65,11 @@ function parseCollection(key : string, cfg : any) {
 
 function createPage(role: string, title : string, description : string, url : string,
   layout : Layout, body : ComponentType<any>, output : boolean, date : string,
-  categoryTitles : string[], tags : string[], requiredBy : string) {
+  categoryTitles : string[], tags : string[], feed : boolean, requiredBy : string) {
 
   switch (role) {
     case 'page':
-      return new Page(title, description, url, layout, body, output, date, categoryTitles, tags);
+      return new Page(title, description, url, layout, body, output, date, categoryTitles, tags, feed);
     case 'category':
       return new Category(title, description, url, layout, body, output, date, categoryTitles, tags);
     default:
@@ -90,6 +99,7 @@ function parsePage(name : string, body: ComponentType<any>, frontMatter: any, de
           : []
       ),
     checkIsArray(frontMatter.tags || [], `${requiredBy}.tags`),
+    checkIsOptionalBoolean(frontMatter.feed, true, `${requiredBy}.feed`),
     requiredBy
   );
 
