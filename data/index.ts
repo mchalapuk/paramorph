@@ -29,11 +29,13 @@ if (index === undefined) {
 }
 
 // add pages to categories and tags
-pages.forEach((page : Page) => {
-  const requiredBy = `pages['${page.url}']`;
-  page.categories.forEach(title => website.getCategoryOfTitle(title, requiredBy).pages.push(page));
-  page.tags.forEach(title => website.getTagOfTitle(title, requiredBy).pages.push(page));
-});
+pages
+  .filter((page : Page) => page.url !== '/')
+  .forEach((page : Page) => {
+    const requiredBy = `pages['${page.url}']`;
+    page.categories.forEach(title => website.getCategoryOfTitle(title, requiredBy).pages.push(page));
+    page.tags.forEach(title => website.getTagOfTitle(title, requiredBy).pages.push(page));
+  });
 
 // add sub-categories to categories
 categories.forEach((page : Page) => {
