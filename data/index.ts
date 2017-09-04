@@ -29,10 +29,16 @@ if (index === undefined) {
 }
 
 // add pages to categories and tags
-pages.concat(categories).forEach((page : Page) => {
+pages.forEach((page : Page) => {
   const requiredBy = `pages['${page.url}']`;
   page.categories.forEach(title => website.getCategoryOfTitle(title, requiredBy).pages.push(page));
   page.tags.forEach(title => website.getTagOfTitle(title, requiredBy).pages.push(page));
+});
+
+// add sub-categories to categories
+categories.forEach((page : Page) => {
+  const requiredBy = `pages['${page.url}']`;
+  page.categories.forEach(title => website.getCategoryOfTitle(title, requiredBy).pages.push(page));
 });
 
 // generate descriptions for pages, categories and tags
