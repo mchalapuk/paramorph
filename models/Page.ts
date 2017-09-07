@@ -46,6 +46,19 @@ export class Page {
         .map((crumb : Page[]) => crumb.concat([ this ]));
     }).reduce((a : Page[][], b : Page[][]) => a.concat(b), []);
   }
+
+  compareTo(another : Page) {
+    if (this.date === null) {
+      if (another.date === null) {
+        return this.title > another.title;
+      }
+      return -1;
+    }
+    if (another.date === null) {
+      return 1;
+    }
+    return new Date(this.date).getTime() > new Date(another.date).getTime();
+  }
 }
 
 export default Page;
