@@ -6,7 +6,7 @@ export default class Tag extends Page {
   pages : Page[] = [];
 
   constructor(title : string, url : string, layout : Layout, body : ComponentType<any>) {
-    super('#'+ title, '', url, layout, body, true, null, [], [], false);
+    super('#'+ title, '', url, layout, body, true, new Date(Date.UTC(0, 0)), [], [], false);
     this.originalTitle = title;
   }
 }

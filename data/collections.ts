@@ -64,7 +64,7 @@ function parseCollection(key : string, cfg : any) {
 }
 
 function createPage(role: string, title : string, description : string, url : string,
-  layout : Layout, body : ComponentType<any>, output : boolean, date : string,
+  layout : Layout, body : ComponentType<any>, output : boolean, date : Date,
   categoryTitles : string[], tags : string[], feed : boolean, requiredBy : string) {
 
   switch (role) {
@@ -91,7 +91,7 @@ function parsePage(name : string, body: ComponentType<any>, frontMatter: any, de
     ),
     body,
     frontMatter.output != false,
-    frontMatter.date || null,
+    new Date(checkIsString(frontMatter.date, `${requiredBy}.date`)),
     checkIsArray(frontMatter.categories || [], `${requiredBy}.categories`)
       .concat(
         frontMatter.category !== undefined

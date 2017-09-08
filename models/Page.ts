@@ -12,14 +12,15 @@ export class Page {
   layout : Layout;
   body : any;
   output : boolean;
-  date : string | null;
+  date : Date;
   categories : string[];
   tags : string[];
   feed : boolean;
 
   constructor(title : string, description : string, url : string, layout : Layout,
-    body : ComponentType<any>, output : boolean, date : string | null,
+    body : ComponentType<any>, output : boolean, date : Date,
     categories : string[], tags : string[], feed : boolean) {
+
     this.title = title;
     this.description = description;
     this.url = url;
@@ -47,17 +48,14 @@ export class Page {
     }).reduce((a : Page[][], b : Page[][]) => a.concat(b), []);
   }
 
-  compareTo(another : Page) {
-    if (this.date === null) {
-      if (another.date === null) {
-        return this.title > another.title;
+  compareTo(another : Page) : -1 | 1 {
+    if (this.date === another.date) {
+      if (this.title === another.title) {
+        return this.url > another.url ? 1 : -1;
       }
-      return -1;
+      return this.title > another.title ? 1 : -1;
     }
-    if (another.date === null) {
-      return 1;
-    }
-    return new Date(this.date).getTime() > new Date(another.date).getTime();
+    return this.date.getTime() > another.date.getTime() ? 1 : -1;
   }
 }
 
