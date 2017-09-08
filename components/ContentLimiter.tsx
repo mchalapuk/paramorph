@@ -66,7 +66,7 @@ function limitReactElement(
     const newChildren = [] as ReactNode[];
     characters = limitContent(child.props.children, characters, props, newChildren);
     const newProps : any = typeof child.type === 'object'? { ...props, key } : { key };
-    output.push(cloneElement(child, newProps, newChildren));
+    output.push(cloneElement(child, newProps, newChildren.length === 0 ? undefined : newChildren));
   });
 
   return characters;
