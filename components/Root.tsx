@@ -14,13 +14,14 @@ export default ({ title, path, tags, description, css, scripts, stylesheets } : 
   <html>
     <head>
       <title>{ title }</title>
-      <meta name="path" content={ path }/>
-      <meta name="keywords" content={ tags.join(', ') } />
-      <meta name="description" content={ description } />
-      <style type="text/css">{ css.join('') }</style>
+      <meta name='path' content={ path }/>
+      <meta name='keywords' content={ tags.join(', ') } />
+      <meta name='description' content={ description } />
+      <meta name='viewport' content='width=device-width; initial-scale=1.0'/>
+      <style type='text/css'>{ css.join('') }</style>
     </head>
     <body>
-      <div id="root">
+      <div id='root'>
         %%%BODY%%%
       </div>
       { scripts.map(src => (
