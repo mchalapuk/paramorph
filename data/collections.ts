@@ -67,6 +67,9 @@ function createPage(role: string, title : string, description : string, url : st
   layout : Layout, body : ComponentType<any>, output : boolean, date : Date,
   categoryTitles : string[], tags : string[], feed : boolean, requiredBy : string) {
 
+  // replace _ with non-breaking spaces
+  title = title.replace(/_/g, String.fromCharCode(160));
+
   switch (role) {
     case 'page':
       return new Page(title, description, url, layout, body, output, date, categoryTitles, tags, feed);
