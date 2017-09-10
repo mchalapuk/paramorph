@@ -149,5 +149,20 @@ export default class Website {
     }
     return entity;
   }
+
+  menuContains(page : Page) {
+    return -1 !== this.menu
+      .map(entry => entry.url)
+      .indexOf(page.url);
+  }
+  getMenuEntry(page : Page, requiredBy ?: string) {
+    const found = this.menu.filter(entry => entry.url === page.url);
+    if (found.length === 0) {
+      throw new Error(`couldn't find menu entry for url '${page.url}'${
+        requiredBy ? ' required by ' + requiredBy : ''
+      }`);
+    }
+    return found[0];
+  }
 }
 
