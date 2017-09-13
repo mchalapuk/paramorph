@@ -9,12 +9,12 @@ interface Props {
 
 export function ContentLimiter({ children, limit, respectLimit, ...props } : Props) {
   if (!limit || !respectLimit) {
-    return <div>{ children }</div>;
+    return <div className='content'>{ children }</div>;
   }
 
   const output = [] as ReactNode[];
   limitContent(children, limit, props, output);
-  return <div>{ output }</div>;
+  return <div className='content'>{ output }</div>;
 }
 
 function limitContent(
