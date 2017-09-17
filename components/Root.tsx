@@ -6,11 +6,21 @@ interface Props {
   tags : string[];
   description : string;
   css : string[];
-  scripts : string[];
-  stylesheets : string[];
+  bundles : string[];
+  externalScripts : string[];
+  externalStylesheets : string[];
 }
 
-export default ({ title, path, tags, description, css, scripts, stylesheets } : Props) => (
+export default ({
+  title,
+  path,
+  tags,
+  description,
+  css,
+  bundles,
+  externalScripts,
+  externalStylesheets
+} : Props) => (
   <html>
     <head>
       <title>{ title }</title>
@@ -24,10 +34,13 @@ export default ({ title, path, tags, description, css, scripts, stylesheets } : 
       <div id='root'>
         %%%BODY%%%
       </div>
-      { scripts.map(src => (
+      { externalScripts.map(src => (
         <script type='text/javascript' src={ src } key={ src }></script>
       )) }
-      { stylesheets.map(src => (
+      { bundles.map(src => (
+        <script type='text/javascript' src={ src } key={ src }></script>
+      )) }
+      { externalStylesheets.map(src => (
         <link type='text/css' rel='stylesheet' href={ src } key={ src } />
       )) }
     </body>

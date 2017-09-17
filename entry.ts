@@ -39,7 +39,8 @@ const serverRender = (locals : any) => {
   // site skeleton rendered without react ids and with prerendered css modules
   const page = (website.entities[locals.path] || { tags: [], description: '' });
   const title = `${page.title} | ${locals.title}`;
-  const root = createElement(Root, Object.assign({ css: [ ...css ] }, locals, page, { title }));
+  const bundles = locals.scripts.map((name : string) => `/${locals.assets[name]}`);
+  const root = createElement(Root, Object.assign({ css: [ ...css ] }, locals, page, { title, bundles }));
   const html = renderToStaticMarkup(root);
 
   // everything together
