@@ -1,4 +1,4 @@
-import { Page, Tag, Website } from 'paramorph/models';
+import { Page, Tag, Website } from '../models';
 
 import pages from './pages';
 import categories from './categories';

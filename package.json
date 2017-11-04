@@ -5,9 +5,8 @@
   "scripts": {
     "clean": "rm -rf lib #",
     "compile": "tsc",
-    "test": "PATTERN=${PATTERN:-'*.spec.js'}; mocha --use_strict lib/mocha.config.js $(find lib -name \"${PATTERN}\")",
-    "build": "npm run compile && npm test",
-    "clean-build": "npm run clean && npm run compile && npm test"
+    "build": "npm run compile",
+    "clean-build": "npm run clean && npm run compile"
   },
   "repository": {
     "type": "git",
