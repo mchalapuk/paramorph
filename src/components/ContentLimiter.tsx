@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ReactNode, ReactElement, cloneElement } from 'react';
 
-interface Props {
+export interface Props {
   children ?: ReactNode;
   limit ?: number;
   respectLimit ?: boolean;
@@ -16,6 +16,8 @@ export function ContentLimiter({ children, limit, respectLimit, ...props } : Pro
   limitContent(children, limit, props, output);
   return <div className='content'>{ output }</div>;
 }
+
+export default ContentLimiter;
 
 function limitContent(
   children : ReactNode | undefined,
@@ -93,6 +95,4 @@ function sentencize(child : string) {
 
   return matches;
 }
-
-export default ContentLimiter;
 
