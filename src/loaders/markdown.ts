@@ -1,12 +1,14 @@
-const utils = require('loader-utils');
+import { getOptions } from 'loader-utils';
 const Markdown = require('markdown-it');
 
-module.exports = function markdownLoader(source) {
-  this.cacheable && this.cacheable();
-  const opts = utils.getOptions(this);
+module.exports = function markdownLoader(source : string) {
+  const that = this as any;
+
+  that.cacheable && that.cacheable();
+  const opts = getOptions(that);
   const md = new Markdown(opts);
 
-	const exports = this.exec(source, this.resource);
+	const exports = that.exec(source, that.resource);
 
 	if (typeof exports.body != 'string') {
 		throw new Error('markdownloader expects body property of type string; got '

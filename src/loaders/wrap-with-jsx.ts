@@ -1,9 +1,11 @@
-const utils = require('loader-utils');
+import { getOptions } from 'loader-utils';
 
-module.exports = function wrapWithJsxLoader(source) {
-  this.cacheable && this.cacheable();
-  const opts = utils.getOptions(this);
-	const exports = this.exec(source, this.resource);
+module.exports = function wrapWithJsxLoader(source : string) {
+  const that = this as any;
+
+  that.cacheable && that.cacheable();
+  const opts = getOptions(that);
+	const exports = that.exec(source, that.resource);
   const wrapped = opts.field ? exports[opts.field] : exports;
 
 	if (typeof wrapped != 'string') {

@@ -2,22 +2,22 @@ const fs = require('fs');
 const path = require('path');
 
 const specialDirs = fs.readdirSync('.')
-  .filter(file => fs.lstatSync(file).isDirectory())
-  .filter(file => file.match(/^_[a-z0-9-_]+$/))
-  .filter((key) => ['_layouts', '_includes'].indexOf(key) == -1)
+  .filter((file : string) => fs.lstatSync(file).isDirectory())
+  .filter((file : string) => file.match(/^_[a-z0-9-_]+$/))
+  .filter((file : string) => ['_layouts', '_includes'].indexOf(file) == -1)
 ;
 
 const TSX_REGEX = '/\\.tsx$/';
 const MD_REGEX = '/\\.markdown$/';
 
 const code = 'module.exports = {\n' + specialDirs
-  .map((key) => {
+  .map((key : string) => {
     return { name: key.substring(1), path: `../../${key}`, regex: MD_REGEX, subdirs: true };
   })
   .concat([ { name: 'ROOT', path: '../../', regex: MD_REGEX, subdirs: false } ])
   .concat([ { name: 'LAYOUTS', path: '../../_layouts', regex: TSX_REGEX, subdirs: false } ])
   .concat([ { name: 'INCLUDES', path: '../../_includes', regex: TSX_REGEX, subdirs: false } ])
-  .map((entry) => {
+  .map((entry : Entry) => {
     return `${entry.name.toUpperCase()}: `
       + `require.context('${entry.path}', ${entry.subdirs}, ${entry.regex})`;
   })
@@ -26,4 +26,11 @@ const code = 'module.exports = {\n' + specialDirs
 module.exports = function() {
   return { code: code };
 };
+
+interface Entry {
+  name : string;
+  path : string;
+  regex : RegExp;
+  subdirs : boolean;
+}
 

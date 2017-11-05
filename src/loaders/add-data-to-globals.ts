@@ -1,8 +1,10 @@
-const utils = require('loader-utils');
+import { getOptions } from 'loader-utils';
 
-module.exports = function addDataToGlobalsLoader(source) {
-  this.cacheable && this.cacheable();
-  const opts = utils.getOptions(this);
+module.exports = function addDataToGlobalsLoader(source : string) {
+  const that = this as any;
+
+  that.cacheable && that.cacheable();
+  const opts = getOptions(that);
 
 	if (typeof opts.data != 'string') {
 		throw new Error('addDataToGlobalsLoader expects data option'
