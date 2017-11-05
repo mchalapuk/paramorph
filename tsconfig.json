@@ -21,7 +21,7 @@
     "noImplicitThis": true,
     "outDir": "./lib/",
     "strictNullChecks": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "target": "es5",
     "types": [
       "webpack",
