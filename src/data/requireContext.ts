@@ -12,11 +12,31 @@ const MD_REGEX = '/\\.markdown$/';
 
 const code = 'module.exports = {\n' + specialDirs
   .map((key : string) => {
-    return { name: key.substring(1), path: `../../${key}`, regex: MD_REGEX, subdirs: true };
+    return {
+      name: key.substring(1),
+      path: path.resolve(`./${key}/`),
+      regex: MD_REGEX,
+      subdirs: true,
+    };
   })
-  .concat([ { name: 'ROOT', path: '../../', regex: MD_REGEX, subdirs: false } ])
-  .concat([ { name: 'LAYOUTS', path: '../../_layouts', regex: TSX_REGEX, subdirs: false } ])
-  .concat([ { name: 'INCLUDES', path: '../../_includes', regex: TSX_REGEX, subdirs: false } ])
+  .concat([ {
+    name: 'ROOT',
+    path: path.resolve('./'),
+    regex: MD_REGEX,
+    subdirs: false,
+  } ])
+  .concat([ {
+    name: 'LAYOUTS',
+    path: path.resolve('./_layouts/'),
+    regex: TSX_REGEX,
+    subdirs: false,
+  } ])
+  .concat([ {
+    name: 'INCLUDES',
+    path: path.resolve('./_includes/'),
+    regex: TSX_REGEX,
+    subdirs: false,
+  } ])
   .map((entry : Entry) => {
     return `${entry.name.toUpperCase()}: `
       + `require.context('${entry.path}', ${entry.subdirs}, ${entry.regex})`;
