@@ -1,13 +1,16 @@
 {
   "name": "paramorph",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf lib #",
-    "compile": "tsc",
+    "compile-ts": "tsc",
+    "compile-coffee": "coffee -c -m -o lib src",
+    "compile": "npm run compile-ts && npm run compile-coffee",
+    "test": "mocha --use_strict lib/mocha.config.js $(find lib -name \"*.spec.js\")",
     "copy-package.json": "mkdir -p lib/ && cp package.json lib/",
-    "build": "npm run compile && npm run copy-package.json",
-    "clean-build": "npm run clean && npm run compile && npm run copy-package.json",
+    "build": "npm run compile && npm run test && npm run copy-package.json",
+    "clean-build": "npm run clean && npm run build",
     "deploy": "npm run clean-build && npm publish lib"
   },
   "repository": {
@@ -45,6 +48,10 @@
     "@types/react-router-dom": "^4.2.0",
     "@types/webpack": "^3.0.14",
     "@types/webpack-env": "^1.13.2",
+    "coffeescript": "^1.12.7",
+    "mocha": "^3.5.3",
+    "should": "^13.1.3",
+    "should-sinon": "0.0.6",
     "typescript": "^2.6.1"
   }
 }

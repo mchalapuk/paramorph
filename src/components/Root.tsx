@@ -1,47 +1,42 @@
 import * as React from 'react';
 
-export interface Props {
-  title : string;
-  path : string;
-  tags : string[];
-  description : string;
+import { Page } from '../models';
+
+export interface BundleUrls {
   css : string[];
-  bundles : string[];
-  externalScripts : string[];
-  externalStylesheets : string[];
+  js : string[];
 }
 
-export function Root({
-  title,
-  path,
-  tags,
-  description,
-  css,
-  bundles,
-  externalScripts,
-  externalStylesheets
-} : Props) {
+export interface RootProps {
+  page : Page;
+  localBundles : BundleUrls;
+  externalBundles : BundleUrls;
+}
+
+export function Root({ page, localBundles, externalBundles } : RootProps) {
   return (
     <html>
       <head>
-        <title>{ title }</title>
-        <meta name='path' content={ path }/>
-        <meta name='keywords' content={ tags.join(', ') } />
-        <meta name='description' content={ description } />
+        <title>{ page.title }</title>
+        <meta name='path' content={ page.url }/>
+        <meta name='keywords' content={ page.tags.join(', ') } />
+        <meta name='description' content={ page.description } />
         <meta name='viewport' content='width=device-width; initial-scale=1.0'/>
-        <style type='text/css'>{ css.join('') }</style>
+        { localBundles.css.map(url => (
+          <link type='text/css' rel='stylesheet' href={ url } key={ url } />
+        )) }
       </head>
       <body>
         <div id='root'>
           %%%BODY%%%
         </div>
-        { externalScripts.map(src => (
+        { externalBundles.js.map(src => (
           <script type='text/javascript' src={ src } key={ src }></script>
         )) }
-        { bundles.map(src => (
+        { localBundles.js.map(src => (
           <script type='text/javascript' src={ src } key={ src }></script>
         )) }
-        { externalStylesheets.map(src => (
+        { externalBundles.css.map(src => (
           <link type='text/css' rel='stylesheet' href={ src } key={ src } />
         )) }
       </body>

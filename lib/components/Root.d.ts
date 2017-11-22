@@ -1,13 +1,13 @@
 /// <reference types="react" />
-export interface Props {
-    title: string;
-    path: string;
-    tags: string[];
-    description: string;
+import { Page } from '../models';
+export interface BundleUrls {
     css: string[];
-    bundles: string[];
-    externalScripts: string[];
-    externalStylesheets: string[];
+    js: string[];
 }
-export declare function Root({title, path, tags, description, css, bundles, externalScripts, externalStylesheets}: Props): JSX.Element;
+export interface RootProps {
+    page: Page;
+    localBundles: BundleUrls;
+    externalBundles: BundleUrls;
+}
+export declare function Root({page, localBundles, externalBundles}: RootProps): JSX.Element;
 export default Root;

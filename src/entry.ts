@@ -3,56 +3,26 @@ import { render } from 'react-dom';
 import { renderToStaticMarkup, renderToString } from 'react-dom/server';
 import { StaticRouter, BrowserRouter, Switch } from 'react-router-dom';
 import { AppContainer } from 'react-hot-loader';
-import * as PropTypes from 'prop-types';
 
+import { HashMap, Locals, ServerRenderer } from './renderers/server';
 import Root from './components/Root';
-import IsomorphicStyleContext from './components/IsomorphicStyleContext';
-import routes from './routes';
+
+import RoutesFactory from './route-factory';
 import website from './data';
 
-const css : Set<string> = new Set<string>();
+const routesFactory = new RoutesFactory()
+const routes = routesFactory.getRoutes(website);
 
-// context for catching css modules during static rendering
-class CssCaptureContext extends Component<{}, {}> {
-  static childContextTypes = {
-    insertCss: PropTypes.func.isRequired,
-  };
-  getChildContext() {
-    return {
-      insertCss: (...styles : { _getCss() : string }[]) => {
-        styles.forEach(s => css.add(s._getCss()));
-      },
-    };
-  }
-  render() {
-    return Children.only(this.props.children);
-  }
-}
-
-const serverRender = (locals : any) => {
-  // react root contents rendered with react ids
-  const child = createElement(Switch, {}, routes);
-  const router = createElement(StaticRouter, { location: locals.path, context: {} }, child);
-  const context = createElement(CssCaptureContext, {}, router);
-  const body = renderToString(context);
-
-  // site skeleton rendered without react ids and with prerendered css modules
-  const page = (website.entities[locals.path] || { tags: [], description: '' });
-  const title = `${page.title} | ${locals.title}`;
-  const bundles = locals.scripts.map((name : string) => `/${locals.assets[name]}`);
-  const root = createElement(Root, Object.assign({ css: [ ...css ] }, locals, page, { title, bundles }));
-  const html = renderToStaticMarkup(root);
-
-  // everything together
-  return '<!DOCTYPE html>\n' + html.replace("%%%BODY%%%", body);
+const serverRender = (locals : Locals) => {
+  const renderer = new ServerRenderer(Root);
+  return renderer.render(locals, routes);
 }
 
 const clientRender = () => {
   const container = document.getElementById('root');
   const child = createElement(Switch, {}, routes);
   const router = createElement(BrowserRouter, {}, child);
-  const context = createElement(IsomorphicStyleContext, { children: router });
-  const app = createElement(AppContainer, {}, context);
+  const app = createElement(AppContainer, {}, router);
   render(app, container);
 }
 
