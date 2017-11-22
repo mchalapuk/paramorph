@@ -13,8 +13,8 @@ export interface HashMap<T> {
 export interface Locals {
   title : string;
   path : string;
-  js : string[];
-  css : string[];
+  js ?: string[];
+  css ?: string[];
   assets : HashMap<{}>;
 }
 
@@ -62,7 +62,7 @@ function getRootProps(locals : Locals, page : Page) {
   return {
     page: Object.assign(page, { title }),
     localBundles: { css, js },
-    externalBundles: { css: locals.css, js: locals.js },
+    externalBundles: { css: locals.css || [], js: locals.js || [] },
   };
 }
 

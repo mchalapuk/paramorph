@@ -8,8 +8,8 @@ export interface HashMap<T> {
 export interface Locals {
     title: string;
     path: string;
-    js: string[];
-    css: string[];
+    js?: string[];
+    css?: string[];
     assets: HashMap<{}>;
 }
 export declare class ServerRenderer {
