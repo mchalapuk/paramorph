@@ -6,16 +6,23 @@ import { PageWithRoute } from '../route-factory';
 import { RootProps } from '../components/Root';
 import { Website, Page } from '../models';
 
-export interface HashMap<T> {
-  [name : string] : T;
-};
-
 export interface Locals {
   title : string;
   path : string;
   js ?: string[];
   css ?: string[];
-  assets : HashMap<{}>;
+  assets : HashMap<string>;
+  webpackStats : WebpackStats;
+}
+
+export interface WebpackStats {
+  compilation : CompilationStats;
+}
+export interface CompilationStats {
+  assets : HashMap<any>;
+}
+export interface HashMap<T> {
+  [name : string] : T;
 }
 
 export class ServerRenderer {
@@ -55,7 +62,8 @@ function getRouterProps(location : string) {
 function getRootProps(locals : Locals, page : Page) {
   const title = page.title + (locals.title ? ` | ${locals.title}` : '');
 
-  const assets = Object.keys(locals.assets);
+  const assets = Object.keys(locals.webpackStats.compilation.assets)
+    .map(url => `/${url}`);
   const css = assets.filter(value => value.match(/\.css$/));
   const js = assets.filter(value => value.match(/\.js$/));
 

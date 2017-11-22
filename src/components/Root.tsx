@@ -30,14 +30,14 @@ export function Root({ page, localBundles, externalBundles } : RootProps) {
         <div id='root'>
           %%%BODY%%%
         </div>
-        { externalBundles.js.map(src => (
-          <script type='text/javascript' src={ src } key={ src }></script>
+        { externalBundles.js.map(url => (
+          <script type='text/javascript' src={ url } key={ url }></script>
         )) }
-        { localBundles.js.map(src => (
-          <script type='text/javascript' src={ src } key={ src }></script>
+        { localBundles.js.map(url => (
+          <script type='text/javascript' src={ url } key={ url }></script>
         )) }
-        { externalBundles.css.map(src => (
-          <link type='text/css' rel='stylesheet' href={ src } key={ src } />
+        { externalBundles.css.map(url => (
+          <link type='text/css' rel='stylesheet' href={ url } key={ url } />
         )) }
       </body>
     </html>

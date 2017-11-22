@@ -31,9 +31,11 @@ createRoute = (page) ->
     component: -> React.createElement Layout, page: page
 
 locals =
-  assets:
-    "bundle.css": {}
-    "bundle.js": {}
+  webpackStats:
+    compilation:
+      assets:
+        "bundle.css": {}
+        "bundle.js": {}
 
 describe "ServerRenderer", ->
   testedRenderer = null
