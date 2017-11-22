@@ -1,7 +1,7 @@
 declare const fs: any;
 declare const path: any;
 declare const specialDirs: any;
-declare const TSX_REGEX = "/\\.tsx$/";
+declare const JS_REGEX = "/\\.js$/";
 declare const MD_REGEX = "/\\.markdown$/";
 declare const code: string;
 interface Entry {

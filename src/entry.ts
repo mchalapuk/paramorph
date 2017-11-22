@@ -20,7 +20,7 @@ const serverRender = (locals : Locals) => {
 
 const clientRender = () => {
   const container = document.getElementById('root');
-  const child = createElement(Switch, {}, routes);
+  const child = createElement(Switch, {}, routes.map(e => e.route));
   const router = createElement(BrowserRouter, {}, child);
   const app = createElement(AppContainer, {}, router);
   render(app, container);

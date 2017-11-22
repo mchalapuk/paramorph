@@ -7,7 +7,7 @@ const specialDirs = fs.readdirSync('.')
   .filter((file : string) => ['_layouts', '_includes'].indexOf(file) == -1)
 ;
 
-const TSX_REGEX = '/\\.tsx$/';
+const JS_REGEX = '/\\.js$/';
 const MD_REGEX = '/\\.markdown$/';
 
 const code = 'module.exports = {\n' + specialDirs
@@ -28,13 +28,13 @@ const code = 'module.exports = {\n' + specialDirs
   .concat([ {
     name: 'LAYOUTS',
     path: path.resolve('./_layouts/'),
-    regex: TSX_REGEX,
+    regex: JS_REGEX,
     subdirs: false,
   } ])
   .concat([ {
     name: 'INCLUDES',
     path: path.resolve('./_includes/'),
-    regex: TSX_REGEX,
+    regex: JS_REGEX,
     subdirs: false,
   } ])
   .map((entry : Entry) => {
