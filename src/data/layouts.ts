@@ -9,9 +9,9 @@ const layouts = requireDirectory(Context.LAYOUTS)
     const name = module.name.replace(/^\.\//, '').replace(/\.js$/, '');
     const component = module.exports.default;
 
-    if (typeof component !== 'object') {
+    if (typeof component !== 'function') {
       throw new Error(`default export of layout ${
-        name} is of wrong type; expected 'object'; got '${typeof component}'`);
+        name} is of wrong type; expected 'function'; got '${typeof component}'`);
     }
     return new Layout(name, component);
   });
