@@ -1,6 +1,6 @@
 {
   "name": "paramorph",
-  "version": "1.5.0",
+  "version": "1.5.2",
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf lib #",
@@ -34,6 +34,7 @@
   "homepage": "https://github.com/muroc/paramorph#readme",
   "description": "",
   "dependencies": {
+    "js-yaml": "^3.10.0",
     "loader-utils": "^1.1.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
@@ -41,6 +42,7 @@
     "react-router-dom": "^4.2.2"
   },
   "devDependencies": {
+    "@types/js-yaml": "^3.10.0",
     "@types/loader-utils": "^1.1.0",
     "@types/react": "^16.0.20",
     "@types/react-dom": "^16.0.2",

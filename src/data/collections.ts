@@ -5,7 +5,7 @@ import requireDirectory, { Module, RequireContext } from './requireDirectory';
 import layouts from './layouts';
 
 const Context = require('./requireContext');
-const config = require('../../_config.yml');
+const config = require('./config');
 
 function checkIsObject(value : any, name : string) {
   if (typeof value != 'object') {

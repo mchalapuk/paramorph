@@ -1,7 +1,7 @@
 
 import { MenuEntry } from '../models';
 
-const config = require('../../_config.yml');
+const config = require('./config');
 
 function checkIsArray(value : any, name : string) {
   if (!(value instanceof Array)) {

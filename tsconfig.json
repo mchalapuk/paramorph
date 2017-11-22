@@ -28,7 +28,8 @@
       "webpack-env",
       "react",
       "react-dom",
-      "react-router-dom"
+      "react-router-dom",
+      "js-yaml"
     ]
   },
   "include": [
