@@ -33,6 +33,6 @@ if (typeof window !== 'undefined') {
 export default serverRender;
 
 if (module.hot) {
-  module.hot.accept('./routes', clientRender);
+  module.hot.accept('./data', clientRender);
 }
 
