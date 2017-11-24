@@ -5,9 +5,10 @@ export interface BundleUrls {
     js: string[];
 }
 export interface RootProps {
+    siteTitle: string;
     page: Page;
     localBundles: BundleUrls;
     externalBundles: BundleUrls;
 }
-export declare function Root({page, localBundles, externalBundles}: RootProps): JSX.Element;
+export declare function Root({siteTitle, page, localBundles, externalBundles}: RootProps): JSX.Element;
 export default Root;

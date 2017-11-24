@@ -7,7 +7,7 @@ import { RootProps } from '../components/Root';
 import { Website, Page } from '../models';
 
 export interface Locals {
-  title : string;
+  siteTitle : string;
   path : string;
   js ?: string[];
   css ?: string[];
@@ -60,15 +60,14 @@ function getRouterProps(location : string) {
 }
 
 function getRootProps(locals : Locals, page : Page) {
-  const title = page.title + (locals.title ? ` | ${locals.title}` : '');
-
   const assets = Object.keys(locals.webpackStats.compilation.assets)
     .map(url => `/${url}`);
   const css = assets.filter(value => value.match(/\.css$/));
   const js = assets.filter(value => value.match(/\.js$/));
 
   return {
-    page: Object.assign(page, { title }),
+    siteTitle: locals.siteTitle,
+    page,
     localBundles: { css, js },
     externalBundles: { css: locals.css || [], js: locals.js || [] },
   };

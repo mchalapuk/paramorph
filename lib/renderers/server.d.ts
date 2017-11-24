@@ -3,7 +3,7 @@ import { ComponentType } from 'react';
 import { PageWithRoute } from '../route-factory';
 import { RootProps } from '../components/Root';
 export interface Locals {
-    title: string;
+    siteTitle: string;
     path: string;
     js?: string[];
     css?: string[];

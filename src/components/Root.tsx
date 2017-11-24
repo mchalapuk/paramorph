@@ -8,16 +8,17 @@ export interface BundleUrls {
 }
 
 export interface RootProps {
+  siteTitle : string;
   page : Page;
   localBundles : BundleUrls;
   externalBundles : BundleUrls;
 }
 
-export function Root({ page, localBundles, externalBundles } : RootProps) {
+export function Root({ siteTitle, page, localBundles, externalBundles } : RootProps) {
   return (
     <html>
       <head>
-        <title>{ page.title }</title>
+        <title>{ page.title } | { siteTitle }</title>
         <meta name='path' content={ page.url }/>
         <meta name='keywords' content={ page.tags.join(', ') } />
         <meta name='description' content={ page.description } />
