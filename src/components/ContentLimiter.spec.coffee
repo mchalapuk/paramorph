@@ -36,8 +36,10 @@ describe "ContentLimiter", ->
   limitTests = [
     [
       "limiting two sentences"
-      elem "p", (elem "b", "Ignorance"), " is a lack of ", (elem "a", "knowledge"), ". ",
+      [
+        elem "p", (elem "b", "Ignorance"), " is a lack of ", (elem "a", "knowledge"), ". "
         "Knowledge is a lack of ignorance."
+      ]
       "<p><b>Ignorance</b> is a lack of <a>knowledge</a>.</p>"
     ]
     [

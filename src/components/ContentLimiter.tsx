@@ -13,11 +13,25 @@ export function ContentLimiter({ children, limit, respectLimit, ...props } : Pro
   }
 
   const output = [] as ReactNode[];
-  limitContent(children, limit, props, 'root', output);
+  limitChildren(children, limit, props, output);
   return <div className='content'>{ output }</div>;
 }
 
 export default ContentLimiter;
+
+function limitChildren(
+  children : ReactNode,
+  limit : number,
+  limiterProps : any,
+  output : ReactNode[]
+) {
+  let updatedLimit = limit;
+
+  Children.forEach(children, (child, key) => {
+    updatedLimit = limitContent(child, updatedLimit, limiterProps, key, output);
+  });
+  return updatedLimit;
+}
 
 function limitContent(
   node : ReactNode,
@@ -68,16 +82,15 @@ function limitReactElement(
     return limit;
   }
 
-  const newChildren = [] as ReactNode[];
-  let characters = limit;
-
-  Children.forEach(elem.props.children, (child, key) => {
-    characters = limitContent(child, characters, limiterProps, key, newChildren);
-  });
+  const updatedChildren = [] as ReactNode[];
+  const updatedLimit = limitChildren(elem.props.children, limit, limiterProps, updatedChildren);
 
   const cloneProps = createCloneProps(elem, limiterProps, key);
-  output.push(cloneElement(elem, cloneProps, newChildren.length === 0 ? undefined : newChildren));
-  return characters;
+  // props.children must be undefined in case of child-less elements (e.g <img/>).
+  const maybeChildren = updatedChildren.length === 0 ? undefined : updatedChildren;
+
+  output.push(cloneElement(elem, cloneProps, maybeChildren));
+  return updatedLimit;
 }
 
 function sentencize(child : string) {
