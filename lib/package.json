@@ -1,6 +1,6 @@
 {
   "name": "paramorph",
-  "version": "1.8.11",
+  "version": "1.9.3",
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf lib #",
