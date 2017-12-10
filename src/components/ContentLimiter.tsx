@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { ReactNode, ReactElement, cloneElement } from 'react';
+import { Children, ReactNode, ReactElement, cloneElement } from 'react';
 
 export interface Props {
-  children ?: ReactNode;
+  children : ReactNode;
   limit ?: number;
   respectLimit ?: boolean;
 }
@@ -13,28 +13,32 @@ export function ContentLimiter({ children, limit, respectLimit, ...props } : Pro
   }
 
   const output = [] as ReactNode[];
-  limitContent(children, limit, props, output);
+  limitContent(children, limit, props, 'root', output);
   return <div className='content'>{ output }</div>;
 }
 
 export default ContentLimiter;
 
 function limitContent(
-  children : ReactNode | undefined,
+  node : ReactNode,
   limit : number,
-  props : any,
+  limiterProps : any,
+  key : number | string,
   output : ReactNode[]
 ) {
-  switch (typeof children) {
-    case 'undefined':
-      return limit;
+  if (limit === 0 || node === null || node === undefined) {
+    return limit;
+  }
+
+  switch (typeof node) {
+    case 'boolean':
     case 'number':
-      output.push(children);
+      output.push(node);
       return limit;
     case 'string':
-      return limitString(children as string, limit, output);
+      return limitString(node as string, limit, output);
     default:
-      return limitReactElement(children, limit, props, output);
+      return limitReactElement(node as ReactElement<any>, limit, limiterProps, key, output);
   }
 }
 
@@ -54,34 +58,26 @@ function limitString(child : string, limit : number, output : ReactNode[]) {
 }
 
 function limitReactElement(
-  children : ReactNode | undefined,
+  elem : ReactElement<any>,
   limit : number,
-  props : any,
+  limiterProps : any,
+  key : number | string,
   output : ReactNode[]
 ) {
+  if (elem.type === 'img') {
+    return limit;
+  }
+
+  const newChildren = [] as ReactNode[];
   let characters = limit;
 
-  asReactElementArray(children).forEach((child, key) => {
-    if (characters === 0 || child.type === 'img') {
-      return;
-    }
-    const newChildren = [] as ReactNode[];
-    characters = limitContent(child.props.children, characters, props, newChildren);
-    const newProps : any = typeof child.type === 'object'? { ...props, key } : { key };
-    output.push(cloneElement(child, newProps, newChildren.length === 0 ? undefined : newChildren));
+  Children.forEach(elem.props.children, (child, key) => {
+    characters = limitContent(child, characters, limiterProps, key, newChildren);
   });
 
+  const cloneProps = createCloneProps(elem, limiterProps, key);
+  output.push(cloneElement(elem, cloneProps, newChildren.length === 0 ? undefined : newChildren));
   return characters;
-}
-
-function asReactElementArray(children ?: ReactNode) {
-  if (children === undefined) {
-    return [] as ReactElement<any>[];
-  }
-  if (typeof children !== 'object') {
-    throw new Error(`unexpected value: ${children}`);
-  }
-  return ([] as ReactElement<any>[]).concat(children as ReactElement<any>[]);
 }
 
 function sentencize(child : string) {
@@ -94,5 +90,12 @@ function sentencize(child : string) {
   }
 
   return matches;
+}
+
+function createCloneProps(elem : ReactElement<any>, limiterProps : any, key : number | string) {
+  if (typeof elem.type === 'string') {
+    return { key, ...elem.props };
+  }
+  return { key, ...elem.props, ...limiterProps };
 }
 

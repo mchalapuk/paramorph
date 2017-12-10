@@ -1,7 +1,7 @@
 /// <reference types="react" />
 import { ReactNode } from 'react';
 export interface Props {
-    children?: ReactNode;
+    children: ReactNode;
     limit?: number;
     respectLimit?: boolean;
 }
