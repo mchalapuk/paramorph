@@ -6,10 +6,10 @@ export default class Category extends Page {
   pages : Page[] = [];
 
   constructor(title : string, description : string, url : string, layout : Layout,
-    body : ComponentType<any>, output : boolean, date : Date,
+    body : ComponentType<any>, image : string | null, output : boolean, date : Date,
     categories : string[], tags : string[]) {
 
-    super(title, description, url, layout, body, output, date, categories, tags, false);
+    super(title, description, url, layout, body, image, output, date, categories, tags, false);
   }
 }
 

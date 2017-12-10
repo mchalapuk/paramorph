@@ -62,7 +62,7 @@ function limitReactElement(
   let characters = limit;
 
   asReactElementArray(children).forEach((child, key) => {
-    if (characters === 0) {
+    if (characters === 0 || child.type === 'img') {
       return;
     }
     const newChildren = [] as ReactNode[];

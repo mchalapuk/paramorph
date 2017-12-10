@@ -8,7 +8,7 @@ const Context = require('./requireContext');
 const config = require('./config');
 
 function checkIsObject(value : any, name : string) {
-  if (typeof value != 'object') {
+  if (typeof value !== 'object') {
     throw new Error(`${name} must be an object; got ${typeof value}`);
   }
   return value;
@@ -20,8 +20,14 @@ function checkIsArray(value : any, name : string) {
   return value;
 }
 function checkIsString(value : any, name : string) {
-  if (typeof value != 'string') {
+  if (typeof value !== 'string') {
     throw new Error(`${name} must be a string; got ${typeof value}`);
+  }
+  return value;
+}
+function checkIsOptionalString(value : any, name : string) {
+  if (typeof value !== 'string' && value !== null) {
+    throw new Error(`${name} must be a string or null; got ${typeof value}`);
   }
   return value;
 }
@@ -64,7 +70,7 @@ function parseCollection(key : string, cfg : any) {
 }
 
 function createPage(role: string, title : string, description : string, url : string,
-  layout : Layout, body : ComponentType<any>, output : boolean, date : Date,
+  layout : Layout, body : ComponentType<any>, image : string | null, output : boolean, date : Date,
   categoryTitles : string[], tags : string[], feed : boolean, requiredBy : string) {
 
   // replace _ with non-breaking spaces
@@ -72,9 +78,32 @@ function createPage(role: string, title : string, description : string, url : st
 
   switch (role) {
     case 'page':
-      return new Page(title, description, url, layout, body, output, date, categoryTitles, tags, feed);
+      return new Page(
+        title,
+        description,
+        url,
+        layout,
+        body,
+        image,
+        output,
+        date,
+        categoryTitles,
+        tags,
+        feed
+      );
     case 'category':
-      return new Category(title, description, url, layout, body, output, date, categoryTitles, tags);
+      return new Category(
+        title,
+        description,
+        url,
+        layout,
+        body,
+        image,
+        output,
+        date,
+        categoryTitles,
+        tags
+      );
     default:
       throw new Error(`unrecognized role: ${role} in ${requiredBy}`);
   }
@@ -93,6 +122,7 @@ function parsePage(name : string, body: ComponentType<any>, frontMatter: any, de
       requiredBy
     ),
     body,
+    checkIsOptionalString(frontMatter.image || null, `${requiredBy}.image`),
     frontMatter.output != false,
     new Date(checkIsString(frontMatter.date, `${requiredBy}.date`)),
     checkIsArray(frontMatter.categories || [], `${requiredBy}.categories`)
