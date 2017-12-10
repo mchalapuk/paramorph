@@ -1,14 +1,14 @@
 /// <reference types="react" />
-import { Page } from '../models';
+import { Website, Page } from '../models';
 export interface BundleUrls {
     css: string[];
     js: string[];
 }
 export interface RootProps {
-    siteTitle: string;
+    website: Website;
     page: Page;
     localBundles: BundleUrls;
     externalBundles: BundleUrls;
 }
-export declare function Root({siteTitle, page, localBundles, externalBundles}: RootProps): JSX.Element;
+export declare function Root({website, page, localBundles, externalBundles}: RootProps): JSX.Element;
 export default Root;

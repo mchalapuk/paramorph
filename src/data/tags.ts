@@ -3,7 +3,7 @@ import { Page, Tag, Website } from '../models';
 import pages from './pages';
 import categories from './categories';
 
-const website = new Website();
+const website = new Website('', '', '', '');
 pages.forEach((page : Page) => website.addPage(page));
 
 const tagPage = website.getPageOfUrl('/tag', 'all tags');

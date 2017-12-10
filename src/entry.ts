@@ -15,7 +15,7 @@ const routes = routesFactory.getRoutes(website);
 
 const serverRender = (locals : Locals) => {
   const renderer = new ServerRenderer(Root);
-  return renderer.render(locals, routes);
+  return renderer.render(locals, website, routes);
 }
 
 const clientRender = () => {

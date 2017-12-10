@@ -2,8 +2,8 @@
 import { ComponentType } from 'react';
 import { PageWithRoute } from '../route-factory';
 import { RootProps } from '../components/Root';
+import { Website } from '../models';
 export interface Locals {
-    siteTitle: string;
     path: string;
     js?: string[];
     css?: string[];
@@ -22,6 +22,6 @@ export interface HashMap<T> {
 export declare class ServerRenderer {
     private Root;
     constructor(Root: ComponentType<RootProps>);
-    render(locals: Locals, routes: PageWithRoute[]): HashMap<string>;
+    render(locals: Locals, website: Website, routes: PageWithRoute[]): HashMap<string>;
 }
 export default ServerRenderer;

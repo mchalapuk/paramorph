@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Page } from '../models';
+import { Website, Page } from '../models';
 
 export interface BundleUrls {
   css : string[];
@@ -8,17 +8,17 @@ export interface BundleUrls {
 }
 
 export interface RootProps {
-  siteTitle : string;
+  website : Website;
   page : Page;
   localBundles : BundleUrls;
   externalBundles : BundleUrls;
 }
 
-export function Root({ siteTitle, page, localBundles, externalBundles } : RootProps) {
+export function Root({ website, page, localBundles, externalBundles } : RootProps) {
   return (
     <html>
       <head>
-        <title>{ page.title } | { siteTitle }</title>
+        <title>{ page.title } | { website.title }</title>
         <meta name='path' content={ page.url }/>
         <meta name='keywords' content={ page.tags.join(', ') } />
         <meta name='description' content={ page.description } />
@@ -26,6 +26,11 @@ export function Root({ siteTitle, page, localBundles, externalBundles } : RootPr
         { localBundles.css.map(url => (
           <link type='text/css' rel='stylesheet' href={ url } key={ url } />
         )) }
+        <meta property='og:url' content={ `${website.baseUrl}${page.url}` } />
+        <meta property='og:title' content={ page.title } />
+        <meta property='og:description' content={ page.description } />
+        <meta property='og:locale' content={ website.locale } />
+        <meta property='og:type' content={ page.url === '/' ? 'website' : 'article' } />
       </head>
       <body>
         <div id='root'>

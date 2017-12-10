@@ -37,7 +37,7 @@ function checkIsOptionalBoolean(value : any, defaultValue : boolean, name : stri
 
 checkIsObject(config.collections, 'config.collections');
 
-const website = new Website();
+const website = new Website('', '', '', '');
 layouts.forEach((layout : Layout) => website.addLayout(layout));
 
 const ROOT_COLLECTION_KEY = '$root';

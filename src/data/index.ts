@@ -14,7 +14,17 @@ import categories from './categories';
 import tags from './tags';
 import menu from './menu';
 
-const website = new Website();
+const config = require('./config');
+
+const website = new Website(
+  checkIsString(config.title, 'config.title'),
+  checkIsString(config.baseUrl, 'config.baseUrl'),
+  checkIsString(config.timezone, 'config.timezone'),
+  checkIsString(config.locale || 'en_US', 'config.locale'),
+);
+
+export default website;
+
 layouts.forEach((layout : Layout) => website.addLayout(layout));
 includes.forEach((include : Include) => website.addInclude(include));
 collections.forEach((collection : Collection) => website.addCollection(collection));
@@ -75,5 +85,9 @@ function descriptionFromPages(page : Tag | Category) {
   return `${index.title} ${page.title}: ${page.pages.map(p => p.title).join(', ')}`;
 }
 
-export default website;
-
+function checkIsString(value : any, name : string) {
+  if (typeof value !== 'string') {
+    throw new Error(`${name} must be a string; got ${value} (${typeof value})`);
+  }
+  return value as string;
+}

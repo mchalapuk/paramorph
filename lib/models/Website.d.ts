@@ -12,6 +12,7 @@ export default class Website {
     title: string;
     baseUrl: string;
     timezone: string;
+    locale: string;
     layouts: HashTable<Layout>;
     includes: HashTable<Include>;
     collections: HashTable<Collection>;
@@ -20,6 +21,7 @@ export default class Website {
     pages: HashTable<Page>;
     entities: HashTable<Page>;
     menu: MenuEntry[];
+    constructor(title: string, baseUrl: string, timezone: string, locale: string);
     addLayout(layout: Layout): void;
     getLayoutOfName(name: string, requiredBy: string): Layout;
     addInclude(include: Include): void;

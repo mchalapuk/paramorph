@@ -13,7 +13,7 @@ elem = (tag, children...) ->
 class Root extends React.Component
   render: ->
     (elem "html",
-      (elem "head", elem "title", @props.page.title)
+      (elem "head", elem "title", "#{@props.page.title} | #{@props.website.title}")
       (elem "body", "%%%BODY%%%")
     )
 class Layout extends React.Component
@@ -37,6 +37,9 @@ locals =
         "bundle.css": {}
         "bundle.js": {}
 
+website =
+  title: "website.test"
+
 describe "ServerRenderer", ->
   testedRenderer = null
 
@@ -47,13 +50,13 @@ describe "ServerRenderer", ->
     page = createPage "/", "Meeting", new Date "1954, Feb 20"
     route = createRoute page
 
-    result = testedRenderer.render locals, [ { page, route } ]
+    result = testedRenderer.render locals, website, [ { page, route } ]
 
     (Object.keys result).should.eql [ "/" ]
     result["/"].should.equal "" +
       "<!DOCTYPE html>\n" +
       "<html>" +
-        "<head><title>Meeting</title></head>" +
+        "<head><title>Meeting | website.test</title></head>" +
         "<body><div data-reactroot=\"\"><p>Meeting</p></div></body>" +
       "</html>"
 

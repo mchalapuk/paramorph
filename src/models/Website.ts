@@ -15,6 +15,7 @@ export default class Website {
   title : string;
   baseUrl : string;
   timezone : string;
+  locale : string;
   layouts : HashTable<Layout> = {};
   includes : HashTable<Include> = {};
   collections : HashTable<Collection> = {};
@@ -23,6 +24,13 @@ export default class Website {
   pages : HashTable<Page> = {};
   entities : HashTable<Page> = {};
   menu : MenuEntry[];
+
+  constructor(title : string, baseUrl : string, timezone : string, locale : string) {
+    this.title = title;
+    this.baseUrl = baseUrl;
+    this.timezone = timezone;
+    this.locale = locale;
+  }
 
   addLayout(layout : Layout) {
     if (this.layouts[layout.name] != undefined) {
