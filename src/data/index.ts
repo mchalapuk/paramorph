@@ -55,7 +55,7 @@ categories.forEach((page : Page) => {
 
 // generate descriptions for pages, categories and tags
 pages.forEach((page : Page) => {
-  if (page.description) {
+  if (page.description || !page.output) {
     return;
   }
   Object.defineProperty(page, 'description', {
@@ -75,6 +75,15 @@ categories.forEach((category : Category) => {
 tags.forEach((tag: Tag) => {
   tag.description = descriptionFromPages(tag);
 });
+
+const missingDescription = pages
+  .concat(categories)
+  .concat(tags)
+  .filter((p : Page) => p.description === '' && p.output)
+  .map((p : Page) => p.title);
+if (missingDescription.length !== 0) {
+  throw new Error(`Description missing in pages ${JSON.stringify(missingDescription)}. Write some text in the article or add \'description\' field.`);
+}
 
 function descriptionFromContent(page : Page) {
   const element = createElement(page.body, { website, page, respectLimit: true })

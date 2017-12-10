@@ -16,21 +16,8 @@ export function stripTags(htmlText : string) {
 	// remove all tags except that are being handled separately
 	tmp = tmp.replace(/<(\/)?((?!h[1-6]( [^>]*)*>)(?!img( [^>]*)*>)(?!a( [^>]*)*>)(?!ul( [^>]*)*>)(?!ol( [^>]*)*>)(?!li( [^>]*)*>)(?!p( [^>]*)*>)(?!div( [^>]*)*>)(?!td( [^>]*)*>)(?!br( [^>]*)*>)[^>\/])[^>]*>/gi, "");
 
-	// remove or replace images - replacement texts with <> tags will be removed also, if not intentional, try to use other notation
-	tmp = tmp.replace(/<img([^>]*)>/gi, function(str : string, imAttrs : string) {
-		let imSrc = "";
-		let imAlt = "";
-		const imSrcResult = (/src="([^"]*)"/i).exec(imAttrs);
-		const imAltResult = (/alt="([^"]*)"/i).exec(imAttrs);
-		if(imSrcResult !== null){
-			imSrc = imSrcResult[1];
-		}
-		if(imAltResult !== null){
-			imAlt = imAltResult[1];
-		}
-		return imAlt;
-	});
-
+  // remove images
+  tmp = tmp.replace(/<img([^>]*)>/gi, '');
 
 	function createListReplaceCb() {
 		return (match : string, listType : string, listAttributes : string | null, listBody : string) => {
