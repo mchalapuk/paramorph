@@ -28,6 +28,7 @@ export function Root({ website, page, localBundles, externalBundles } : RootProp
         )) }
         <meta property='og:url' content={ `${website.baseUrl}${page.url}` } />
         <meta property='og:title' content={ page.title } />
+        { page.image !== null ? <meta property='og:image' content={ page.image } /> : null }
         <meta property='og:description' content={ page.description } />
         <meta property='og:locale' content={ website.locale } />
         <meta property='og:type' content={ page.url === '/' ? 'website' : 'article' } />
