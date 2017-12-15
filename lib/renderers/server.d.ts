@@ -7,6 +7,7 @@ export interface Locals {
     path: string;
     js?: string[];
     css?: string[];
+    meta?: any[];
     assets: HashMap<string>;
     webpackStats: WebpackStats;
 }

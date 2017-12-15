@@ -10,6 +10,7 @@ export interface Locals {
   path : string;
   js ?: string[];
   css ?: string[];
+  meta ?: any[];
   assets : HashMap<string>;
   webpackStats : WebpackStats;
 }
@@ -69,6 +70,7 @@ function getRootProps(locals : Locals, website : Website, page : Page) {
     page,
     localBundles: { css, js },
     externalBundles: { css: locals.css || [], js: locals.js || [] },
+    meta: locals.meta || [],
   };
 }
 

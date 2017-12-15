@@ -12,9 +12,10 @@ export interface RootProps {
   page : Page;
   localBundles : BundleUrls;
   externalBundles : BundleUrls;
+  meta : any[];
 }
 
-export function Root({ website, page, localBundles, externalBundles } : RootProps) {
+export function Root({ website, page, localBundles, externalBundles, meta } : RootProps) {
   return (
     <html>
       <head>
@@ -32,6 +33,9 @@ export function Root({ website, page, localBundles, externalBundles } : RootProp
         <meta property='og:description' content={ page.description } />
         <meta property='og:locale' content={ website.locale } />
         <meta property='og:type' content={ page.url === '/' ? 'website' : 'article' } />
+        { meta.map((props, key) => (
+          <meta { ...props } key={ key } />
+        )) }
       </head>
       <body>
         <div id='root'>
