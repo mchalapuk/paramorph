@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import DeferredScript from './DeferredScript';
-import DeferredLink from './DeferredLink';
+import DeferredScripts from './DeferredScripts';
+import DeferredStyles from './DeferredStyles';
 
 import { Website, Page } from '../models';
 
@@ -34,15 +34,8 @@ export function Root({ website, page, localBundles, externalBundles } : RootProp
         <div id='root'>
           %%%BODY%%%
         </div>
-        { externalBundles.js.map(url => (
-          <DeferredScript src={ url } key={ url } />
-        )) }
-        { localBundles.js.map(url => (
-          <DeferredScript src={ url } key={ url } />
-        )) }
-        { externalBundles.css.map(url => (
-          <DeferredLink href={ url } rel='stylesheet' key={ url } />
-        )) }
+        <DeferredScripts srcs={ externalBundles.js.concat(localBundles.js) } />
+        <DeferredStyles hrefs={ externalBundles.css } />
       </body>
     </html>
   );
