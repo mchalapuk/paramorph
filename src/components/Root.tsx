@@ -1,5 +1,8 @@
 import * as React from 'react';
 
+import DeferredScript from './DeferredScript';
+import DeferredLink from './DeferredLink';
+
 import { Website, Page } from '../models';
 
 export interface BundleUrls {
@@ -12,10 +15,9 @@ export interface RootProps {
   page : Page;
   localBundles : BundleUrls;
   externalBundles : BundleUrls;
-  meta : any[];
 }
 
-export function Root({ website, page, localBundles, externalBundles, meta } : RootProps) {
+export function Root({ website, page, localBundles, externalBundles } : RootProps) {
   return (
     <html>
       <head>
@@ -27,28 +29,19 @@ export function Root({ website, page, localBundles, externalBundles, meta } : Ro
         { localBundles.css.map(url => (
           <link type='text/css' rel='stylesheet' href={ url } key={ url } />
         )) }
-        <meta property='og:url' content={ `${website.baseUrl}${page.url}` } />
-        <meta property='og:title' content={ page.title } />
-        { page.image !== null ? <meta property='og:image' content={ page.image } /> : null }
-        <meta property='og:description' content={ page.description } />
-        <meta property='og:locale' content={ website.locale } />
-        <meta property='og:type' content={ page.url === '/' ? 'website' : 'article' } />
-        { meta.map((props, key) => (
-          <meta { ...props } key={ key } />
-        )) }
       </head>
       <body>
         <div id='root'>
           %%%BODY%%%
         </div>
         { externalBundles.js.map(url => (
-          <script type='text/javascript' src={ url } key={ url }></script>
+          <DeferredScript src={ url } key={ url } />
         )) }
         { localBundles.js.map(url => (
-          <script type='text/javascript' src={ url } key={ url }></script>
+          <DeferredScript src={ url } key={ url } />
         )) }
         { externalBundles.css.map(url => (
-          <link type='text/css' rel='stylesheet' href={ url } key={ url } />
+          <DeferredLink href={ url } rel='stylesheet' key={ url } />
         )) }
       </body>
     </html>

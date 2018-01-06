@@ -4,10 +4,10 @@ import { PageWithRoute } from '../route-factory';
 import { RootProps } from '../components/Root';
 import { Website } from '../models';
 export interface Locals {
+    Root?: ComponentType<RootProps>;
     path: string;
     js?: string[];
     css?: string[];
-    meta?: any[];
     assets: HashMap<string>;
     webpackStats: WebpackStats;
 }

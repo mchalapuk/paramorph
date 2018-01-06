@@ -9,7 +9,6 @@ export interface RootProps {
     page: Page;
     localBundles: BundleUrls;
     externalBundles: BundleUrls;
-    meta: any[];
 }
-export declare function Root({website, page, localBundles, externalBundles, meta}: RootProps): JSX.Element;
+export declare function Root({website, page, localBundles, externalBundles}: RootProps): JSX.Element;
 export default Root;

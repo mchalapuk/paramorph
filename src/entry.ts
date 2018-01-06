@@ -5,16 +5,16 @@ import { StaticRouter, BrowserRouter, Switch } from 'react-router-dom';
 import { AppContainer } from 'react-hot-loader';
 
 import { HashMap, Locals, ServerRenderer } from './renderers/server';
-import Root from './components/Root';
+import DefaultRoot from './components/Root';
 
 import RoutesFactory from './route-factory';
 import website from './data';
 
-const routesFactory = new RoutesFactory()
+const routesFactory = new RoutesFactory();
 const routes = routesFactory.getRoutes(website);
 
 const serverRender = (locals : Locals) => {
-  const renderer = new ServerRenderer(Root);
+  const renderer = new ServerRenderer(locals.Root || DefaultRoot);
   return renderer.render(locals, website, routes);
 }
 
