@@ -17,23 +17,25 @@ export function DeferredScripts({ srcs } : Props) {
 export default DeferredScripts;
 
 function loadScripts(srcs : string[]) {
-  const head = document.getElementsByTagName('head')[0];
+  window.addEventListener('load', () => {
+    const head = document.getElementsByTagName('head')[0];
 
-  function load(src : string, onLoad : () => void) {
-    const script = document.createElement('script');
-    script.setAttribute('type', 'text/javascript');
-    script.setAttribute('src', src);
-    script.onload = onLoad;
+    function load(src : string, onLoad : () => void) {
+      const script = document.createElement('script');
+      script.setAttribute('type', 'text/javascript');
+      script.setAttribute('src', src);
+      script.onload = onLoad;
 
-    head.appendChild(script);
-  }
+      head.appendChild(script);
+    }
 
-  function loadNext() {
-    const src = srcs.shift() as string;
-    const onLoad = srcs.length === 0 ? () => {} : loadNext;
-    load(src, onLoad);
-  }
+    function loadNext() {
+      const src = srcs.shift() as string;
+      const onLoad = srcs.length === 0 ? () => {} : loadNext;
+      load(src, onLoad);
+    }
 
-  loadNext();
+    loadNext();
+  });
 }
 
