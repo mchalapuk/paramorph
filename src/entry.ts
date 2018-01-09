@@ -27,7 +27,11 @@ const clientRender = () => {
 }
 
 if (typeof window !== 'undefined') {
-  window.addEventListener('load', clientRender);
+  if (document.readyState === 'complete') {
+    clientRender();
+  } else {
+    window.addEventListener('load', clientRender);
+  }
 }
 
 export default serverRender;
