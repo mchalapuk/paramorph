@@ -29,7 +29,8 @@
       "react",
       "react-dom",
       "react-router-dom",
-      "js-yaml"
+      "js-yaml",
+      "html-entities"
     ]
   },
   "include": [
