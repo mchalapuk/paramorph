@@ -56,9 +56,7 @@ function titleFromUrl(url : string, requiredBy : string) {
   return title;
 }
 function urlFromTitle(title : string, requiredBy : string) {
-  const url = `/${title.toLowerCase().replace(/ /g, '-')}`;
-  console.warn(`${requiredBy}.url is not defined; defaulting to ${url}`);
-  return url;
+  return `/${title.toLowerCase().replace(/ /g, '-')}`;
 }
 
 function parseCollection(key : string, cfg : any) {
@@ -109,6 +107,8 @@ function createPage(role: string, title : string, description : string, url : st
   }
 }
 
+const TITLE_LENGTH_WARN = 60;
+
 function parsePage(name : string, body: ComponentType<any>, frontMatter: any, defaultLayout : string) {
   const requiredBy = `pages['${name}']`;
 
@@ -136,6 +136,9 @@ function parsePage(name : string, body: ComponentType<any>, frontMatter: any, de
     requiredBy
   );
 
+  if (page.title.length > TITLE_LENGTH_WARN) {
+    console.warn(`${requiredBy}.url is to long (${page.title.length} > ${TITLE_LENGTH_WARN})`);
+  }
   return page;
 }
 
