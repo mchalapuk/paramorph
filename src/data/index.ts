@@ -1,7 +1,6 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
-import { Html5Entities } from 'html-entities';
 
 import { stripTags } from '../utils';
 
@@ -14,8 +13,6 @@ import pages from './pages';
 import categories from './categories';
 import tags from './tags';
 import menu from './menu';
-
-const entities = new Html5Entities();
 
 const config = require('./config');
 
@@ -103,10 +100,10 @@ pages.forEach((page : Page) => {
 function descriptionFromContent(page : Page) {
   const element = createElement(page.body, { website, page, respectLimit: true })
   const router = createElement(StaticRouter, { location: page.url, context: {}}, element);
-  return entities.decode(stripTags(renderToStaticMarkup(router)));
+  return removeEntities(stripTags(renderToStaticMarkup(router)));
 }
 function descriptionFromPages(page : Tag | Category) {
-  return entities.decode(`${index.title} ${page.title}: ${page.pages.map(p => p.title).join(', ')}`);
+  return removeEntities(`${index.title} ${page.title}: ${page.pages.map(p => p.title).join(', ')}`);
 }
 
 function imageFromContent(page : Page) {
@@ -127,3 +124,11 @@ function checkIsString(value : any, name : string) {
   }
   return value as string;
 }
+
+function removeEntities(str : string) {
+  return str
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&[^\s;]+;/g, '')
+  ;
+}
+

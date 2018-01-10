@@ -1,6 +1,6 @@
 {
   "name": "paramorph",
-  "version": "1.11.0",
+  "version": "1.11.2",
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf lib #",
@@ -35,7 +35,6 @@
   "description": "",
   "dependencies": {
     "@types/html-entities": "^1.2.16",
-    "html-entities": "^1.2.1",
     "js-yaml": "^3.10.0",
     "loader-utils": "^1.1.0",
     "react": "^16.0.0",
