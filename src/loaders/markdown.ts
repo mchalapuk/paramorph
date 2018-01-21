@@ -6,7 +6,13 @@ module.exports = function markdownLoader(source : string) {
 
   that.cacheable && that.cacheable();
   const opts = getOptions(that);
-  const md = new Markdown(opts);
+
+  let md = new Markdown(opts);
+
+  const plugins = opts.plugins = [];
+  for (var i = 0 ; i < plugins.length; ++i) {
+    md = md.use(plugins[i]);
+  }
 
 	const exports = that.exec(source, that.resource);
 
@@ -18,7 +24,8 @@ module.exports = function markdownLoader(source : string) {
   const body = md.render(exports.body)
     .replace('&lt;', '<')
     .replace('&gt;', '>')
-    .replace('…', '...');
+    .replace('…', '...')
+  ;
 
   return 'module.exports = '+ JSON.stringify({
     frontMatter: exports.attributes,
