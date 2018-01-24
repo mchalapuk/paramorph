@@ -1,0 +1,17 @@
+/// <reference types="react" />
+import { Component, ReactNode } from 'react';
+export interface Props {
+    children: ReactNode;
+    limit?: number;
+    respectLimit?: boolean;
+}
+export declare class Content extends Component<Props, {}> {
+    private outstandingLimit;
+    render(): JSX.Element;
+    private renderChildren(children);
+    private renderNode(node, key);
+    private renderString(child);
+    private renderComponent(elem, key);
+    private isLimitReached();
+}
+export default Content;

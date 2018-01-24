@@ -17,9 +17,9 @@ module.exports = function wrapWithJsxLoader(source : string) {
   const limit = exports.frontMatter.limit || opts.limit || 5;
 
   const template = 'import React from \'react\';\n'
-    + 'import ContentLimiter from \'paramorph/components/ContentLimiter\';'
+    + 'import Content from \'paramorph/components/Content\';'
     + 'export const component = (data) => (\n'
-    + '  <ContentLimiter limit={ '+ limit +'} {...data}>%WRAPPED%</ContentLimiter>\n'
+    + '  <Content limit={ '+ limit +'} {...data}>%WRAPPED%</Content>\n'
     + ');\n';
 
   const sources = template.replace('%WRAPPED%', wrapped)

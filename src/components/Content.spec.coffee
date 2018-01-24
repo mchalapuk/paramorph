@@ -1,7 +1,7 @@
 React = require "react"
 ReactDOMServer = require "react-dom/server"
 
-ContentLimiter = require "./ContentLimiter"
+ContentLimiter = require "./Content"
   .default
 
 key = 0
@@ -9,7 +9,7 @@ key = 0
 elem = (name, children...) ->
   React.createElement name, { key: key++ }, if children.length is 1 then children[0] else children
 
-describe "ContentLimiter", ->
+describe "Content", ->
   props = limit: 1, respectLimit: true, test: true
 
   testedLimiter = null
