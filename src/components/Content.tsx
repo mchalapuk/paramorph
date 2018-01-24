@@ -1,8 +1,11 @@
 import * as React from 'react';
 import { Component, Children, ReactNode, ReactElement, cloneElement } from 'react';
 
+import NodeMapper from './NodeMapper';
+
 export interface Props {
   children : ReactNode;
+  map ?: NodeMapper;
   limit ?: number;
   respectLimit ?: boolean;
 }
@@ -54,18 +57,18 @@ export class Content extends Component<Props, {} > {
   }
 
   private renderComponent(elem : ReactElement<any>, key : number | string) {
-    const { respectLimit, ...props } = this.props;
+    const { respectLimit, map = (node : ReactNode) => node, ...props } = this.props;
     if (respectLimit && elem.type === 'img') {
       return null;
     }
 
     const children = this.renderChildren(elem.props.children);
 
-    return cloneElement(
+    return map(cloneElement(
       elem,
       cloneProps(elem, props, key),
       children.length === 0 ? undefined : children,
-    );
+    ));
   }
 
   private isLimitReached() {
