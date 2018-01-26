@@ -5,7 +5,7 @@ import NodeMapper from './NodeMapper';
 
 export interface Props {
   children : ReactNode;
-  map ?: NodeMapper;
+  mapper ?: NodeMapper;
   limit ?: number;
   respectLimit ?: boolean;
 }
@@ -57,14 +57,14 @@ export class Content extends Component<Props, {} > {
   }
 
   private renderComponent(elem : ReactElement<any>, key : number | string) {
-    const { respectLimit, map = (node : ReactNode) => node, ...props } = this.props;
+    const { respectLimit, mapper = (node : ReactNode) => node, ...props } = this.props;
     if (respectLimit && elem.type === 'img') {
       return null;
     }
 
     const children = this.renderChildren(elem.props.children);
 
-    return map(cloneElement(
+    return mapper(cloneElement(
       elem,
       cloneProps(elem, props, key),
       children.length === 0 ? undefined : children,

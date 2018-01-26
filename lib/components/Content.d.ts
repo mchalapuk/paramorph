@@ -3,7 +3,7 @@ import { Component, ReactNode } from 'react';
 import NodeMapper from './NodeMapper';
 export interface Props {
     children: ReactNode;
-    map?: NodeMapper;
+    mapper?: NodeMapper;
     limit?: number;
     respectLimit?: boolean;
 }
