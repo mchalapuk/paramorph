@@ -62,12 +62,10 @@ export class Content extends Component<Props, {} > {
       return null;
     }
 
-    const children = this.renderChildren(elem.props.children);
-
     return mapper(cloneElement(
       elem,
       cloneProps(elem, props, key),
-      children.length === 0 ? undefined : children,
+      this.renderChildren(elem.props.children),
     ));
   }
 
