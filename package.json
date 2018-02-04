@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/muroc/paramorph.git"
+    "url": "git+https://github.com/paramorph/paramorph.git"
   },
   "keywords": [
     "static",
@@ -32,9 +32,9 @@
   "author": "Maciej Chałapuk <maciej@chalapuk.pl>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/muroc/paramorph/issues"
+    "url": "https://github.com/paramorph/paramorph/issues"
   },
-  "homepage": "https://github.com/muroc/paramorph",
+  "homepage": "https://github.com/paramorph/paramorph",
   "description": "",
   "dependencies": {
     "js-yaml": "^3.10.0",

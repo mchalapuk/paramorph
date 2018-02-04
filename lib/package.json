@@ -7,15 +7,18 @@
     "compile-ts": "tsc",
     "compile-coffee": "coffee -c -m -o lib src",
     "compile": "npm run compile-ts && npm run compile-coffee",
-    "test": "mocha --use_strict lib/mocha.config.js $(find lib -name \"*.spec.js\")",
+    "unit-test": "mocha --use_strict lib/mocha.config.js $(find lib -name \"*.spec.js\")",
+    "integration-test": "cd test-project && npm install && npm run clean-build",
+    "test": "npm run unit-test && npm run integration-test",
     "copy-package.json": "mkdir -p lib/ && cp package.json lib/",
-    "build": "npm run compile && npm run test && npm run copy-package.json",
+    "build": "npm run compile && npm run copy-package.json && npm run test",
     "clean-build": "npm run clean && npm run build",
+    "watch": "watch 'npm run clean-build' src",
     "deploy": "npm run clean-build && npm publish lib"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/muroc/paramorph.git"
+    "url": "git+https://github.com/paramorph/paramorph.git"
   },
   "keywords": [
     "static",
@@ -29,33 +32,36 @@
   "author": "Maciej Chałapuk <maciej@chalapuk.pl>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/muroc/paramorph/issues"
+    "url": "https://github.com/paramorph/paramorph/issues"
   },
-  "homepage": "https://github.com/muroc/paramorph#readme",
+  "homepage": "https://github.com/paramorph/paramorph",
   "description": "",
   "dependencies": {
-    "@types/html-entities": "^1.2.16",
     "js-yaml": "^3.10.0",
     "loader-utils": "^1.1.0",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "react-hot-loader": "^3.1.1",
+    "markdown-it": "^8.4.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-hot-loader": "^3.1.3",
     "react-router-dom": "^4.2.2"
   },
   "devDependencies": {
-    "@types/js-yaml": "^3.10.0",
-    "@types/loader-utils": "^1.1.0",
-    "@types/react": "^16.0.20",
-    "@types/react-dom": "^16.0.2",
+    "@types/html-entities": "^1.2.16",
+    "@types/js-yaml": "^3.10.1",
+    "@types/loader-utils": "^1.1.1",
+    "@types/react": "^16.0.36",
+    "@types/react-dom": "^16.0.3",
     "@types/react-hot-loader": "^3.0.5",
-    "@types/react-router-dom": "^4.2.0",
-    "@types/webpack": "^3.0.14",
-    "@types/webpack-env": "^1.13.2",
+    "@types/react-router-dom": "^4.2.3",
+    "@types/webpack": "^3.8.4",
+    "@types/webpack-env": "^1.13.5",
     "coffeescript": "^1.12.7",
     "mocha": "^3.5.3",
-    "should": "^13.1.3",
+    "should": "^13.2.1",
     "should-sinon": "0.0.6",
-    "sinon": "^3.2.1",
-    "typescript": "^2.6.1"
+    "sinon": "^3.3.0",
+    "typescript": "^2.7.1",
+    "watch": "^1.0.2",
+    "webpack": "^3.10.0"
   }
 }
