@@ -25,7 +25,7 @@ export function Root({ website, page, localBundles, externalBundles } : RootProp
         <meta name='path' content={ page.url }/>
         <meta name='keywords' content={ page.tags.join(', ') } />
         <meta name='description' content={ page.description } />
-        <meta name='viewport' content='width=device-width; initial-scale=1.0'/>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
         { localBundles.css.map(url => (
           <link type='text/css' rel='stylesheet' href={ url } key={ url } />
         )) }
