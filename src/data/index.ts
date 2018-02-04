@@ -40,7 +40,7 @@ if (index === undefined) {
 
 // add pages to categories and tags
 pages
-  .filter((page : Page) => page.url !== '/')
+  .filter((page : Page) => page.feed && page.output)
   .forEach((page : Page) => {
     const requiredBy = `pages['${page.url}']`;
     page.categories.forEach(title => website.getCategoryOfTitle(title, requiredBy).pages.push(page));
