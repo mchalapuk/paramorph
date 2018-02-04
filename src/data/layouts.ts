@@ -6,7 +6,7 @@ const Context = require('./requireContext');
 
 const layouts = requireDirectory(Context.LAYOUTS)
   .map((module : Module) => {
-    const name = module.name.replace(/^\.\//, '').replace(/\.js$/, '');
+    const name = module.name.replace(/^\.\//, '').replace(/\.(t|j)sx?$/, '');
     const component = module.exports.default;
 
     if (typeof component !== 'function') {

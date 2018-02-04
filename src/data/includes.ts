@@ -6,8 +6,11 @@ const Context = require('./requireContext');
 
 const includes = requireDirectory(Context.INCLUDES)
   .map((module : Module) => {
-    const name = module.name.replace(/^\.\//, '').replace(/\.js$/, '');
-
+    const match = /^\.\/([^/]*)(\/index)?\.(j|t)sx?$/.exec(module.name);
+    if (match === null) {
+      return null;
+    }
+    const name = match[1];
     return new Include(name, module.exports.default);
   });
 
