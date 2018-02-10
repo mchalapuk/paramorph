@@ -1,3 +1,3 @@
-<h1>Paramorph<img src="https://github.com/paramorph/media/blob/master/logo.svg" width="50"></h1>
+<h1><img src="https://github.com/paramorph/media/blob/master/logo.svg" width="48" valign="bottom">Paramorph</h1>
 
 > Isomorphic Static Website Generator
