@@ -2,7 +2,7 @@
 
 [![Build Status][travis-badge]][travis-status]
 
-[travis-img]: https://travis-ci.org/paramorph/paramorph.svg?branch=master
+[travis-badge]: https://travis-ci.org/paramorph/paramorph.svg?branch=master
 [travis-status]: https://travis-ci.org/paramorph/paramorph
 
 > Isomorphic Static Website Generator
