@@ -9,7 +9,7 @@ script:
 deploy:
   provider: 'script'
   skip_cleanup: true
-  script: git clone https://github.com/paramorph/paramorph-deploy && ./paramorph-deploy/deploy.sh master https://github.com/paramorph/paramorph.github.io
+  script: cd test-project && git clone https://github.com/paramorph/paramorph-deploy.git && ./paramorph-deploy/deploy.sh master https://github.com/paramorph/paramorph.github.io
   on:
     branch: 'master'
 
