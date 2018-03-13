@@ -1,8 +1,6 @@
 import check from 'offensive';
 import { safeLoad } from 'js-yaml';
 
-import specialDirs from './specialDirs';
-
 export interface Config {
   title : string;
   timezone : string;
@@ -26,7 +24,12 @@ export interface MenuEntryConfig {
   icon : string;
 }
 
-export function load(yaml : string) : Config {
+/**
+ * Parses _config.yml, validates its content and returns as instance of Config.
+ *
+ * @author Maciej Chałapuk
+ */
+export function parse(yaml : string) : Config {
   const config = safeLoad(yaml);
 
   check(config.title, 'config.title').is.aString();
@@ -34,22 +37,15 @@ export function load(yaml : string) : Config {
 
   check(config.collections, 'config.collections').is.anObject();
   Object.keys(config.collections)
-    .filter((key : string) => {
-      if (specialDirs.indexOf(key) === -1) {
-        console.warn(`couldn't find folder _${key} required by collection ${key}`);
-        return false;
-      }
-      return true;
-    })
     .forEach((key : string) => {
       const collection = config.collections[key];
-      check(collection.title, `config.collections[${name}].title`).is.Undefined.or.aString();
-      check(collection.layout, `config.collections[${name}].layout`).is.Undefined.or.aString();
-      check(collection.output, `config.collections[${name}].output`).is.Undefined.or.aBoolean();
+      check(collection.title, `config.collections[${name}].title`).is.either.Undefined.or.aString();
+      check(collection.layout, `config.collections[${name}].layout`).is.either.Undefined.or.aString();
+      check(collection.output, `config.collections[${name}].output`).is.either.Undefined.or.aBoolean();
     })
   ;
 
-  check(config.image, 'config.image').is.aString();
+  check(config.image, 'config.image').is.either.Undefined.or.aString();
   check(config.baseUrl, 'config.baseUrl').is.aString();
   check(config.locale, 'pl_PL').is.aString();
 

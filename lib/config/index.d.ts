@@ -18,7 +18,12 @@ export interface MenuEntryConfig {
     url: string;
     icon: string;
 }
-export declare function load(yaml: string): Config;
+/**
+ * Parses _config.yml, validates its content and returns as instance of Config.
+ *
+ * @author Maciej Chałapuk
+ */
+export declare function parse(yaml: string): Config;
 export interface HashMap<T> {
     [name: string]: T | undefined;
 }
