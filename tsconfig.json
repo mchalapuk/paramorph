@@ -5,7 +5,6 @@
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "alwaysStrict": true,
-    "diagnostics": true,
     "declaration": true,
     "downlevelIteration": true,
     "forceConsistentCasingInFileNames": true,
