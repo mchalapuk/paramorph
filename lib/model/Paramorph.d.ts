@@ -1,10 +1,12 @@
 import { Config } from '../config';
-import { Page } from '.';
+import { Page, Layout } from '.';
 export declare class Paramorph {
     readonly config: Config;
+    readonly layouts: HashMap<Layout>;
     readonly pages: HashMap<Page>;
     constructor(config: Config);
-    addPage(url: string, page: Page): void;
+    addLayout(layout: Layout): void;
+    addPage(page: Page): void;
 }
 export default Paramorph;
 export interface HashMap<T> {

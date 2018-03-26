@@ -1,16 +1,20 @@
 
 import { Config } from '../config';
-import { Page } from '.';
+import { Page, Layout } from '.';
 
 export class Paramorph {
+  readonly layouts : HashMap<Layout> = {};
   readonly pages : HashMap<Page> = {};
 //  readonly categories : HashMap<Category> = {};
 
   constructor(readonly config : Config) {
   }
 
-  addPage(url : string, page : Page) {
-    this.pages[url] = page;
+  addLayout(layout : Layout) {
+    this.layouts[layout.name] = layout;
+  }
+  addPage(page : Page) {
+    this.pages[page.url] = page;
   }
 /*
   getCrumbs(page : Page) : Page[][] {

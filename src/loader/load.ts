@@ -1,5 +1,5 @@
 import { Config } from '../config';
-import { Paramorph } from '../model';
+import { Paramorph, Layout } from '../model';
 import { FileSystem } from '../platform/node/FileSystem';
 
 import { ProjectStructure } from './ProjectStructure';
@@ -12,7 +12,7 @@ export function load(config : Config) : Promise<Paramorph> {
 
   return structure.scan(config)
     .then(specialDirs => {
-      console.log(specialDirs);
+      specialDirs.layouts.forEach(file => paramorph.addLayout(new Layout(file.name, file.path)));
       return paramorph;
     });
 }
