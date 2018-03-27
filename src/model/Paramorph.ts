@@ -1,12 +1,13 @@
 
 import { Config } from '../config';
-import { Page, Layout, Include } from '.';
+import { Layout, Include, Page, Category, Tag } from '.';
 
 export class Paramorph {
   readonly layouts : HashMap<Layout> = {};
   readonly includes : HashMap<Include> = {};
   readonly pages : HashMap<Page> = {};
-//  readonly categories : HashMap<Category> = {};
+  readonly categories : HashMap<Category> = {};
+  readonly tags : HashMap<Category> = {};
 
   constructor(readonly config : Config) {
   }
@@ -19,6 +20,12 @@ export class Paramorph {
   }
   addPage(page : Page) {
     this.pages[page.url] = page;
+
+    if (page instanceof Category) {
+      this.categories[page.title] = page;
+    } else if (page instanceof Tag) {
+      this.tags[(page as Tag).originalTitle] = page;
+    }
   }
 /*
   getCrumbs(page : Page) : Page[][] {

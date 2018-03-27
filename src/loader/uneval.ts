@@ -1,4 +1,4 @@
-import { Paramorph, Layout, Include, Page } from '..';
+import { Paramorph, Layout, Include, Page, Category, Tag } from '..';
 
 export function uneval(paramorph : Paramorph, varName : string = 'paramorph') : string {
   return `const ${varName} = new Paramorph(${JSON.stringify(paramorph.config)});\n`
@@ -36,7 +36,27 @@ export function unevalInclude(include : Include) {
 }
 
 export function unevalPage(page : Page) {
-  return `new Page(${
+  if (page instanceof Tag) {
+    return `new Tag(${
+      JSON.stringify((page as Tag).originalTitle)
+    }, ${
+      JSON.stringify(page.description)
+    }, ${
+      JSON.stringify(page.image)
+    }, ${
+      JSON.stringify(page.layout)
+    }, ${
+      JSON.stringify(page.source)
+    }, ${
+      JSON.stringify(page.output)
+    }, ${
+      JSON.stringify(page.timestamp)
+    })`;
+  }
+
+  const Type = page instanceof Category ? 'Category' : 'Page';
+
+  return `new ${Type}(${
     JSON.stringify(page.url)
   }, ${
     JSON.stringify(page.title)
