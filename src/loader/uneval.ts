@@ -1,10 +1,14 @@
-import { Paramorph, Layout, Page } from '..';
+import { Paramorph, Layout, Include, Page } from '..';
 
 export function uneval(paramorph : Paramorph, varName : string = 'paramorph') : string {
   return `const ${varName} = new Paramorph(${JSON.stringify(paramorph.config)});\n`
     + Object.keys(paramorph.layouts)
     .map(key => paramorph.layouts[key] as Layout)
     .map(layout => `${varName}.addLayout(${unevalLayout(layout)});\n`)
+    .join('')
+    + Object.keys(paramorph.includes)
+    .map(key => paramorph.includes[key] as Layout)
+    .map(include => `${varName}.addInclude(${unevalInclude(include)});\n`)
     .join('')
     + Object.keys(paramorph.pages)
     .map(key => paramorph.pages[key] as Page)
@@ -20,6 +24,14 @@ export function unevalLayout(layout : Layout) {
     JSON.stringify(layout.name)
   }, ${
     JSON.stringify(layout.path)
+  })`;
+}
+
+export function unevalInclude(include : Include) {
+  return `new Include(${
+    JSON.stringify(include.name)
+  }, ${
+    JSON.stringify(include.path)
   })`;
 }
 

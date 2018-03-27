@@ -1,1 +1,1 @@
-export { Paramorph, Layout, Page } from './model';
+export { Paramorph, Layout, Include, Page } from './model';

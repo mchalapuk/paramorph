@@ -1,9 +1,10 @@
 
 import { Config } from '../config';
-import { Page, Layout } from '.';
+import { Page, Layout, Include } from '.';
 
 export class Paramorph {
   readonly layouts : HashMap<Layout> = {};
+  readonly includes : HashMap<Include> = {};
   readonly pages : HashMap<Page> = {};
 //  readonly categories : HashMap<Category> = {};
 
@@ -12,6 +13,9 @@ export class Paramorph {
 
   addLayout(layout : Layout) {
     this.layouts[layout.name] = layout;
+  }
+  addInclude(include : Include) {
+    this.includes[include.name] = include;
   }
   addPage(page : Page) {
     this.pages[page.url] = page;
