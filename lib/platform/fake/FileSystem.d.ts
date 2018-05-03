@@ -4,6 +4,7 @@ export declare class FakeFileSystem implements FileSystem {
     private directories;
     readDir(path: string): Promise<string[]>;
     lstat(path: string): Promise<Stats>;
+    read(path: string, bytes: number): Promise<string>;
     writeFile(path: string, content: string): void;
     createDir(path: string): void;
 }

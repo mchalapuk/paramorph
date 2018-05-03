@@ -31,6 +31,13 @@ export class FakeFileSystem implements FileSystem {
     }
     return Promise.reject(new Error(`no such file or directory: ${path}`));
   }
+  read(path : string, bytes : number) : Promise<string> {
+    const content = this.files[path];
+    if (content === undefined) {
+      throw new Error(`no such file: ${path}`);
+    }
+    return Promise.resolve(content.substring(0, bytes));
+  }
 
   writeFile(path : string, content : string) {
     this.files[path] = content;

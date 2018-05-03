@@ -30,7 +30,10 @@ export interface MenuEntryConfig {
  * @author Maciej Chałapuk
  */
 export function parse(yaml : string) : Config {
-  const config = safeLoad(yaml);
+  const config = safeLoad(yaml) as any | undefined;
+  if (config === undefined) {
+    throw new Error('Couldn\'t parse config file; is it empty?');
+  }
 
   check(config.title, 'config.title').is.aString();
   check(config.timezone, 'config.timezone').is.aString();
