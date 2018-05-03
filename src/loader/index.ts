@@ -1,5 +1,8 @@
 import { parse } from '../config';
-import load from './load';
+import FileSystem from '../platform/node/FileSystem';
+
+import Loader from './Loader';
+import ProjectStructure from './ProjectStructure';
 import uneval from './uneval';
 
 export type Callback = (error : any | null, source ?: string, map ?: any, meta ?: any) => void;
@@ -9,10 +12,12 @@ export interface WebpackLoader {
 }
 
 module.exports = function configLoader(source : string, map : any, meta : any) {
-  const loader = this as any as WebpackLoader;
-  const callback = loader.async();
+  const that = this as any as WebpackLoader;
+  const callback = that.async();
 
-  load(parse(source))
+  const loader = new Loader(new ProjectStructure(new FileSystem()));
+
+  loader.load(parse(source))
     .then(paramorph => {
       const source = uneval(paramorph, 'paramorph') +';\nmodule.exports = paramorph;\n';
       callback(null, source, map, meta);

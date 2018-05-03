@@ -15,6 +15,7 @@ export declare class ProjectStructure {
     scan(config: Config): Promise<SpecialDirs>;
     scanDir(path: string, fileRegex: RegExp, subdirs?: boolean): Promise<SourceFile[]>;
 }
+export default ProjectStructure;
 export interface HashMap<T> {
     [name: string]: T | undefined;
 }

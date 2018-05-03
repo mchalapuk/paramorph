@@ -116,6 +116,8 @@ export class ProjectStructure {
   }
 }
 
+export default ProjectStructure;
+
 export interface HashMap<T> {
   [name : string] : T | undefined;
 }
