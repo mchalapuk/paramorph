@@ -1,3 +1,5 @@
+require "source-map-support"
+  .install()
 
 should = require "should"
 require "should-sinon"
