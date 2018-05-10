@@ -15,14 +15,15 @@ export class NodeFileSystem implements FileSystem {
   lstat(path : string) : Promise<Stats> {
     return asyncLstat(path);
   }
-  async read(path : string, bytes : number) : Promise<string> {
-    const buffer = Buffer.alloc(bytes);
+  async read(path : string, maxLength : number) : Promise<string> {
+    const buffer = Buffer.alloc(maxLength);
     const fd = await asyncOpen(path, 'r');
-    const result = await asyncRead(fd, buffer, bytes, 0, 0);
+    const result = await asyncRead(fd, buffer, 0, maxLength, 0);
 
-    return Promise.resolve(
-      buffer.slice(0, result.bytesRead).toString('utf-8')
-    );
+    return buffer
+      .slice(0, result.bytesRead)
+      .toString('utf-8')
+    ;
   }
 }
 

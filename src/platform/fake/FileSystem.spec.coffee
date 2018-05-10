@@ -20,6 +20,12 @@ describe "FakeFileSystem", ->
       .catch (err) ->
         err.should.eql new Error "no such file or directory: /"
 
+  it "throws when reading unexisting file", ->
+    testedFs.read '/nope', 7
+      .then (result) -> throw new Error "expected an error got result: "+ result
+      .catch (err) ->
+        err.should.eql new Error "no such file or directory: /nope"
+
   describe "when after adding directory '/'", ->
     beforeEach ->
       testedFs.createDir "/"
@@ -53,6 +59,21 @@ describe "FakeFileSystem", ->
         testedFs.lstat "/file1"
           .then (result) ->
             result.isDirectory().should.equal false
+
+      it ".read('/file0', 8) returns proper content", ->
+        testedFs.read "/file0", 8
+          .then (result) ->
+            result.should.equal "content0"
+
+      it ".read('/file1', 8) returns proper content", ->
+        testedFs.read "/file1", 8
+          .then (result) ->
+            result.should.equal "content1"
+
+      it ".read('/file1', 7) returns proper content", ->
+        testedFs.read "/file1", 7
+          .then (result) ->
+            result.should.equal "content"
 
     describe "and after adding some subdirectories of '/'", ->
       beforeEach ->
