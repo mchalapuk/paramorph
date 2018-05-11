@@ -17,7 +17,7 @@ export class FrontMatter {
       throw new Error(`Couldn't find front matter data at the beginning of ${
         file.path}; expected '---\\n'; got '${source.substring(0, 4)}'.`);
     }
-    const end = source.indexOf(DELIMITER, 4);
+    const end = source.indexOf(`\n${DELIMITER}`, 4);
     if (end === -1) {
       throw new Error(`Couldn't find end of front matter data in first ${
         MAX_FM_SIZE} bytes of ${file.path}.`);
