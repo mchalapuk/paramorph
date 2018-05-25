@@ -79,7 +79,9 @@ export class ProjectStructure {
     return specialDirs;
   }
 
-  async scanDir(path : string, fileRegex : RegExp, subdirs : boolean = true) : Promise<SourceFile[]> {
+  private async scanDir(path : string,
+                        fileRegex : RegExp,
+                        subdirs : boolean = true) : Promise<SourceFile[]> {
     const result = [] as SourceFile[];
 
     const rawContents = (await this.fs.readDir(path)).sort();
