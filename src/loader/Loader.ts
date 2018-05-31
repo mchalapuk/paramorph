@@ -13,7 +13,7 @@ export class Loader {
       .then(specialDirs => {
         const paramorph = new Paramorph(config);
         specialDirs.layouts.forEach(file => paramorph.addLayout(new Layout(file.name, file.path)));
-        specialDirs.includes.forEach(file => paramorph.addLayout(new Include(file.name, file.path)));
+        specialDirs.includes.forEach(file => paramorph.addInclude(new Include(file.name, file.path)));
 
         Object.keys(specialDirs.collections).map(name => {
           this.addCollection(paramorph, name, specialDirs.collections[name] as SourceFile[]);
