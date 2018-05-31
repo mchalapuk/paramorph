@@ -2,12 +2,12 @@ import { Config } from '../config';
 import { Paramorph } from '../model';
 import { ProjectStructure } from './ProjectStructure';
 import { FrontMatter } from './FrontMatter';
+import { PageFactory } from './PageFactory';
 export declare class Loader {
     private structure;
     private frontMatter;
-    constructor(structure: ProjectStructure, frontMatter: FrontMatter);
+    private pageFactory;
+    constructor(structure: ProjectStructure, frontMatter: FrontMatter, pageFactory: PageFactory);
     load(config: Config): Promise<Paramorph>;
-    private addCollection(paramorph, name, collection);
-    private createPage(file, metaData);
 }
 export default Loader;
