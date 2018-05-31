@@ -7,6 +7,7 @@ export class Page {
     readonly title : string,
     readonly description : string,
     readonly image : string | null,
+    readonly collection : string,
     readonly layout : string,
     readonly source : string,
     readonly output : boolean,

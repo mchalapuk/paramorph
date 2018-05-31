@@ -65,6 +65,8 @@ export function unevalPage(page : Page) {
   }, ${
     JSON.stringify(page.image)
   }, ${
+    JSON.stringify(page.collection)
+  }, ${
     JSON.stringify(page.layout)
   }, ${
     JSON.stringify(page.source)

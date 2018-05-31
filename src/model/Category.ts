@@ -9,6 +9,7 @@ export class Category extends Page {
     title : string,
     description : string,
     image : string | null,
+    collection : string,
     layout : string,
     source : string,
     output : boolean,
@@ -17,7 +18,20 @@ export class Category extends Page {
     tags : string[],
     timestamp : number,
   ) {
-    super(url, title, description, image, layout, source, output, feed, categories, tags, timestamp);
+    super(
+      url,
+      title,
+      description,
+      image,
+      collection,
+      layout,
+      source,
+      output,
+      feed,
+      categories,
+      tags,
+      timestamp
+    );
   }
 }
 

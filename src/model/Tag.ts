@@ -19,6 +19,7 @@ export class Tag extends Page {
       `#${title}`,
       description,
       image,
+      "_tags",
       layout,
       source,
       output,
