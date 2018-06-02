@@ -27,7 +27,7 @@ export class Loader {
 
           return Promise.all(sourceFiles.map(async file => {
             const matter = await this.frontMatter.read(file);
-            const page = await this.pageFactory.create(file, collection, matter);
+            const page = this.pageFactory.create(file, collection, matter);
             paramorph.addPage(page);
           }));
         })

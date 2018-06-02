@@ -119,11 +119,23 @@ describe "Loader", ->
       matter =
         title: "Hello, World!"
         description: "Just a first post."
-      pagePromise = null
+      page = new Page(
+        "/hello-world"
+        "Hello, World!"
+        "Just a first post."
+        null
+        "posts"
+        "default"
+        "./_post/hello-world.md"
+        true
+        true
+        []
+        []
+        0
+      )
 
       beforeEach (end) ->
-        pagePromise = new FakePromise
-        mocks.pageFactory.create.returns pagePromise
+        mocks.pageFactory.create.returns page
         matterPromise.resolve matter
         setImmediate end
 
@@ -131,29 +143,9 @@ describe "Loader", ->
         mocks.pageFactory.create.should.have.callCount 1
           .and.have.been.calledWith postSource, "posts", matter
 
-      describe "and after resolving promise from pageFactory", ->
-        page = new Page(
-          "/hello-world"
-          "Hello, World!"
-          "Just a first post."
-          null
-          "posts"
-          "default"
-          "./_post/hello-world.md"
-          true
-          true
-          []
-          []
-          0
-        )
-
-        beforeEach (end) ->
-          pagePromise.resolve page
-          setImmediate end
-
-        it "resolves paramorph containing the page", ->
-          paramorphPromise
-            .then (paramorph) ->
-              paramorph.pages.should.have.property "/hello-world"
-                .which.equal page
+      it "resolves paramorph containing the page", ->
+        paramorphPromise
+          .then (paramorph) ->
+            paramorph.pages.should.have.property "/hello-world"
+              .which.equal page
 
