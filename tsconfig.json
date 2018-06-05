@@ -29,7 +29,8 @@
       "react-dom",
       "react-router-dom",
       "js-yaml",
-      "html-entities"
+      "html-entities",
+      "offensive"
     ]
   },
   "include": [
