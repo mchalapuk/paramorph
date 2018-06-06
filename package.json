@@ -39,7 +39,7 @@
     "js-yaml": "^3.11.0",
     "loader-utils": "^1.1.0",
     "markdown-it": "^8.4.0",
-    "offensive": "^0.8.2",
+    "offensive": "^0.9.3",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-hot-loader": "^3.1.3",

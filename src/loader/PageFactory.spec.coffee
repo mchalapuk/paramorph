@@ -69,7 +69,7 @@ describe "PageFactory", ->
     [
       "{ categories: [ 0 ] }"
       matter categories: [ 0 ]
-      "pages['test'].categories[0] must be a string; got 0"
+      "pages['test'].categories[0] must be a string; got 0 or pages['test'].categories must be undefined; got [0]"
     ]
     [
       "{ category: function() {} }"
@@ -84,7 +84,7 @@ describe "PageFactory", ->
     [
       "{ tags: [ 0 ] }"
       matter tags: [ 0 ]
-      "pages['test'].tags[0] must be a string; got 0"
+      "pages['test'].tags[0] must be a string; got 0 or pages['test'].tags must be undefined; got [0]"
     ]
     [
       "{ feed: 12345 }"
