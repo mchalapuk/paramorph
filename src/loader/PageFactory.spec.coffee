@@ -1,5 +1,6 @@
 
 { PageFactory } = require "./PageFactory"
+{ Page, Category } = require "../model"
 
 matter = (arg) ->
   { date: "Jun 05 2018 00:00 UTC", arg... }
@@ -29,7 +30,12 @@ describe "PageFactory", ->
     [
       "{ role: 0 }"
       matter role: 0
-      "pages['test'].role must be a string or undefined; got 0"
+      "pages['test'].role must be 'page' or 'category' or undefined; got 0"
+    ]
+    [
+      "{ role: 'superhero' }"
+      matter role: 0
+      "pages['test'].role must be 'page' or 'category' or undefined; got 'superhero"
     ]
     [
       "{ title: true }"
@@ -99,4 +105,26 @@ describe "PageFactory", ->
     it "throws when calling .create(#{argDesc})", ->
       should -> testedFactory.create sourceFile, collection, arg
         .throw expectedMessage
+
+  roleTests = [
+    [ undefined, Page ]
+    [ "page", Page ]
+    [ "Page", Page ]
+    [ "PAGE", Page ]
+    [ "category", Category ]
+    [ "Category", Category ]
+    [ "CATEGORY", Category ]
+  ]
+
+  roleTests.forEach (params) ->
+    [ role, ExpectedPrototype ] = params
+
+    describe "when calling .create(#{JSON.stringify { role }}", ->
+      result = null
+
+      beforeEach ->
+        result = testedFactory.create sourceFile, collection, matter { role }
+
+      it "returns instance of #{ExpectedPrototype.name}", ->
+        result.should.be.instanceOf ExpectedPrototype
 
