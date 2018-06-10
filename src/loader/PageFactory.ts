@@ -36,6 +36,8 @@ export interface PageConstructor {
   ) : Page;
 }
 
+const DEFAULT_LAYOUT_NAME = "default";
+
 export class PageFactory {
   create(file : SourceFile, collection : string, maybeMatter : any) : Page {
     const frontMatter = validateFrontMatter(file.name, maybeMatter);
@@ -63,15 +65,14 @@ export class PageFactory {
     }
 
     const title = matter.title || defaultTitle(file);
-    const url = matter.permalink || defaultUrl(title);
 
     return new PageType(
-      url,
+      matter.permalink || defaultUrl(title),
       title,
       matter.description || '',
       matter.image || null,
       collection,
-      matter.layout || '',
+      matter.layout || DEFAULT_LAYOUT_NAME,
       file.path,
       matter.output || true,
       matter.feed || true,
