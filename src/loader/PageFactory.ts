@@ -59,12 +59,12 @@ export class PageFactory {
     collection : string,
     matter : Matter,
   ) {
+    const title = matter.title || defaultTitle(file);
+
     const categories = matter.categories || [];
     if (matter.category) {
       categories.push(matter.category);
     }
-
-    const title = matter.title || defaultTitle(file);
 
     return new PageType(
       matter.permalink || defaultUrl(title),
@@ -74,8 +74,8 @@ export class PageFactory {
       collection,
       matter.layout || DEFAULT_LAYOUT_NAME,
       file.path,
-      matter.output || true,
-      matter.feed || true,
+      matter.output !== undefined ? matter.output : true,
+      matter.feed !== undefined ? matter.feed : true,
       categories,
       matter.tags || [],
       new Date(matter.date).getTime(),

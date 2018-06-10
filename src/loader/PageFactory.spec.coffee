@@ -135,6 +135,8 @@ describe "PageFactory", ->
     beforeEach ->
       result = testedFactory.create sourceFile, collection, matter()
 
+    it "contains given date", ->
+      result.timestamp.should.equal 1528156800000
     it "contains title generated from file name", ->
       result.title.should.equal "Test page"
     it "contains url generated from title", ->
@@ -143,3 +145,86 @@ describe "PageFactory", ->
       result.description.should.equal ""
     it "contains layout 'default'", ->
       result.layout.should.equal "default"
+    it "contains output=true", ->
+      result.output.should.equal true
+    it "contains feed=true", ->
+      result.feed.should.equal true
+    it "contains no categories", ->
+      result.categories.should.eql []
+    it "contains no tags", ->
+      result.tags.should.eql []
+
+  fullMatter =
+    permalink: '/link'
+    title: "Title"
+    description: "Full defined page"
+    layout: "Custom"
+    output: false
+    feed: false
+
+  describe "when calling .crate(#{JSON.stringify fullMatter})", ->
+    result = null
+
+    beforeEach ->
+      result = testedFactory.create sourceFile, collection, matter fullMatter
+
+    it "contains given title", ->
+      result.title.should.equal fullMatter.title
+    it "contains given url", ->
+      result.url.should.equal fullMatter.permalink
+    it "contains given description", ->
+      result.description.should.equal fullMatter.description
+    it "contains given layout", ->
+      result.layout.should.equal fullMatter.layout
+    it "contains given output", ->
+      result.output.should.equal fullMatter.output
+    it "contains given feed", ->
+      result.feed.should.equal fullMatter.feed
+
+  tagsMatter = tags: [ 'a', 'b', 'c' ]
+
+  describe "when calling .crate(#{JSON.stringify tagsMatter})", ->
+    result = null
+
+    beforeEach ->
+      result = testedFactory.create sourceFile, collection, matter tagsMatter
+
+    it "contains given tags", ->
+      result.tags.should.eql tagsMatter.tags
+
+  categoriesMatter = categories: [ 'a', 'b', 'c' ]
+
+  describe "when calling .crate(#{JSON.stringify categoriesMatter})", ->
+    result = null
+
+    beforeEach ->
+      result = testedFactory.create sourceFile, collection, matter categoriesMatter
+
+    it "contains given categories", ->
+      result.categories.should.eql categoriesMatter.categories
+
+  categoryMatter = category: 'a'
+
+  describe "when calling .crate(#{JSON.stringify categoryMatter})", ->
+    result = null
+
+    beforeEach ->
+      result = testedFactory.create sourceFile, collection, matter categoryMatter
+
+    it "contains given categories", ->
+      result.categories.should.eql [ 'a' ]
+
+  categoriesCategoryMatter =
+    categories: [ 'a', 'b', 'c' ]
+    category: 'd'
+
+  describe "when calling .crate(#{JSON.stringify categoriesCategoryMatter})", ->
+    result = null
+
+    beforeEach ->
+      result = testedFactory.create sourceFile, collection, matter categoriesCategoryMatter
+
+    it "contains given categories", ->
+      result.categories.should.eql [ 'a', 'b', 'c', 'd' ]
+
+
