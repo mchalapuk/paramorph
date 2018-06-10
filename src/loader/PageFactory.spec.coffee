@@ -136,4 +136,4 @@ describe "PageFactory", ->
       result = testedFactory.create sourceFile, collection, matter()
 
     it "contains title generated from file name", ->
-      result.title.should.equal "Test Page"
+      result.title.should.equal "Test page"

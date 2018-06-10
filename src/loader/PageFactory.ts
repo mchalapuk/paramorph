@@ -62,9 +62,11 @@ export class PageFactory {
       categories.push(matter.category);
     }
 
+    const title = matter.title || defaultTitle(file);
+
     return new PageType(
       matter.permalink || '',
-      matter.title || '',
+      title,
       matter.description || '',
       matter.image || null,
       collection,
@@ -158,5 +160,11 @@ function safeParseDate(dateString : string, variableName : string) : Date {
     throw new Error(`${variableName} must be a valid date; got '${dateString}'`);
   }
   return date;
+}
+
+function defaultTitle(file : SourceFile) {
+  const title = `${file.name.charAt(0).toUpperCase()}${file.name.substring(1).replace(/-/g, ' ')}`;
+  console.warn(`title of ${file.path} is not defined; defaulting to ${title}`);
+  return title;
 }
 
