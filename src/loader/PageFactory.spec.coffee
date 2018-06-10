@@ -137,3 +137,5 @@ describe "PageFactory", ->
 
     it "contains title generated from file name", ->
       result.title.should.equal "Test page"
+    it "contains url generated from title", ->
+      result.url.should.equal "/test-page"

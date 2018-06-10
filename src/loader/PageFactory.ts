@@ -63,9 +63,10 @@ export class PageFactory {
     }
 
     const title = matter.title || defaultTitle(file);
+    const url = matter.permalink || defaultUrl(title);
 
     return new PageType(
-      matter.permalink || '',
+      url,
       title,
       matter.description || '',
       matter.image || null,
@@ -166,5 +167,9 @@ function defaultTitle(file : SourceFile) {
   const title = `${file.name.charAt(0).toUpperCase()}${file.name.substring(1).replace(/-/g, ' ')}`;
   console.warn(`title of ${file.path} is not defined; defaulting to ${title}`);
   return title;
+}
+
+function defaultUrl(title : string) {
+  return `/${title.toLowerCase().replace(/ /g, '-')}`;
 }
 
