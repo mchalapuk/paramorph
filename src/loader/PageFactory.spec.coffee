@@ -34,8 +34,8 @@ describe "PageFactory", ->
     ]
     [
       "{ role: 'superhero' }"
-      matter role: 0
-      "pages['test'].role must be 'page' or 'category' or undefined; got 'superhero"
+      matter role: "superhero"
+      "pages['test'].role must be 'page' or 'category' or undefined; got 'superhero'"
     ]
     [
       "{ title: true }"
@@ -108,6 +108,7 @@ describe "PageFactory", ->
 
   roleTests = [
     [ undefined, Page ]
+    [ null, Page ]
     [ "page", Page ]
     [ "Page", Page ]
     [ "PAGE", Page ]

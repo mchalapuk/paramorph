@@ -14,7 +14,11 @@ export interface Matter {
     tags?: string[];
     feed?: boolean;
 }
+export interface PageConstructor {
+    new (url: string, title: string, description: string, image: string | null, collection: string, layout: string, source: string, output: boolean, feed: boolean, categories: string[], tags: string[], timestamp: number): Page;
+}
 export declare class PageFactory {
     create(file: SourceFile, collection: string, maybeMatter: any): Page;
+    private create0(PageType, file, collection, matter);
 }
 export default PageFactory;

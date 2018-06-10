@@ -19,14 +19,69 @@ export interface Matter {
   feed ?: boolean;
 }
 
+export interface PageConstructor {
+  new(
+    url : string,
+    title : string,
+    description : string,
+    image : string | null,
+    collection : string,
+    layout : string,
+    source : string,
+    output : boolean,
+    feed : boolean,
+    categories : string[],
+    tags : string[],
+    timestamp : number,
+  ) : Page;
+}
+
 export class PageFactory {
   create(file : SourceFile, collection : string, maybeMatter : any) : Page {
     const frontMatter = validateFrontMatter(file.name, maybeMatter);
-    return null as any as Page;
+
+    const role = (frontMatter.role || 'page').toLowerCase();
+    switch (role) {
+      case 'page':
+        return this.create0(Page as PageConstructor, file, collection, frontMatter);
+      case 'category':
+        return this.create0(Category as PageConstructor, file, collection, frontMatter);
+      default:
+        throw new Error(`Unknown role: '${role}'`);
+    }
+  }
+
+  private create0(
+    PageType : PageConstructor,
+    file : SourceFile,
+    collection : string,
+    matter : Matter,
+  ) {
+    const categories = matter.categories || [];
+    if (matter.category) {
+      categories.push(matter.category);
+    }
+
+    return new PageType(
+      matter.permalink || '',
+      matter.title || '',
+      matter.description || '',
+      matter.image || null,
+      collection,
+      matter.layout || '',
+      file.path,
+      matter.output || true,
+      matter.feed || true,
+      categories,
+      matter.tags || [],
+      new Date(matter.date).getTime(),
+    );
   }
 }
 
 export default PageFactory;
+
+const VALID_ROLES = ['', null, 'page', 'Page', 'PAGE', 'category', 'Category', 'CATEGORY'];
 
 function validateFrontMatter(fileName : string, matter : any) {
   const namePrefix = `pages['${fileName}']`;
@@ -37,7 +92,7 @@ function validateFrontMatter(fileName : string, matter : any) {
     `${namePrefix}.date`,
   );
   const role = check(matter.role, `${namePrefix}.role`)
-    .is.either.aString
+    .is.either.containedIn(VALID_ROLES, '\'page\' or \'category\'')
     .or.Undefined() as string | undefined
   ;
   const title = check(matter.title, `${namePrefix}.title`)
