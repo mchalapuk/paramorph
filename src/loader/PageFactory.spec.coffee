@@ -139,5 +139,7 @@ describe "PageFactory", ->
       result.title.should.equal "Test page"
     it "contains url generated from title", ->
       result.url.should.equal "/test-page"
+    it "contains empty description", ->
+      result.description.should.equal ""
     it "contains layout 'default'", ->
       result.layout.should.equal "default"
