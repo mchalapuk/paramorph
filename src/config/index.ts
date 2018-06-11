@@ -50,7 +50,7 @@ export function parse(yaml : string) : Config {
 
   check(config.image, 'config.image').is.either.Undefined.or.aString();
   check(config.baseUrl, 'config.baseUrl').is.aString();
-  check(config.locale, 'pl_PL').is.aString();
+  check(config.locale, 'config.locale').is.aString();
 
   check(config.menu, 'config.menu').is.anArray();
   (config.menu as any[]).forEach((entry, i) => {

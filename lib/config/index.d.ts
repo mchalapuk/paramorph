@@ -16,7 +16,7 @@ export interface MenuEntryConfig {
     title: string;
     short: string;
     url: string;
-    icon: string;
+    icon?: string;
 }
 /**
  * Parses _config.yml, validates its content and returns as instance of Config.
