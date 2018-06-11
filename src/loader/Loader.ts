@@ -20,6 +20,7 @@ export class Loader {
     specialDirs.layouts.forEach(file => paramorph.addLayout(new Layout(file.name, file.path)));
     specialDirs.includes.forEach(file => paramorph.addInclude(new Include(file.name, file.path)));
 
+    // TODO queue + limited number of workers?
     await Promise.all(
       Object.keys(specialDirs.collections)
         .map(collection => {

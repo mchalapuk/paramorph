@@ -21,7 +21,7 @@ export interface MenuEntryConfig {
   title : string;
   short : string;
   url : string;
-  icon : string;
+  icon ?: string;
 }
 
 /**
@@ -57,7 +57,7 @@ export function parse(yaml : string) : Config {
     check(entry, `config.menu[${i}].title`).is.aString();
     check(entry, `config.menu[${i}].short`).is.aString();
     check(entry, `config.menu[${i}].url`).is.aString();
-    check(entry, `config.menu[${i}].icon`).is.aString();
+    check(entry, `config.menu[${i}].icon`).is.either.aString.or.Undefined();
   });
 
   return config as Config;
