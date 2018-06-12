@@ -35,6 +35,10 @@ describe "Loader", ->
     mocks.pageFactory.create.resetBehavior()
     mocks.pageFactory.create.resetHistory()
 
+  tagPage =
+    url: "/tag"
+    tags: []
+
   describe "when loading empty project structure", ->
     struct =
       layouts: []
@@ -43,12 +47,41 @@ describe "Loader", ->
 
     beforeEach ->
       mocks.projectStructure.scan.returns FakePromise.resolve struct
+
+    it ".load() throws Error with complain about missing tag page", ->
+      testedLoader.load config
+        .then(
+          (result) ->
+            throw new Error "expected rejection"
+          (error) ->
+            error.message.should.eql "Couldn't find page of url '/tag' (used to render tag pages)"
+        )
+
+  describe "when loading a project structure containing only tag page", ->
+    struct =
+      layouts: []
+      includes: []
+      collections: {
+        pages: [
+          {
+            name: "tag"
+            path: "./_pages/tag.markdown"
+          }
+        ]
+      }
+
+    beforeEach ->
+      mocks.projectStructure.scan.returns FakePromise.resolve struct
+      mocks.frontMatter.read.returns FakePromise.resolve {}
+      mocks.pageFactory.create.returns tagPage
       paramorph = await testedLoader.load config
 
     it ".load() returns empty Paramorph instance", ->
       paramorph.layouts.should.eql {}
       paramorph.includes.should.eql {}
-      paramorph.pages.should.eql {}
+      paramorph.pages.should.eql {
+        "/tag": tagPage
+      }
       paramorph.categories.should.eql {}
       paramorph.tags.should.eql {}
       paramorph.config.should.eql config
@@ -60,10 +93,19 @@ describe "Loader", ->
         path: "./_layouts/default.ts"
       ]
       includes: []
-      collections: {}
+      collections: {
+        pages: [
+          {
+            name: "tag"
+            path: "./_pages/tag.markdown"
+          }
+        ]
+      }
 
     beforeEach ->
       mocks.projectStructure.scan.returns FakePromise.resolve struct
+      mocks.frontMatter.read.returns FakePromise.resolve {}
+      mocks.pageFactory.create.returns tagPage
       paramorph = await testedLoader.load config
 
     it ".load() returns Paramorph containing layouts", ->
@@ -78,10 +120,19 @@ describe "Loader", ->
         name: "Feed"
         path: "./_includes/Feed.ts"
       ]
-      collections: {}
+      collections: {
+        pages: [
+          {
+            name: "tag"
+            path: "./_pages/tag.markdown"
+          }
+        ]
+      }
 
     beforeEach ->
       mocks.projectStructure.scan.returns FakePromise.resolve struct
+      mocks.frontMatter.read.returns FakePromise.resolve {}
+      mocks.pageFactory.create.returns tagPage
       paramorph = await testedLoader.load config
 
     it ".load() returns Paramorph containing includes", ->
@@ -142,10 +193,4 @@ describe "Loader", ->
       it 'calls pageFactory.create(...)', ->
         mocks.pageFactory.create.should.have.callCount 1
           .and.have.been.calledWith postSource, "posts", matter
-
-      it "resolves paramorph containing the page", ->
-        paramorphPromise
-          .then (paramorph) ->
-            paramorph.pages.should.have.property "/hello-world"
-              .which.equal page
 

@@ -1,9 +1,13 @@
+
 import { Config } from '../config';
 import { Paramorph, Layout, Include, Page } from '../model';
 
 import { ProjectStructure, SourceFile } from './ProjectStructure';
 import { FrontMatter } from './FrontMatter';
 import { PageFactory } from './PageFactory';
+import { TagFactory } from './TagFactory';
+
+const TAG_PAGE_URL = '/tag';
 
 export class Loader {
   constructor(
@@ -33,6 +37,27 @@ export class Loader {
           }));
         })
     );
+
+    const pages = Object.keys(paramorph.pages)
+      .map(key => paramorph.pages[key] as Page);
+
+    const tagPage = paramorph.pages[TAG_PAGE_URL];
+    if (!tagPage) {
+      throw new Error(`Couldn't find page of url '${TAG_PAGE_URL}' (used to render tag pages)`);
+    }
+    const tagFactory = new TagFactory(tagPage);
+
+    pages.forEach(page => {
+      page.tags.forEach(title => {
+        const tag = tagFactory.create(title);
+
+        if (paramorph.pages.hasOwnProperty(tag.url)) {
+          // In case there is a separately defined page for this tag.
+          return;
+        }
+        paramorph.addPage(tag);
+      });
+    });
     return paramorph;
   }
 }
