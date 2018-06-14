@@ -28,7 +28,7 @@ describe "uneval", ->
       "/index.markdown"
       true
       false
-      ["diy"]
+      ["Do It Yourself!"]
       ["exciting"]
       0
     )

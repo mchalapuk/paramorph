@@ -36,7 +36,7 @@ paramorph.addPage(
     "/index.markdown",
     true,
     false,
-    ["diy"],
+    ["Do It Yourself!"],
     ["exciting"],
     0,
   )
@@ -60,6 +60,9 @@ paramorph.addPage(
   )
 );
 
+// PAGES IN CATEGORIES //
+paramorph.categories["Do It Yourself!"].pages.push(paramorph.pages["/"]);
+
 // TAGS //
 paramorph.addPage(
   new Tag(
@@ -72,4 +75,7 @@ paramorph.addPage(
     2,
   )
 );
+
+// PAGES IN TAGS //
+paramorph.tags["exciting"].pages.push(paramorph.pages["/"]);
 
