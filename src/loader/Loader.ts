@@ -38,6 +38,12 @@ export class Loader {
         })
     );
 
+    this.addTags(paramorph);
+    this.validateCategories(paramorph);
+    return paramorph;
+  }
+
+  private addTags(paramorph : Paramorph) {
     const pages = Object.keys(paramorph.pages)
       .map(key => paramorph.pages[key] as Page);
 
@@ -58,7 +64,25 @@ export class Loader {
         paramorph.addPage(tag);
       });
     });
-    return paramorph;
+  }
+
+  private validateCategories(paramorph : Paramorph) {
+    const pages = Object.keys(paramorph.pages)
+      .map(key => paramorph.pages[key] as Page);
+
+    const missing = [] as { requiredBy : string, category : string }[];
+
+    pages.forEach(page => {
+      page.categories.forEach(category => {
+        if (!paramorph.categories.hasOwnProperty(category)) {
+          missing.push({ requiredBy: page.url, category });
+        }
+      });
+    });
+
+    if (missing.length !== 0) {
+      throw new Error(`Couldn't find category pages: ${JSON.stringify(missing)}`);
+    }
   }
 }
 

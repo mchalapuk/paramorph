@@ -9,5 +9,7 @@ export declare class Loader {
     private pageFactory;
     constructor(structure: ProjectStructure, frontMatter: FrontMatter, pageFactory: PageFactory);
     load(config: Config): Promise<Paramorph>;
+    private addTags(paramorph);
+    private validateCategories(paramorph);
 }
 export default Loader;
