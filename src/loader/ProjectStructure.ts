@@ -24,7 +24,7 @@ const MD_REGEX = /\.markdown$/;
 const FORBIDDEN_NAMES = [
   'layouts',
   'includes',
-  'ROOT',
+  '$root',
 ];
 
 export class ProjectStructure {
@@ -63,7 +63,7 @@ export class ProjectStructure {
     await this.scanDir(`./${INCLUDES_DIR}`, JS_REGEX)
       .then(sourceFiles => specialDirs.includes = sourceFiles);
     await this.scanDir(ROOT_DIR, MD_REGEX, false)
-      .then(sourceFiles => specialDirs.collections['ROOT'] = sourceFiles);
+      .then(sourceFiles => specialDirs.collections['$root'] = sourceFiles);
 
     for (let i = 0; i < collectionNames.length; ++i) {
       const name = collectionNames[i];

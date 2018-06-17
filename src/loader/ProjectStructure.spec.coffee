@@ -44,12 +44,12 @@ describe "ProjectStructure", ->
     it ".scan() produces empty specialDirs", ->
       testedStructure.scan collections: {}
         .then (result) ->
-          result.should.eql layouts: [], includes: [], collections: ROOT: []
+          result.should.eql layouts: [], includes: [], collections: $root: []
 
     it ".scan() doesn't throw when encountering collection without its folder", ->
       testedStructure.scan collections: nonexistent: {}
 
-    [ 'layouts', 'includes', 'ROOT' ].forEach (forbiddenName) ->
+    [ 'layouts', 'includes', '$root' ].forEach (forbiddenName) ->
       it ".scan() complains about collection named '#{forbiddenName}'", ->
         collections = {}
         collections[forbiddenName] = {}
@@ -81,7 +81,7 @@ describe "ProjectStructure", ->
       ]
       testedStructure.scan collections: {}
         .then (result) ->
-          result.should.eql layouts: expectedLayouts, includes: [], collections: ROOT: []
+          result.should.eql layouts: expectedLayouts, includes: [], collections: $root: []
 
   describe "given project with layout of 2 index files", ->
     beforeEach ->
@@ -124,7 +124,7 @@ describe "ProjectStructure", ->
       ]
       testedStructure.scan collections: {}
         .then (result) ->
-          result.should.eql layouts: [], includes: expectedIncludes, collections: ROOT: []
+          result.should.eql layouts: [], includes: expectedIncludes, collections: $root: []
 
   describe "given project with some markdown files in root folder", ->
     beforeEach ->
@@ -137,7 +137,7 @@ describe "ProjectStructure", ->
       fs.writeFile "./about.markdown"
       fs.writeFile "./404.markdown"
 
-    it ".scan() produces specialDirs containing markdown files in ROOT collection", ->
+    it ".scan() produces specialDirs containing markdown files in $root collection", ->
       expectedFiles = [
         { name: "404", path: "./404.markdown" }
         { name: "about", path: "./about.markdown" }
@@ -146,7 +146,7 @@ describe "ProjectStructure", ->
       ]
       testedStructure.scan collections: {}
         .then (result) ->
-          result.should.eql layouts: [], includes: [], collections: ROOT: expectedFiles
+          result.should.eql layouts: [], includes: [], collections: $root: expectedFiles
 
   describe "given project with some markdown files in _posts folder", ->
     beforeEach ->
@@ -171,5 +171,5 @@ describe "ProjectStructure", ->
       ]
       testedStructure.scan collections: posts: {}
         .then (result) ->
-          result.should.eql layouts: [], includes: [], collections: ROOT: [], posts: expectedFiles
+          result.should.eql layouts: [], includes: [], collections: $root: [], posts: expectedFiles
 
