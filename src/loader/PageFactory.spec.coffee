@@ -162,7 +162,7 @@ describe "PageFactory", ->
     output: false
     feed: false
 
-  describe "when calling .crate(#{JSON.stringify fullMatter})", ->
+  describe "when calling .create(#{JSON.stringify fullMatter})", ->
     result = null
 
     beforeEach ->
@@ -183,7 +183,7 @@ describe "PageFactory", ->
 
   tagsMatter = tags: [ 'a', 'b', 'c' ]
 
-  describe "when calling .crate(#{JSON.stringify tagsMatter})", ->
+  describe "when calling .create(#{JSON.stringify tagsMatter})", ->
     result = null
 
     beforeEach ->
@@ -194,7 +194,7 @@ describe "PageFactory", ->
 
   categoriesMatter = categories: [ 'a', 'b', 'c' ]
 
-  describe "when calling .crate(#{JSON.stringify categoriesMatter})", ->
+  describe "when calling .create(#{JSON.stringify categoriesMatter})", ->
     result = null
 
     beforeEach ->
@@ -218,7 +218,7 @@ describe "PageFactory", ->
     categories: [ 'a', 'b', 'c' ]
     category: 'd'
 
-  describe "when calling .crate(#{JSON.stringify categoriesCategoryMatter})", ->
+  describe "when calling .create(#{JSON.stringify categoriesCategoryMatter})", ->
     result = null
 
     beforeEach ->

@@ -2,7 +2,7 @@
 import { Config } from '../config';
 import { Paramorph, Layout, Include, Page } from '../model';
 
-import { ProjectStructure, SourceFile } from './ProjectStructure';
+import { ProjectStructure, SpecialDirs, SourceFile } from './ProjectStructure';
 import { FrontMatter } from './FrontMatter';
 import { PageFactory } from './PageFactory';
 import { TagFactory } from './TagFactory';
@@ -24,23 +24,30 @@ export class Loader {
     specialDirs.layouts.forEach(file => paramorph.addLayout(new Layout(file.name, file.path)));
     specialDirs.includes.forEach(file => paramorph.addInclude(new Include(file.name, file.path)));
 
+    const collectionFileTuples = this.getCollectionFileTuples(specialDirs);
     // TODO queue + limited number of workers?
     await Promise.all(
-      Object.keys(specialDirs.collections)
-        .map(collection => {
-          const sourceFiles = specialDirs.collections[collection] as SourceFile[];
-
-          return Promise.all(sourceFiles.map(async file => {
-            const matter = await this.frontMatter.read(file);
-            const page = this.pageFactory.create(file, collection, matter);
-            paramorph.addPage(page);
-          }));
-        })
+      collectionFileTuples.map(async ({ collection, file }) => {
+        const matter = await this.frontMatter.read(file);
+        const page = this.pageFactory.create(file, collection, matter);
+        paramorph.addPage(page);
+      }),
     );
 
     this.addTags(paramorph);
     this.validateCategories(paramorph);
     return paramorph;
+  }
+
+  private getCollectionFileTuples(specialDirs : SpecialDirs) {
+    return [].concat.apply(
+      [],
+      Object.keys(specialDirs.collections)
+        .map(collection => {
+          const sourceFiles = specialDirs.collections[collection] as SourceFile[];
+          return sourceFiles.map(file => ({ file, collection }));
+        })
+    ) as { file : SourceFile, collection : string }[];
   }
 
   private addTags(paramorph : Paramorph) {
@@ -70,18 +77,18 @@ export class Loader {
     const pages = Object.keys(paramorph.pages)
       .map(key => paramorph.pages[key] as Page);
 
-    const missing = [] as { requiredBy : string, category : string }[];
+    const missing = [] as { page : string, category : string }[];
 
     pages.forEach(page => {
       page.categories.forEach(category => {
         if (!paramorph.categories.hasOwnProperty(category)) {
-          missing.push({ requiredBy: page.url, category });
+          missing.push({ page: page.url, category });
         }
       });
     });
 
     if (missing.length !== 0) {
-      throw new Error(`Couldn't find category pages: ${JSON.stringify(missing)}`);
+      throw new Error(`Couldn't find category page(s): ${JSON.stringify(missing)}`);
     }
   }
 }

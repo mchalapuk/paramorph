@@ -38,6 +38,8 @@ describe "Loader", ->
   tagPage =
     url: "/tag"
     tags: []
+    categories: []
+    output: false
 
   describe "when loading empty project structure", ->
     struct =
@@ -52,7 +54,7 @@ describe "Loader", ->
       testedLoader.load config
         .then(
           (result) ->
-            throw new Error "expected rejection"
+            throw new Error "expected rejection; got #{JSON.stringify result}"
           (error) ->
             error.message.should.eql "Couldn't find page of url '/tag' (used to render tag pages)"
         )
@@ -85,6 +87,36 @@ describe "Loader", ->
       paramorph.categories.should.eql {}
       paramorph.tags.should.eql {}
       paramorph.config.should.eql config
+
+  describe "when loading a project structure containing only a page with missing category", ->
+    struct =
+      layouts: []
+      includes: []
+      collections: {
+        pages: [
+          {
+            name: "tag"
+            path: "./_pages/tag.markdown"
+          }
+        ]
+      }
+    paramorphPromise = null
+
+    beforeEach ->
+      mocks.projectStructure.scan.returns FakePromise.resolve struct
+      mocks.frontMatter.read.returns FakePromise.resolve {}
+      mocks.pageFactory.create.returns Object.assign {}, tagPage, categories: ["missing"]
+
+    it ".load() throws Error", ->
+      testedLoader.load config
+        .then(
+          (result) ->
+            throw new Error "expected rejection; got result=#{JSON.stringify result}",
+          (error) ->
+            error.message.should.equal(
+              "Couldn't find category page(s): [{\"page\":\"/tag\",\"category\":\"missing\"}]"
+            )
+        )
 
   describe "when loading a project structure containing layouts", ->
     struct =
