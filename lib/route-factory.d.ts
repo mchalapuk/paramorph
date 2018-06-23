@@ -1,12 +1,10 @@
-/// <reference types="react" />
-import { ReactElement } from 'react';
-import { RouteProps } from 'react-router-dom';
-import { Website, Page } from './models';
+import { Route } from 'universal-router';
+import { Paramorph, Page } from './model';
 export interface PageWithRoute {
     page: Page;
-    route: ReactElement<RouteProps>;
+    route: Route;
 }
 export declare class RoutesFactory {
-    getRoutes(website: Website): PageWithRoute[];
+    getRoutes(paramorph: Paramorph): PageWithRoute[];
 }
 export default RoutesFactory;

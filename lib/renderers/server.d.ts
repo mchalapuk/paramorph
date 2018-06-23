@@ -2,7 +2,7 @@
 import { ComponentType } from 'react';
 import { PageWithRoute } from '../route-factory';
 import { RootProps } from '../components/Root';
-import { Website } from '../models';
+import { Paramorph } from '../model';
 export interface Locals {
     Root?: ComponentType<RootProps>;
     path: string;
@@ -18,11 +18,11 @@ export interface CompilationStats {
     assets: HashMap<any>;
 }
 export interface HashMap<T> {
-    [name: string]: T;
+    [name: string]: T | undefined;
 }
 export declare class ServerRenderer {
     private Root;
     constructor(Root: ComponentType<RootProps>);
-    render(locals: Locals, website: Website, routes: PageWithRoute[]): HashMap<string>;
+    render(locals: Locals, paramorph: Paramorph, routes: PageWithRoute[]): HashMap<string>;
 }
 export default ServerRenderer;

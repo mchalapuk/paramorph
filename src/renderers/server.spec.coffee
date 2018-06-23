@@ -13,7 +13,7 @@ elem = (tag, children...) ->
 class Root extends React.Component
   render: ->
     (elem "html",
-      (elem "head", elem "title", "#{@props.page.title} | #{@props.website.title}")
+      (elem "head", elem "title", "#{@props.page.title} | #{@props.paramorph.config.title}")
       (elem "body", "%%%BODY%%%")
     )
 class Layout extends React.Component
@@ -37,8 +37,9 @@ locals =
         "bundle.css": {}
         "bundle.js": {}
 
-website =
-  title: "website.test"
+paramorph =
+  config:
+    title: "website.test"
 
 describe "ServerRenderer", ->
   testedRenderer = null
@@ -50,7 +51,7 @@ describe "ServerRenderer", ->
     page = createPage "/", "Meeting", new Date "1954, Feb 20"
     route = createRoute page
 
-    result = testedRenderer.render locals, website, [ { page, route } ]
+    result = testedRenderer.render locals, paramorph, [ { page, route } ]
 
     (Object.keys result).should.eql [ "/" ]
     result["/"].should.equal "" +

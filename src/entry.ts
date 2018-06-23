@@ -1,29 +1,25 @@
-import { createElement, Component, Children } from 'react';
-import { render } from 'react-dom';
-import { renderToStaticMarkup, renderToString } from 'react-dom/server';
-import { StaticRouter, BrowserRouter, Switch } from 'react-router-dom';
-import { AppContainer } from 'react-hot-loader';
+
+import { Paramorph } from './model';
 
 import { HashMap, Locals, ServerRenderer } from './renderers/server';
+import { ClientRenderer } from './renderers/client';
 import DefaultRoot from './components/Root';
 
 import RoutesFactory from './route-factory';
-import website from './data';
+
+const paramorph : Paramorph = require('./config');
 
 const routesFactory = new RoutesFactory();
-const routes = routesFactory.getRoutes(website);
+const routes = routesFactory.getRoutes(paramorph);
 
 const serverRender = (locals : Locals) => {
   const renderer = new ServerRenderer(locals.Root || DefaultRoot);
-  return renderer.render(locals, website, routes);
+  return renderer.render(locals, paramorph, routes);
 }
 
 const clientRender = () => {
-  const container = document.getElementById('root');
-  const child = createElement(Switch, {}, routes.map(e => e.route));
-  const router = createElement(BrowserRouter, {}, child);
-  const app = createElement(AppContainer, {}, router);
-  render(app, container);
+  const renderer = new ClientRenderer();
+  renderer.render('root', routes);
 }
 
 if (typeof window !== 'undefined') {

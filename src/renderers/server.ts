@@ -4,7 +4,7 @@ import { renderToStaticMarkup, renderToString } from 'react-dom/server';
 
 import { PageWithRoute } from '../route-factory';
 import { RootProps } from '../components/Root';
-import { Website, Page } from '../models';
+import { Paramorph, Page } from '../model';
 
 export interface Locals {
   Root ?: ComponentType<RootProps>;
@@ -22,7 +22,7 @@ export interface CompilationStats {
   assets : HashMap<any>;
 }
 export interface HashMap<T> {
-  [name : string] : T;
+  [name : string] : T | undefined;
 }
 
 export class ServerRenderer {
@@ -32,7 +32,7 @@ export class ServerRenderer {
     this.Root = Root;
   }
 
-  render(locals : Locals, website : Website, routes : PageWithRoute[]) : HashMap<string> {
+  render(locals : Locals, paramorph : Paramorph, routes : PageWithRoute[]) : HashMap<string> {
     const routeSwitch = createElement(Switch, {}, routes.map(r => r.route));
 
     return routes.reduce(
@@ -42,13 +42,13 @@ export class ServerRenderer {
         const body = renderToString(router);
 
         // site skeleton rendered without react ids
-        const root = createElement(this.Root, getRootProps(locals, website, page));
+        const root = createElement(this.Root, getRootProps(locals, paramorph, page));
         const html = renderToStaticMarkup(root);
 
         result[page.url] = '<!DOCTYPE html>\n' + html.replace("%%%BODY%%%", body);
         return result;
       },
-      {} as HashMap<string>
+      {} as HashMap<string>,
     );
   }
 }
@@ -59,14 +59,14 @@ function getRouterProps(location : string) {
   return { location, context: {} };
 }
 
-function getRootProps(locals : Locals, website : Website, page : Page) {
+function getRootProps(locals : Locals, paramorph : Paramorph, page : Page) {
   const assets = Object.keys(locals.webpackStats.compilation.assets)
     .map(url => `/${url}`);
   const css = assets.filter(value => value.match(/\.css$/));
   const js = assets.filter(value => value.match(/\.js$/));
 
   return {
-    website,
+    paramorph,
     page,
     localBundles: { css, js },
     externalBundles: { css: locals.css || [], js: locals.js || [] },

@@ -3,7 +3,7 @@ import * as React from 'react';
 import DeferredScripts from './DeferredScripts';
 import DeferredStyles from './DeferredStyles';
 
-import { Website, Page } from '../models';
+import { Paramorph, Page } from '../model';
 
 export interface BundleUrls {
   css : string[];
@@ -11,17 +11,17 @@ export interface BundleUrls {
 }
 
 export interface RootProps {
-  website : Website;
+  paramorph : Paramorph;
   page : Page;
   localBundles : BundleUrls;
   externalBundles : BundleUrls;
 }
 
-export function Root({ website, page, localBundles, externalBundles } : RootProps) {
+export function Root({ paramorph, page, localBundles, externalBundles } : RootProps) {
   return (
     <html>
       <head>
-        <title>{ page.title } | { website.title }</title>
+        <title>{ page.title } | { paramorph.config.title }</title>
         <meta name='path' content={ page.url }/>
         <meta name='keywords' content={ page.tags.join(', ') } />
         <meta name='description' content={ page.description } />
