@@ -44,7 +44,8 @@
     "react-dom": "^16.2.0",
     "react-hot-loader": "^4.3.3",
     "react-router-dom": "^4.2.2",
-    "source-map-support": "^0.5.5"
+    "source-map-support": "^0.5.5",
+    "universal-router": "^6.0.0"
   },
   "devDependencies": {
     "@types/html-entities": "^1.2.16",
@@ -54,6 +55,7 @@
     "@types/react-dom": "^16.0.4",
     "@types/react-hot-loader": "^4.1.0",
     "@types/react-router-dom": "^4.2.4",
+    "@types/universal-router": "^6.0.0",
     "@types/webpack": "^4.4.1",
     "@types/webpack-env": "^1.13.5",
     "coffeescript": "^2.2.3",
