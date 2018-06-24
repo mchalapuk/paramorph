@@ -1,6 +1,6 @@
 import { createElement, ReactElement } from 'react';
-import { Route } from 'universal-router';
 
+import { Route } from './router';
 import { Paramorph, Page, ComponentType } from './model';
 
 const NOT_FOUND_URL = '/404';
@@ -29,7 +29,7 @@ export class RoutesFactory {
       .map(page => createRoute(page))
     ;
     // 404 (must be at the end)
-    createRoute(error404, '/:anything');
+    routes.push(createRoute(error404, '/:anything'));
 
     return routes;
   }

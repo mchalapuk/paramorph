@@ -1,5 +1,6 @@
+
 import { ComponentType, ReactElement, createElement } from 'react';
-import { default as UniversalRouter, Route, Context } from 'universal-router';
+import { UniversalRouter, Route, Context } from '../router';
 import { renderToStaticMarkup, renderToString } from 'react-dom/server';
 import { createMemoryHistory } from 'history';
 
@@ -13,17 +14,7 @@ export interface Locals {
   js ?: string[];
   css ?: string[];
   assets : HashMap<string>;
-  webpackStats : WebpackStats;
-}
-
-export interface WebpackStats {
-  compilation : CompilationStats;
-}
-export interface CompilationStats {
-  assets : HashMap<any>;
-}
-export interface HashMap<T> {
-  [name : string] : T | undefined;
+  webpackStats : { compilation: { assets: HashMap<any>; } };
 }
 
 export class ServerRenderer {
@@ -33,23 +24,18 @@ export class ServerRenderer {
     this.Root = Root;
   }
 
-  async render(
-    locals : Locals,
-    paramorph : Paramorph,
-    routes : Route[]
-  ) : Promise<HashMap<string>> {
-
+  async render(locals : Locals, paramorph : Paramorph, routes : Route[]) : Promise<HashMap<string>> {
     const router = new UniversalRouter<Context, ComponentType<any>>(routes);
 
     const pages = Object.keys(paramorph.pages)
       .map(key => paramorph.pages[key] as Page);
     const result = {} as HashMap<string>;
 
-    const promises = pages.map(async (page : Page) => {
+    await Promise.all(pages.map(async (page : Page) => {
+      const history = createMemoryHistory();
+
       // react root contents rendered with react ids
       const component = await router.resolve(page.url);
-
-      const history = createMemoryHistory();
       const app = createElement(ContextContainer, { history, paramorph, page }, component);
       const body = renderToString(app);
 
@@ -58,14 +44,17 @@ export class ServerRenderer {
       const html = renderToStaticMarkup(root);
 
       result[page.url] = '<!DOCTYPE html>\n' + html.replace("%%%BODY%%%", body);
-    });
+    }));
 
-    await Promise.all(promises);
     return result;
   }
 }
 
 export default ServerRenderer;
+
+export interface HashMap<T> {
+  [name : string] : T | undefined;
+}
 
 function getRootProps(locals : Locals, paramorph : Paramorph, page : Page) {
   const assets = Object.keys(locals.webpackStats.compilation.assets)

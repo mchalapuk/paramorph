@@ -31,12 +31,12 @@
       "js-yaml",
       "html-entities",
       "offensive",
-      "universal-router",
       "history"
     ]
   },
   "include": [
-    "./modules.d.ts",
+    "./src/@types/**/*.tsx",
+    "./src/@types/**/*.ts",
     "./src/**/*.tsx",
     "./src/**/*.ts"
   ],

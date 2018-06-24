@@ -1,7 +1,7 @@
 
 import { createElement, Component, ComponentType, Children } from 'react';
 import { render } from 'react-dom';
-import { default as UniversalRouter, Route, Context } from 'universal-router';
+import { UniversalRouter, Route, Context } from '../router';
 import { createBrowserHistory } from 'history';
 
 import { ContextContainer } from './ContextContainer';

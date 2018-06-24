@@ -1,6 +1,6 @@
 /// <reference types="react" />
 import { ComponentType } from 'react';
-import { Route } from 'universal-router';
+import { Route } from '../router';
 import { RootProps } from '../components/Root';
 import { Paramorph } from '../model';
 export interface Locals {
@@ -9,16 +9,11 @@ export interface Locals {
     js?: string[];
     css?: string[];
     assets: HashMap<string>;
-    webpackStats: WebpackStats;
-}
-export interface WebpackStats {
-    compilation: CompilationStats;
-}
-export interface CompilationStats {
-    assets: HashMap<any>;
-}
-export interface HashMap<T> {
-    [name: string]: T | undefined;
+    webpackStats: {
+        compilation: {
+            assets: HashMap<any>;
+        };
+    };
 }
 export declare class ServerRenderer {
     private Root;
@@ -26,3 +21,6 @@ export declare class ServerRenderer {
     render(locals: Locals, paramorph: Paramorph, routes: Route[]): Promise<HashMap<string>>;
 }
 export default ServerRenderer;
+export interface HashMap<T> {
+    [name: string]: T | undefined;
+}

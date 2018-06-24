@@ -14,7 +14,7 @@ export interface Props {
 }
 
 export class ContextContainer extends React.Component<Props, {}> {
-  static readonly contextTypes = {
+  static readonly childContextTypes = {
     paramorph: PropTypes.shape({
       layouts: PropTypes.object.isRequired,
       includes: PropTypes.object.isRequired,

@@ -8,7 +8,7 @@ export interface Props {
     page: Page;
 }
 export declare class ContextContainer extends React.Component<Props, {}> {
-    static readonly contextTypes: {
+    static readonly childContextTypes: {
         paramorph: (object: any, key: string, componentName: string, ...rest: any[]) => Error | null;
         history: (object: any, key: string, componentName: string, ...rest: any[]) => Error | null;
         page: (object: any, key: string, componentName: string, ...rest: any[]) => Error | null;
