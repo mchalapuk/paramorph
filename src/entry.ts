@@ -19,7 +19,7 @@ const serverRender = (locals : Locals) => {
 
 const clientRender = () => {
   const renderer = new ClientRenderer();
-  renderer.render('root', routes);
+  renderer.render('root', paramorph, routes);
 }
 
 if (typeof window !== 'undefined') {

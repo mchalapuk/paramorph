@@ -1,10 +1,11 @@
 import { ComponentType, ReactElement, createElement } from 'react';
-import { StaticRouter, Switch } from 'react-router-dom';
+import { default as UniversalRouter, Route, Context } from 'universal-router';
 import { renderToStaticMarkup, renderToString } from 'react-dom/server';
+import { createMemoryHistory } from 'history';
 
-import { PageWithRoute } from '../route-factory';
 import { RootProps } from '../components/Root';
 import { Paramorph, Page } from '../model';
+import { ContextContainer } from './ContextContainer';
 
 export interface Locals {
   Root ?: ComponentType<RootProps>;
@@ -32,32 +33,39 @@ export class ServerRenderer {
     this.Root = Root;
   }
 
-  render(locals : Locals, paramorph : Paramorph, routes : PageWithRoute[]) : HashMap<string> {
-    const routeSwitch = createElement(Switch, {}, routes.map(r => r.route));
+  async render(
+    locals : Locals,
+    paramorph : Paramorph,
+    routes : Route[]
+  ) : Promise<HashMap<string>> {
 
-    return routes.reduce(
-      (result : HashMap<string>, { page, route } : PageWithRoute) => {
-        // react root contents rendered with react ids
-        const router = createElement(StaticRouter, getRouterProps(page.url), routeSwitch);
-        const body = renderToString(router);
+    const router = new UniversalRouter<Context, ComponentType<any>>(routes);
 
-        // site skeleton rendered without react ids
-        const root = createElement(this.Root, getRootProps(locals, paramorph, page));
-        const html = renderToStaticMarkup(root);
+    const pages = Object.keys(paramorph.pages)
+      .map(key => paramorph.pages[key] as Page);
+    const result = {} as HashMap<string>;
 
-        result[page.url] = '<!DOCTYPE html>\n' + html.replace("%%%BODY%%%", body);
-        return result;
-      },
-      {} as HashMap<string>,
-    );
+    const promises = pages.map(async (page : Page) => {
+      // react root contents rendered with react ids
+      const component = await router.resolve(page.url);
+
+      const history = createMemoryHistory();
+      const app = createElement(ContextContainer, { history, paramorph, page }, component);
+      const body = renderToString(app);
+
+      // site skeleton rendered without react ids
+      const root = createElement(this.Root, getRootProps(locals, paramorph, page));
+      const html = renderToStaticMarkup(root);
+
+      result[page.url] = '<!DOCTYPE html>\n' + html.replace("%%%BODY%%%", body);
+    });
+
+    await Promise.all(promises);
+    return result;
   }
 }
 
 export default ServerRenderer;
-
-function getRouterProps(location : string) {
-  return { location, context: {} };
-}
 
 function getRootProps(locals : Locals, paramorph : Paramorph, page : Page) {
   const assets = Object.keys(locals.webpackStats.compilation.assets)

@@ -1,10 +1,6 @@
 import { Route } from 'universal-router';
-import { Paramorph, Page } from './model';
-export interface PageWithRoute {
-    page: Page;
-    route: Route;
-}
+import { Paramorph } from './model';
 export declare class RoutesFactory {
-    getRoutes(paramorph: Paramorph): PageWithRoute[];
+    getRoutes(paramorph: Paramorph): Route[];
 }
 export default RoutesFactory;

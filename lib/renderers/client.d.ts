@@ -1,5 +1,6 @@
-import { PageWithRoute } from '../route-factory';
+import { Route } from 'universal-router';
+import { Paramorph } from '../model';
 export declare class ClientRenderer {
-    render(containerId: string, routes: PageWithRoute[]): void;
+    render(containerId: string, paramorph: Paramorph, routes: Route[]): void;
 }
 export default ClientRenderer;

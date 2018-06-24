@@ -1,32 +1,24 @@
 import { createElement, ReactElement } from 'react';
-import { Route, Params, Context } from 'universal-router';
+import { Route } from 'universal-router';
 
 import { Paramorph, Page, ComponentType } from './model';
 
 const NOT_FOUND_URL = '/404';
 
-export interface PageWithRoute {
-  page : Page;
-  route : Route;
-}
-
 export class RoutesFactory {
-  getRoutes(paramorph : Paramorph) : PageWithRoute[] {
+  getRoutes(paramorph : Paramorph) : Route[] {
     var error404 = paramorph.pages[NOT_FOUND_URL];
     if (error404 === undefined) {
       throw new Error(`couldn't find page of url ${NOT_FOUND_URL}`);
     }
 
-    function createRoute(page : Page, path = page.url) : PageWithRoute {
+    function createRoute(page : Page, path = page.url) : Route {
       return {
-        page,
-        route: {
-          path,
-          action: async (context : Context, params : Params) => {
-            const layout = await paramorph.loadLayout(page.layout);
-            const component = await paramorph.loadPage(path);
-            return (() => createElement(layout, { component, page, paramorph })) as ComponentType;
-          },
+        path,
+        action: async () => {
+          const layout = await paramorph.loadLayout(page.layout);
+          const component = await paramorph.loadPage(path);
+          return (() => createElement(layout, { component, page, paramorph })) as ComponentType;
         },
       };
     }

@@ -30,7 +30,9 @@
       "react-router-dom",
       "js-yaml",
       "html-entities",
-      "offensive"
+      "offensive",
+      "universal-router",
+      "history"
     ]
   },
   "include": [

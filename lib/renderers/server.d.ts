@@ -1,6 +1,6 @@
 /// <reference types="react" />
 import { ComponentType } from 'react';
-import { PageWithRoute } from '../route-factory';
+import { Route } from 'universal-router';
 import { RootProps } from '../components/Root';
 import { Paramorph } from '../model';
 export interface Locals {
@@ -23,6 +23,6 @@ export interface HashMap<T> {
 export declare class ServerRenderer {
     private Root;
     constructor(Root: ComponentType<RootProps>);
-    render(locals: Locals, paramorph: Paramorph, routes: PageWithRoute[]): HashMap<string>;
+    render(locals: Locals, paramorph: Paramorph, routes: Route[]): Promise<HashMap<string>>;
 }
 export default ServerRenderer;

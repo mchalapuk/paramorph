@@ -36,6 +36,7 @@
   "homepage": "https://github.com/paramorph/paramorph",
   "description": "",
   "dependencies": {
+    "history": "^4.7.2",
     "js-yaml": "^3.11.0",
     "loader-utils": "^1.1.0",
     "markdown-it": "^8.4.0",
@@ -48,6 +49,7 @@
     "universal-router": "^6.0.0"
   },
   "devDependencies": {
+    "@types/history": "^4.6.2",
     "@types/html-entities": "^1.2.16",
     "@types/js-yaml": "^3.11.1",
     "@types/loader-utils": "^1.1.3",
