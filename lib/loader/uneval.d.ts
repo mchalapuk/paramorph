@@ -6,3 +6,4 @@ export declare function unevalInclude(include: Include): string;
 export declare function unevalPage(page: Page): string;
 export declare function unevalCategory(page: Category): string;
 export declare function unevalTag(page: Tag): string;
+export declare function loaderOf(path: string): string;

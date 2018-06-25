@@ -33,7 +33,7 @@ paramorph.addPage(
     "http://some.address/image.jpg",
     "pages",
     "default",
-    "/index.markdown",
+    "./index.markdown",
     true,
     false,
     ["Do It Yourself!"],
@@ -51,7 +51,7 @@ paramorph.addPage(
     "http://some.address/diy.jpg",
     "posts",
     "default",
-    "/diy.markdown",
+    "./diy.markdown",
     true,
     true,
     [],
@@ -70,7 +70,7 @@ paramorph.addPage(
     "This is an exciting tag.",
     "http://some.address/exciting.jpg",
     "default",
-    "/tag.markdown",
+    "./tag.markdown",
     true,
     2,
   )
@@ -78,4 +78,13 @@ paramorph.addPage(
 
 // PAGES IN TAGS //
 paramorph.tags["exciting"].pages.push(paramorph.pages["/"]);
+
+// LAYOUT LOADERS //
+paramorph.addLayoutLoader("default", () => include("./_layouts/default.ts"));
+
+// INCLUDE LOADERS //
+paramorph.addIncludeLoader("BreadCrumbs", () => include("./_includes/BreadCrumbs/index.ts"));
+
+// PAGE LOADERS //
+paramorph.addPageLoader("/", () => include("./index.markdown"));
 

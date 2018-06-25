@@ -44,12 +44,8 @@ module.exports = {
     noParse: ExternalReact.noParse,
     rules: [
       {
-        test: require.resolve('paramorph/data/requireContext'),
-        use:  'val-loader',
-      },
-      {
-        test: require.resolve('paramorph/data/config'),
-        use: 'val-loader',
+        test: require.resolve('paramorph/config'),
+        use: 'paramorph/loader',
       },
       {
         enforce: 'pre',

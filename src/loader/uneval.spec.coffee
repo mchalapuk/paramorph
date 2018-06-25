@@ -25,7 +25,7 @@ describe "uneval", ->
       "http://some.address/image.jpg"
       "pages",
       "default"
-      "/index.markdown"
+      "./index.markdown"
       true
       false
       ["Do It Yourself!"]
@@ -39,7 +39,7 @@ describe "uneval", ->
       "http://some.address/diy.jpg"
       "posts",
       "default"
-      "/diy.markdown"
+      "./diy.markdown"
       true
       true
       []
@@ -51,7 +51,7 @@ describe "uneval", ->
       "This is an exciting tag."
       "http://some.address/exciting.jpg"
       "default"
-      "/tag.markdown"
+      "./tag.markdown"
       true
       2
     )

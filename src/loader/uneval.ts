@@ -89,6 +89,24 @@ ${
     .map(t => `${varName}.tags["${t.tag}"].pages.push(${varName}.pages["${t.url}"]);\n`)
     .join('')
 }
+// LAYOUT LOADERS //
+${
+  layouts
+    .map(layout => `${varName}.addLayoutLoader("${layout.name}", ${loaderOf(layout.path)});\n`)
+    .join('')
+}
+// INCLUDE LOADERS //
+${
+  includes
+    .map(include => `${varName}.addIncludeLoader("${include.name}", ${loaderOf(include.path)});\n`)
+    .join('')
+}
+// PAGE LOADERS //
+${
+  pages
+    .map(page => `${varName}.addPageLoader("${page.url}", ${loaderOf(page.source)});\n`)
+    .join('')
+}
 `;
 }
 
@@ -182,5 +200,9 @@ export function unevalTag(page : Tag) {
   },\n    ${
     JSON.stringify(page.timestamp)
   },\n  )`;
+}
+
+export function loaderOf(path : string) {
+  return `() => include("${path}")`;
 }
 
