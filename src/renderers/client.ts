@@ -2,33 +2,37 @@
 import { createElement, Component, ComponentType, Children } from 'react';
 import { render } from 'react-dom';
 import { UniversalRouter, Route, Context } from '../router';
-import { createBrowserHistory } from 'history';
+import { History, createBrowserHistory } from 'history';
 
 import { ContextContainer } from './ContextContainer';
 import { Paramorph, Page } from '../model';
 
 export class ClientRenderer {
-  render(containerId : string, paramorph : Paramorph, routes : Route[]) {
+  constructor(
+    private history : History,
+    private router : UniversalRouter<Context, ComponentType<any>>,
+    private paramorph : Paramorph
+  ) {
+  }
+  render(containerId : string) {
     const container = document.getElementById(containerId);
 
-    const router = new UniversalRouter<Context, ComponentType<any>>(routes);
-    const history = createBrowserHistory();
-
-    function resolve(page : Page) {
-      router.resolve(page.url)
+    const resolve = (page : Page) => {
+      this.router.resolve(page.url)
         .then(component => {
-          const app = createElement(ContextContainer, { history, paramorph, page }, component);
+          const props = { history: this.history, paramorph: this.paramorph, page };
+          const app = createElement(ContextContainer, props, component);
           render(app, container);
         });
-    }
+    };
 
-    const { pages } = paramorph;
+    const { pages } = this.paramorph;
     const notFound = pages['/404'] as Page;
 
-    const unlisten = history.listen(location => resolve(pages[location.pathname] || notFound));
+    const unlisten = this.history.listen(location => resolve(pages[location.pathname] || notFound));
     window.addEventListener('unload', unlisten);
 
-    const initialPage = pages[history.location.pathname] || notFound;
+    const initialPage = pages[this.history.location.pathname] || notFound;
     resolve(initialPage);
   }
 }

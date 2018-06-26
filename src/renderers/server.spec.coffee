@@ -1,9 +1,10 @@
 React = require "react"
+PropTypes = require "prop-types"
 
+sinon = require "sinon"
 { FakePromise } = require "fake-promise"
 
 model = require "../model"
-{ Route } = require "react-router-dom"
 { ServerRenderer } = require "./server"
 
 elem = (tag, children...) ->
@@ -16,50 +17,60 @@ class Root extends React.Component
       (elem "body", "%%%BODY%%%")
     )
 class Layout extends React.Component
-  render: -> elem "div", elem "p", @props.page.title
+  @contextTypes: page: PropTypes.object
+  render: ->
+    elem "div", elem "p", @context.page.title
 
 createPage = (url, title, date) ->
   new model.Page url, title, "", null, "test", "test", "./test.md", true, true, [], [], date
 
-locals =
-  webpackStats:
-    compilation:
-      assets:
-        "bundle.css": {}
-        "bundle.js": {}
-
 describe "ServerRenderer", ->
+  router = null
   testedRenderer = null
 
   beforeEach ->
-    testedRenderer = new ServerRenderer Root
-
-  it "renders single page", ->
     page = createPage "/", "Meeting", 0
     layout = new model.Layout "test", "./layouts/test.md"
-
-    layoutPromise = new FakePromise
-    pagePromise = new FakePromise
 
     paramorph = new model.Paramorph title: "website.test"
     paramorph.addLayout layout
     paramorph.addPage page
 
-    actionPromise = new FakePromise
-    route =
-      path: page.url
-      action: -> actionPromise
+    history = {}
+    router = resolve: sinon.stub()
 
-    resultPromise = testedRenderer.render locals, paramorph, [ route ]
+    testedRenderer = new ServerRenderer history, router, paramorph
 
-    actionPromise.resolve React.createElement Layout, page: page
+  describe "after calling render", ->
+    routerPromise = null
+    resultPromise = null
 
-    resultPromise.then (result) ->
-      (Object.keys result).should.eql [ "/" ]
-      result["/"].should.equal "" +
-        "<!DOCTYPE html>\n" +
-        "<html>" +
-          "<head><title>Meeting | website.test</title></head>" +
-          "<body><div data-reactroot=\"\"><p>Meeting</p></div></body>" +
-        "</html>"
+    beforeEach ->
+      locals =
+        Root: Root
+        webpackStats:
+          compilation:
+            assets:
+              "bundle.css": {}
+              "bundle.js": {}
+
+      routerPromise = new FakePromise
+      router.resolve.returns routerPromise
+
+      resultPromise = testedRenderer.render locals
+      undefined
+
+    describe "and after resoling router promise", ->
+      beforeEach ->
+        routerPromise.resolve React.createElement Layout
+
+      it "renders single page", ->
+        resultPromise.then (result) ->
+          (Object.keys result).should.eql [ "/" ]
+          result["/"].should.equal "" +
+            "<!DOCTYPE html>\n" +
+            "<html>" +
+              "<head><title>Meeting | website.test</title></head>" +
+              "<body><div data-reactroot=\"\"><p>Meeting</p></div></body>" +
+            "</html>"
 

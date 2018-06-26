@@ -1,6 +1,7 @@
 /// <reference types="react" />
 import { ComponentType } from 'react';
-import { Route } from '../router';
+import { UniversalRouter, Context } from '../router';
+import { History } from 'history';
 import { RootProps } from '../components/Root';
 import { Paramorph } from '../model';
 export interface Locals {
@@ -16,9 +17,11 @@ export interface Locals {
     };
 }
 export declare class ServerRenderer {
-    private Root;
-    constructor(Root: ComponentType<RootProps>);
-    render(locals: Locals, paramorph: Paramorph, routes: Route[]): Promise<HashMap<string>>;
+    private history;
+    private router;
+    private paramorph;
+    constructor(history: History, router: UniversalRouter<Context, ComponentType<any>>, paramorph: Paramorph);
+    render(locals: Locals): Promise<HashMap<string>>;
 }
 export default ServerRenderer;
 export interface HashMap<T> {
