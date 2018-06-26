@@ -44,7 +44,7 @@ module.exports = {
     noParse: ExternalReact.noParse,
     rules: [
       {
-        test: require.resolve('paramorph/config'),
+        test: path.resolve(__dirname, './_config.yml'),
         use: 'paramorph/loader',
       },
       {
