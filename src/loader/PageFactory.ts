@@ -91,10 +91,7 @@ function validateFrontMatter(fileName : string, matter : any) {
   const namePrefix = `pages['${fileName}']`;
   check(matter, `${namePrefix}.matter`).is.anObject();
 
-  const date = safeParseDate(
-    check(matter.date, `${namePrefix}.date`).is.aString() as string,
-    `${namePrefix}.date`,
-  );
+  const date = check(matter.date, `${namePrefix}.date`).is.aDate() as Date;
   const role = check(matter.role, `${namePrefix}.role`)
     .is.either.containedIn(VALID_ROLES, '\'page\' or \'category\'')
     .or.Undefined() as string | undefined
@@ -154,14 +151,6 @@ function validateFrontMatter(fileName : string, matter : any) {
     tags,
     feed,
   };
-}
-
-function safeParseDate(dateString : string, variableName : string) : Date {
-  const date = new Date(dateString);
-  if (Number.isNaN(date.getTime())) {
-    throw new Error(`${variableName} must be a valid date; got '${dateString}'`);
-  }
-  return date;
 }
 
 function defaultTitle(file : SourceFile) {

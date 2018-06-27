@@ -2,7 +2,7 @@
 { PageFactory } = require "./PageFactory"
 { Page, Category } = require "../model"
 
-date = "Jun 05 2018 00:00 UTC"
+date = new Date "Jun 05 2018 00:00 UTC"
 matter = (arg) -> { date, arg... }
 
 describe "PageFactory", ->
@@ -20,12 +20,12 @@ describe "PageFactory", ->
     [
       "{}"
       {}
-      "pages['test-page'].date must be a string; got undefined"
+      "pages['test-page'].date must be a Date; got undefined"
     ]
     [
       "{ date: 'jibberish' }"
       { date: 'jibberish' }
-      "pages['test-page'].date must be a valid date; got 'jibberish'"
+      "pages['test-page'].date must be a Date; got 'jibberish'"
     ]
     [
       "{ role: 0 }"

@@ -40,24 +40,24 @@ export function parse(yaml : string) : Config {
 
   check(config.collections, 'config.collections').is.anObject();
   Object.keys(config.collections)
-    .forEach((key : string) => {
-      const collection = config.collections[key];
+    .forEach((name : string) => {
+      const collection = config.collections[name];
       check(collection.title, `config.collections[${name}].title`).is.either.Undefined.or.aString();
       check(collection.layout, `config.collections[${name}].layout`).is.either.Undefined.or.aString();
       check(collection.output, `config.collections[${name}].output`).is.either.Undefined.or.aBoolean();
     })
   ;
 
-  check(config.image, 'config.image').is.either.Undefined.or.aString();
+  check(config.image, 'config.image').is.either.Empty.or.aString();
   check(config.baseUrl, 'config.baseUrl').is.aString();
   check(config.locale, 'config.locale').is.aString();
 
   check(config.menu, 'config.menu').is.anArray();
   (config.menu as any[]).forEach((entry, i) => {
-    check(entry, `config.menu[${i}].title`).is.aString();
-    check(entry, `config.menu[${i}].short`).is.aString();
-    check(entry, `config.menu[${i}].url`).is.aString();
-    check(entry, `config.menu[${i}].icon`).is.either.aString.or.Undefined();
+    check(entry.title, `config.menu[${i}].title`).is.aString();
+    check(entry.short, `config.menu[${i}].short`).is.aString();
+    check(entry.url, `config.menu[${i}].url`).is.aString();
+    check(entry.icon, `config.menu[${i}].icon`).is.either.Empty.or.aString();
   });
 
   return config as Config;
