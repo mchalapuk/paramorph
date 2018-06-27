@@ -1,3 +1,6 @@
+
+import 'source-map-support/register';
+
 import { parse } from '../config';
 import FileSystem from '../platform/node/FileSystem';
 

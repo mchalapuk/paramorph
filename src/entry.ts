@@ -1,3 +1,4 @@
+import 'source-map-support/register';
 
 import { ComponentType } from 'react';
 import { createMemoryHistory, createBrowserHistory } from 'history';
