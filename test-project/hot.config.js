@@ -18,6 +18,8 @@ const HOT_BABEL = {
 };
 
 module.exports = {
+  mode: 'development',
+
   entry: Object.assign({}, config.entry, {
     'hot-bootstrap': HOT_ENTRY,
   }),
@@ -35,6 +37,19 @@ module.exports = {
   resolve: config.resolve,
   resolveLoader: config.resolveLoader,
   externals: config.externals,
+
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    hot: true,
+    open: true,
+    overlay: {
+      warnings: true,
+      errors: true,
+    },
+    watchOptions: {
+      poll: true
+    },
+  },
 
   module: {
     noParse: config.module.noParse,
@@ -55,10 +70,12 @@ module.exports = {
       component: 'paramorph/components/Root',
       output: 'index.html',
       props: {
-        website: {
-          title: 'Paramorph',
-          baseUrl: 'http://localhost:8080',
-          locale: 'pl_PL',
+        paramorph: {
+          config: {
+            title: 'Paramorph',
+            baseUrl: 'http://localhost:8080',
+            locale: 'pl_PL',
+          },
         },
         page: {
           title: 'Feed',

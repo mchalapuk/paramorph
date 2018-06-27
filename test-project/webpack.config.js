@@ -10,8 +10,7 @@ const ReactDOM = require('react-dom');
 const ReactDOMServer = require('react-dom/server');
 const ReactRouterDOM = require('react-router-dom');
 
-const Root = require('paramorph/components/Root')
-  .Root;
+const { Root } = require('paramorph/components/Root');
 
 module.exports = {
 	entry: {
@@ -35,6 +34,7 @@ module.exports = {
     ],
     alias: {
       'includes': path.resolve(__dirname, './_includes/'),
+      '@project/config': path.resolve(__dirname, './_config.yml'),
     },
   },
 

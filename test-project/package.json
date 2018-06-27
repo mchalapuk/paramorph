@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf _output #",
-    "build": "webpack",
+    "build": "webpack --run-prod",
     "clean-build": "npm run clean && npm run build",
-    "dev": "webpack-dev-server --watch --colors --inline --config ./hot.config.js",
+    "dev": "webpack-dev-server --color --config ./hot.config.js",
     "serve": "http-server _output",
     "test": "npm run clean-build && npm run serve"
   },
@@ -49,6 +49,7 @@
     "webpack-external-react": "^1.0.2"
   },
   "dependencies": {
-    "paramorph": "file:../lib"
+    "paramorph": "file:../lib",
+    "@config": "file:./_config.yml"
   }
 }
