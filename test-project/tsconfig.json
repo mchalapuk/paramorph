@@ -23,6 +23,10 @@
     "strictNullChecks": true,
     "sourceMap": false,
     "target": "es5",
+    "baseUrl": ".",
+    "paths": {
+      "@project/config": "./_config.yml",
+    },
     "types": [
       "node",
       "webpack",

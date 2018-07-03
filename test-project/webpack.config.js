@@ -45,7 +45,7 @@ module.exports = {
     rules: [
       {
         test: path.resolve(__dirname, './_config.yml'),
-        use: 'paramorph/loader',
+        use: 'paramorph/loader/config',
       },
       {
         enforce: 'pre',
@@ -61,14 +61,7 @@ module.exports = {
       },
       {
         test: /\.markdown$/,
-        use: [
-          'babel-loader',
-          'paramorph/loaders/add-data-to-globals?data=includes',
-          'paramorph/loaders/wrap-with-jsx?field=body',
-          'paramorph/loaders/markdown?html=true&xhtmlOut=true&linkify=true&typographer=true',
-          'json-loader',
-          'front-matter-loader',
-        ],
+        use: 'paramorph/loaders/markdown',
       },
     ],
   },

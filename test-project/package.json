@@ -34,10 +34,8 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
-    "front-matter-loader": "^0.2.0",
     "http-server": "^0.11.1",
     "jsdom": "^11.11.0",
-    "json-loader": "^0.5.7",
     "react": "^16.4.1",
     "react-html-webpack-plugin": "^1.0.0",
     "source-map-loader": "^0.2.3",
@@ -49,7 +47,6 @@
     "webpack-external-react": "^1.0.2"
   },
   "dependencies": {
-    "paramorph": "file:../lib",
-    "@config": "file:./_config.yml"
+    "paramorph": "file:../lib"
   }
 }
