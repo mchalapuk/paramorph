@@ -32,7 +32,12 @@
       "html-entities",
       "offensive",
       "history"
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "paramorph/components/Content": [ "./src/components/Content" ],
+      "paramorph/renderers/ContextContainer": [ "./src/renderers/ContextContainer" ]
+    }
   },
   "include": [
     "./src/@types/**/*.tsx",
