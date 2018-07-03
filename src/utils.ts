@@ -47,27 +47,28 @@ export function stripTags(htmlText : string) {
 
 	// handle lists
 	tmp = tmp.replace(/<\/?ul[^>]*>|<\/?ol[^>]*>|<\/?li[^>]*>/gi, "");
-
 	// handle headings
 	tmp = tmp.replace(/<h([1-6])[^>]*>([^<]*)<\/h\1>/gi, " $2 ");
-
 	// replace <br>s, <td>s, <divs> and <p>s with linebreaks
 	tmp = tmp.replace(/<br( [^>]*)*>|<p( [^>]*)*>|<\/p( [^>]*)*>|<div( [^>]*)*>|<\/div( [^>]*)*>|<td( [^>]*)*>|<\/td( [^>]*)*>/gi, "");
-
 	// replace <a href>b<a> links with b (href)
 	tmp = tmp.replace(/<a[^>]*href="([^"]*)"[^>]*>([^<]+)<\/a[^>]*>/gi, function(str, href, linkText) {
 		return " " + linkText +" ";
 	});
-
 	// remove duplicated spaces including non braking spaces
 	tmp = tmp.replace(/( |&nbsp;|\t)+/gi, " ");
-
 	// remove line starter spaces
 	tmp = tmp.replace(/\n +/gi, "");
-
 	// remove content starter spaces
 	tmp = tmp.replace(/^ +/gi, "");
 
 	return tmp;
+}
+
+export function removeEntities(str : string) {
+  return str
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&[^\s;]+;/g, '')
+  ;
 }
 

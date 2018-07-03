@@ -13,7 +13,7 @@ export declare class ProjectStructure {
     private fs;
     constructor(fs: FileSystem);
     scan(config: Config): Promise<SpecialDirs>;
-    private scanDir(path, fileRegex, subdirs?);
+    private scanDir;
 }
 export default ProjectStructure;
 export interface HashMap<T> {

@@ -19,6 +19,6 @@ export interface PageConstructor {
 }
 export declare class PageFactory {
     create(file: SourceFile, collection: string, maybeMatter: any): Page;
-    private create0(PageType, file, collection, matter);
+    private create0;
 }
 export default PageFactory;

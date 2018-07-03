@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { Component, ReactNode } from 'react';
 import NodeMapper from './NodeMapper';
 export interface Props {
@@ -10,10 +9,10 @@ export interface Props {
 export declare class Content extends Component<Props, {}> {
     private outstandingLimit;
     render(): JSX.Element;
-    private renderChildren(children);
-    private renderNode(node, key);
-    private renderString(child);
-    private renderComponent(elem, key);
-    private isLimitReached();
+    private renderChildren;
+    private renderNode;
+    private renderString;
+    private renderComponent;
+    private isLimitReached;
 }
 export default Content;

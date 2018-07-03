@@ -9,8 +9,14 @@ export declare class Loader {
     private pageFactory;
     constructor(structure: ProjectStructure, frontMatter: FrontMatter, pageFactory: PageFactory);
     load(config: Config): Promise<Paramorph>;
-    private getCollectionFileTuples(specialDirs);
-    private addTags(paramorph);
-    private validateCategories(paramorph);
+    private getCollectionFileTuples;
+    private addTags;
+    private generateMissingDescriptions;
+    private addDefaultImages;
+    private descriptionFromContent;
+    private descriptionFromPages;
+    private imageFromContent;
+    private validatePages;
+    private validateCategories;
 }
 export default Loader;
