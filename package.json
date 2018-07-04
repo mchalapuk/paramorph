@@ -11,7 +11,8 @@
     "test": "mocha --use_strict lib/mocha.config.js $(find lib -name \"*.spec.js\")",
     "integration-test": "cd test-project && npm install && npm run clean-build",
     "copy-package.json": "mkdir -p lib/ && cp package.json lib/",
-    "build": "npm run compile && npm run copy-package.json && npm run test",
+    "link-modules": "ln -sf ../node_modules lib/node_modules",
+    "build": "npm run compile && npm run copy-package.json && npm run link-modules && npm run test",
     "clean-build": "npm run clean && npm run build",
     "watch": "watch 'npm run clean-build' src",
     "deploy": "npm run clean-build && npm publish lib"
