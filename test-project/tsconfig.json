@@ -37,6 +37,11 @@
       "react-hot-loader",
       "js-yaml",
       "html-entities"
+    ],
+    "baseUrl": ".",
+    "paths": [
+      "@project/config": "_config.yml",
+      "@project/includes": "_includes"
     ]
   },
   "include": [
