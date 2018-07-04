@@ -40,6 +40,11 @@ describe "Loader", ->
     tags: []
     categories: []
     output: false
+  indexPage =
+    url: "/"
+    tags: []
+    categories: []
+    output: true
 
   describe "when loading empty project structure", ->
     struct =

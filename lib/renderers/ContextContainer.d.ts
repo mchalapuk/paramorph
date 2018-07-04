@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from 'react';
 import { History } from 'history';
 import { Paramorph, Page } from '../model';

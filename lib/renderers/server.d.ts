@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { ComponentType } from 'react';
 import { UniversalRouter, Context } from '../router';
 import { History } from 'history';

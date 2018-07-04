@@ -63,7 +63,7 @@ export class Loader {
     const pages = Object.keys(paramorph.pages)
       .map(key => paramorph.pages[key] as Page);
 
-    const tagPage = paramorph.pages[TAG_PAGE_URL];
+    const tagPage = paramorph.pages[TAG_PAGE_URL] as Tag;
     if (!tagPage) {
       throw new Error(`Couldn't find page of url '${TAG_PAGE_URL}' (used to render tag pages)`);
     }
@@ -145,13 +145,6 @@ export class Loader {
   }
 
   private validatePages(paramorph : Paramorph) {
-    if (!paramorph.pages.hasOwnProperty('/')) {
-      throw new Error('page of url \'/\' must be defined to create index.html');
-    }
-    if (!paramorph.pages.hasOwnProperty('/404')) {
-      throw new Error('page of url \'/404\' must be defined to create error page');
-    }
-
     const pages = Object.keys(paramorph.pages)
       .map(key => paramorph.pages[key] as Page);
     const missingDescription = pages
