@@ -20,7 +20,7 @@ export class LoaderRenderer {
       page,
       respectLimit: false,
     };
-    const component = require(page.source).default;
+    const component = require(`@website${page.source.substring(1)}`).default;
 
     const element = createElement(component, props);
     return renderToStaticMarkup(element);
