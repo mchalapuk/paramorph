@@ -38,12 +38,12 @@ export class Loader {
       }),
     );
 
-    this.validatePages(paramorph);
-    this.validateCategories(paramorph);
-
     this.addTags(paramorph);
     this.generateMissingDescriptions(paramorph);
     this.addDefaultImages(paramorph);
+
+    this.validatePages(paramorph);
+    this.validateCategories(paramorph);
 
     return paramorph;
   }

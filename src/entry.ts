@@ -9,7 +9,7 @@ import { ClientRenderer } from './renderers/client';
 import { UniversalRouter, Route, Context } from './router';
 import RoutesFactory from './route-factory';
 
-const paramorph : Paramorph = require('@project/config');
+const paramorph : Paramorph = require('@website/_config.yml');
 
 const routesFactory = new RoutesFactory();
 const routes = routesFactory.getRoutes(paramorph);

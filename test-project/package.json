@@ -47,6 +47,6 @@
     "webpack-external-react": "^1.0.2"
   },
   "dependencies": {
-    "paramorph": "file:../lib"
+    "paramorph": "file:../lib/"
   }
 }

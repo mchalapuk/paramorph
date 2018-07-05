@@ -25,7 +25,7 @@
     "target": "es5",
     "baseUrl": ".",
     "paths": {
-      "@project/config": "./_config.yml",
+      "@website/*": [ "./" ],
     },
     "types": [
       "node",
@@ -37,11 +37,6 @@
       "react-hot-loader",
       "js-yaml",
       "html-entities"
-    ],
-    "baseUrl": ".",
-    "paths": [
-      "@project/config": "_config.yml",
-      "@project/includes": "_includes"
     ]
   },
   "include": [

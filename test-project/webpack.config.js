@@ -33,8 +33,7 @@ module.exports = {
       '.js', '.tsx', '.ts', '.css', '.markdown'
     ],
     alias: {
-      'includes': path.resolve(__dirname, './_includes/'),
-      '@project/config': path.resolve(__dirname, './_config.yml'),
+      '@website': path.resolve(__dirname),
     },
   },
 

@@ -80,11 +80,11 @@ paramorph.addPage(
 paramorph.tags["exciting"].pages.push(paramorph.pages["/"]);
 
 // LAYOUT LOADERS //
-paramorph.addLayoutLoader("default", () => include("./_layouts/default.ts"));
+paramorph.addLayoutLoader("default", () => include("@website/_layouts/default.ts"));
 
 // INCLUDE LOADERS //
-paramorph.addIncludeLoader("BreadCrumbs", () => include("./_includes/BreadCrumbs/index.ts"));
+paramorph.addIncludeLoader("BreadCrumbs", () => include("@website/_includes/BreadCrumbs/index.ts"));
 
 // PAGE LOADERS //
-paramorph.addPageLoader("/", () => include("./index.markdown"));
+paramorph.addPageLoader("/", () => include("@website/index.markdown"));
 
