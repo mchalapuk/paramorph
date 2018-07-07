@@ -30,7 +30,7 @@ module.exports = {
 
   resolve: {
     extensions: [
-      '.js', '.tsx', '.ts', '.css', '.markdown'
+      '.js', '.tsx', '.ts', '.css', '.markdown', '.yml'
     ],
     alias: {
       '@website': path.resolve(__dirname),
