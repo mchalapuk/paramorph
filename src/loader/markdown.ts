@@ -13,7 +13,7 @@ module.exports = function markdownLoader(source : string) {
   const that = this as any;
 
   that.cacheable && that.cacheable();
-  const opts = getOptions(that);
+  const opts = getOptions(that) || {};
   const md = newMarkdown(opts);
 
   const markdownSource = removeFrontMatter(that.resourcePath, source);
@@ -50,6 +50,6 @@ function removeFrontMatter(path : string, source : string) {
 }
 
 function loadTemplate() {
-  return readFileSync(path.join(__dirname, './MarkdownPage.tsx')).toString('utf8');
+  return readFileSync(path.join(__dirname, './MarkdownPage.js')).toString('utf8');
 }
 
