@@ -18,6 +18,7 @@ export class Loader {
     private structure : ProjectStructure,
     private frontMatter : FrontMatter,
     private pageFactory : PageFactory,
+    private loadSource : (request : string) => Promise<string>,
   ) {
   }
 
@@ -39,8 +40,10 @@ export class Loader {
     );
 
     this.addTags(paramorph);
-    this.generateMissingDescriptions(paramorph);
-    this.addDefaultImages(paramorph);
+    const descriptions = this.generateMissingDescriptions(paramorph);
+    const images = this.addDefaultImages(paramorph);
+    await descriptions;
+    await images;
 
     this.validatePages(paramorph);
     this.validateCategories(paramorph);
@@ -82,60 +85,69 @@ export class Loader {
     });
   }
 
-  private generateMissingDescriptions(paramorph : Paramorph) {
+  private async generateMissingDescriptions(paramorph : Paramorph) {
     const history = createMemoryHistory();
-    const renderer = new LoaderRenderer(history, paramorph);
+    const renderer = new LoaderRenderer(history, paramorph, this.loadSource);
 
     const pages = Object.keys(paramorph.pages)
       .map(key => paramorph.pages[key] as Page);
     const index = paramorph.pages['/'] as Page;
 
-    pages.forEach((page : Page) => {
+    const promises = pages.map(async (page : Page) => {
       if (page.description || !page.output) {
         return;
       }
       if (page instanceof Tag) {
+        const description = await this.descriptionFromPages(index, page);
+
         Object.defineProperty(page, 'description', {
-          get: () => this.descriptionFromPages(index, page),
+          get: () => description,
           set: () => { throw new Error('Page.description is readonly'); },
         });
       } else {
+        const description = await this.descriptionFromContent(renderer, page);
+
         Object.defineProperty(page, 'description', {
-          get: () => this.descriptionFromContent(renderer, page),
+          get: () => description,
           set: () => { throw new Error('Page.description is readonly'); },
         });
       }
     });
+    return Promise.all(promises);
   }
 
-  private addDefaultImages(paramorph : Paramorph) {
+  private async addDefaultImages(paramorph : Paramorph) {
     const history = createMemoryHistory();
-    const renderer = new LoaderRenderer(history, paramorph);
+    const renderer = new LoaderRenderer(history, paramorph, this.loadSource);
 
     const pages = Object.keys(paramorph.pages)
       .map(key => paramorph.pages[key] as Page);
 
-    pages.forEach((page : Page) => {
+    const promises = pages.map(async (page : Page) => {
       if (page.image || !page.output) {
         return;
       }
+      const description = await this.imageFromContent(renderer, page);
+
       Object.defineProperty(page, 'image', {
-        get: () => this.imageFromContent(renderer, page),
+        get: () => description,
         set: () => { throw new Error('Page.image is readonly'); }
       });
     });
+    return Promise.all(promises);
   }
 
-  private descriptionFromContent(renderer : LoaderRenderer, page : Page) {
-    return removeEntities(stripTags(renderer.render(page)));
+  private async descriptionFromContent(renderer : LoaderRenderer, page : Page) {
+    const markup = await renderer.render(page);
+    return removeEntities(stripTags(markup));
   }
 
   private descriptionFromPages(index : Page, page : Tag) {
     return removeEntities(`${index.title} ${page.title}: ${page.pages.map(p => p.title).join(', ')}`);
   }
 
-  private imageFromContent(renderer : LoaderRenderer, page : Page) {
-    const markup = renderer.render(page);
+  private async imageFromContent(renderer : LoaderRenderer, page : Page) {
+    const markup = await renderer.render(page);
     const found = /<img[^>]* src="([^"]*)"[^>]*>/.exec(markup);
     if (!found) {
       console.warn(`Couldn't find image on page ${page.url}; page.image is null`);

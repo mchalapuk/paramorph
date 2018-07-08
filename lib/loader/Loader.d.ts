@@ -7,7 +7,8 @@ export declare class Loader {
     private structure;
     private frontMatter;
     private pageFactory;
-    constructor(structure: ProjectStructure, frontMatter: FrontMatter, pageFactory: PageFactory);
+    private loadSource;
+    constructor(structure: ProjectStructure, frontMatter: FrontMatter, pageFactory: PageFactory, loadSource: (request: string) => Promise<string>);
     load(config: Config): Promise<Paramorph>;
     private getCollectionFileTuples;
     private addTags;

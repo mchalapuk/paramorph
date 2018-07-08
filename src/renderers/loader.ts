@@ -11,7 +11,7 @@ export class LoaderRenderer {
   constructor(
     private history : History,
     private paramorph : Paramorph,
-    private loadPage : (request : string, callback : LoadCallback) => void,
+    private loadSource : (request : string) => Promise<string>,
   ) {
   }
 
@@ -30,19 +30,13 @@ export class LoaderRenderer {
     return renderToStaticMarkup(element);
   }
 
-  private loadComponent(request : string) : Promise<ComponentType> {
-    return new Promise((resolve, reject) => {
-      this.loadPage(request, (err, source, sourceMap, module) => {
-        if (err) {
-          reject(err);
-        }
-        const componentModule = this.eval(request, source);
-        if (!componentModule.hasOwnProperty('default')) {
-          reject(new Error(`Module '${request} must contain a default export...'`));
-        }
-        resolve(componentModule.default);
-      });
-    });
+  private async loadComponent(request : string) : Promise<ComponentType<any>> {
+    const source = await this.loadSource(request);
+    const componentModule = this.eval(request, source);
+    if (!componentModule.hasOwnProperty('default')) {
+      throw new Error(`Module '${request} must contain a default export...'`);
+    }
+    return componentModule.default;
   }
 
   private eval(filename : string, source : string) {
@@ -50,13 +44,14 @@ export class LoaderRenderer {
 
     const exports = {} as any;
     sandbox.exports = exports;
+    sandbox.require = require;
 
     sandbox.module = {
       exports: exports,
       filename: filename,
       id: filename,
       parent: module.parent,
-      require: sandbox.require || requireLike(filename),
+      require: sandbox.require,
     };
     sandbox.global = sandbox;
 
@@ -65,7 +60,7 @@ export class LoaderRenderer {
       displayErrors: true,
     }
 
-    const script = new vm.Script(source, options);
+    const script = new Script(source, options);
     script.runInNewContext(sandbox, options)
 
     return sandbox.module.exports;
@@ -73,11 +68,4 @@ export class LoaderRenderer {
 }
 
 export default LoaderRenderer;
-
-export type LoadeCallback = (
-  err : any,
-  source: string,
-  sourceMap : string,
-  module : NormalModule,
-) => void;
 
