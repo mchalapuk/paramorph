@@ -60,7 +60,10 @@ module.exports = {
       },
       {
         test: /\.markdown$/,
-        use: 'paramorph/loaders/markdown',
+        use: [
+          'babel-loader',
+          'paramorph/loader/markdown',
+        ],
       },
     ],
   },
