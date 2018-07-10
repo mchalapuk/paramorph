@@ -18,7 +18,6 @@ export class Loader {
     private structure : ProjectStructure,
     private frontMatter : FrontMatter,
     private pageFactory : PageFactory,
-    private loadSource : (request : string) => Promise<string>,
   ) {
   }
 
@@ -87,7 +86,7 @@ export class Loader {
 
   private async generateMissingDescriptions(paramorph : Paramorph) {
     const history = createMemoryHistory();
-    const renderer = new LoaderRenderer(history, paramorph, this.loadSource);
+    const renderer = new LoaderRenderer();
 
     const pages = Object.keys(paramorph.pages)
       .map(key => paramorph.pages[key] as Page);
@@ -118,7 +117,7 @@ export class Loader {
 
   private async addDefaultImages(paramorph : Paramorph) {
     const history = createMemoryHistory();
-    const renderer = new LoaderRenderer(history, paramorph, this.loadSource);
+    const renderer = new LoaderRenderer();
 
     const pages = Object.keys(paramorph.pages)
       .map(key => paramorph.pages[key] as Page);

@@ -1,71 +1,42 @@
 
-import { ComponentType, ReactElement, createElement } from 'react';
-import { renderToStaticMarkup, renderToString } from 'react-dom/server';
-import { History } from 'history';
-import { Script } from 'vm';
+import * as Markdown from 'markdown-it';
+import { readFile } from 'fs';
+import { promisify } from 'util';
 
-import { Paramorph, Page } from '../model';
-import { ContextContainer } from './ContextContainer';
+import { Page } from '../model';
+
+const readFileAsync = promisify(readFile);
+
+const DELIMITER = '---\n';
+const MAX_FM_SIZE = 2048;
 
 export class LoaderRenderer {
-  constructor(
-    private history : History,
-    private paramorph : Paramorph,
-    private loadSource : (request : string) => Promise<string>,
-  ) {
-  }
-
   async render(page : Page) : Promise<string> {
-    const request = `@website${page.source.substring(1)}`;
-    const component = await this.loadComponent(request);
-    const element = createElement(component, { respectLimit: false });
+    const source = await readFileAsync(page.source);
+    const markdownSource = removeFrontMatter(page.source, source.toString('utf-8'));
 
-    const props = {
-      history: this.history,
-      paramorph: this.paramorph,
-      page,
-    };
-    const container = createElement(ContextContainer, props, element);
-
-    return renderToStaticMarkup(element);
-  }
-
-  private async loadComponent(request : string) : Promise<ComponentType<any>> {
-    const source = await this.loadSource(request);
-    const componentModule = this.eval(request, source);
-    if (!componentModule.hasOwnProperty('default')) {
-      throw new Error(`Module '${request} must contain a default export...'`);
-    }
-    return componentModule.default;
-  }
-
-  private eval(filename : string, source : string) {
-    const sandbox = {} as any;
-
-    const exports = {} as any;
-    sandbox.exports = exports;
-    sandbox.require = require;
-
-    sandbox.module = {
-      exports: exports,
-      filename: filename,
-      id: filename,
-      parent: module.parent,
-      require: sandbox.require,
-    };
-    sandbox.global = sandbox;
-
-    const options = {
-      filename: filename,
-      displayErrors: true,
-    }
-
-    const script = new Script(source, options);
-    script.runInNewContext(sandbox, options)
-
-    return sandbox.module.exports;
+    const md = new Markdown();
+    const html = md.render(markdownSource)
+      .replace('&lt;', '<')
+      .replace('&gt;', '>')
+      .replace('…', '...')
+    ;
+    return html;
   }
 }
 
 export default LoaderRenderer;
+
+function removeFrontMatter(path : string, source : string) {
+  if (source.substring(0, 4) !== DELIMITER) {
+    throw new Error(`Couldn't find front matter data at the beginning of ${
+      path}; expected '---\\n'; got '${source.substring(0, 4)}'.`);
+  }
+  const end = source.indexOf(`\n${DELIMITER}`, 4);
+  if (end === -1) {
+    throw new Error(`Couldn't find end of front matter data in first ${
+      MAX_FM_SIZE} bytes of ${path}.`);
+  }
+  return source.substring(end + 4);
+}
 
