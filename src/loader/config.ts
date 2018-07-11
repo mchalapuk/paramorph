@@ -28,7 +28,11 @@ module.exports = function configLoader(source : string, map : any, meta : any) {
 
   loader.load(parse(source))
     .then(paramorph => {
-      const source = uneval(paramorph, 'paramorph') +';\nmodule.exports = paramorph;\n';
+      const source = 'const { Paramorph, Layout, Include, Page, Category, Tag } '
+        +'= require(\'paramorph/model\');\n'
+        + uneval(paramorph, 'paramorph')
+        +';\nmodule.exports.default = paramorph;\n'
+      ;
       callback(null, source, map, meta);
     })
     .catch(err => {

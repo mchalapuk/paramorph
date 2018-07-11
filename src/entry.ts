@@ -7,7 +7,7 @@ import { ClientRenderer } from './renderers/client';
 import { UniversalRouter, Route, Context } from './router';
 import RoutesFactory from './route-factory';
 
-const paramorph : Paramorph = require('@website/_config.yml');
+const paramorph : Paramorph = require('@website/_config.yml').default;
 
 const routesFactory = new RoutesFactory();
 const routes = routesFactory.getRoutes(paramorph);
@@ -36,6 +36,6 @@ if (typeof window !== 'undefined') {
 export default serverRender;
 
 if (module.hot) {
-  module.hot.accept('./data', clientRender);
+  module.hot.accept('./route-factory', clientRender);
 }
 
