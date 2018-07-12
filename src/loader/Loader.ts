@@ -24,7 +24,7 @@ export class Loader {
   async load(config : Config) : Promise<Paramorph> {
     const paramorph = new Paramorph(config);
 
-    const specialDirs = await this.structure.scan(config)
+    const specialDirs = await this.structure.scan(config);
     specialDirs.layouts.forEach(file => paramorph.addLayout(new Layout(file.name, file.path)));
     specialDirs.includes.forEach(file => paramorph.addInclude(new Include(file.name, file.path)));
 

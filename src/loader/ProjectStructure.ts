@@ -79,14 +79,16 @@ export class ProjectStructure {
     return specialDirs;
   }
 
-  private async scanDir(path : string,
-                        fileRegex : RegExp,
-                        subdirs : boolean = true) : Promise<SourceFile[]> {
+  private async scanDir(
+    path : string,
+    fileRegex : RegExp,
+    subdirs : boolean = true,
+  ) : Promise<SourceFile[]> {
+
     const result = [] as SourceFile[];
-
     const rawContents = (await this.fs.readDir(path)).sort();
-    for (const name of rawContents) {
 
+    for (const name of rawContents) {
       const subPath = `${path}/${name}`;
       const stat = await this.fs.lstat(subPath);
 
@@ -114,7 +116,7 @@ export class ProjectStructure {
       }
     }
 
-    return Promise.resolve(result);
+    return result;
   }
 }
 
