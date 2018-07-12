@@ -27,6 +27,7 @@ module.exports = {
   },
 
   target: 'web',
+  devtool: 'source-map',
 
   resolve: {
     extensions: [

@@ -32,8 +32,8 @@ module.exports = {
     libraryTarget: 'umd',
   },
 
-  devtool: config.devtool,
   target: config.target,
+  devtool: 'eval-source-map',
   resolve: config.resolve,
   resolveLoader: config.resolveLoader,
   externals: config.externals,
