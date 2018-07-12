@@ -32,11 +32,13 @@ export class ServerRenderer {
     const pages = Object.keys(this.paramorph.pages)
       .map(key => this.paramorph.pages[key] as Page);
     const result = {} as HashMap<string>;
+    const { paramorph, history } = this;
 
     await Promise.all(pages.map(async (page : Page) => {
       // react root contents rendered with react ids
-      const component = await this.router.resolve(page.url);
-      const props = { history: this.history, paramorph: this.paramorph, page };
+      const Component = await this.router.resolve(page.url);
+      const component = createElement(Component, {});
+      const props = { history, paramorph, page };
       const app = createElement(ContextContainer, props, component);
       const body = renderToString(app);
 

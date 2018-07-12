@@ -16,11 +16,13 @@ export class ClientRenderer {
   }
   render(containerId : string) {
     const container = document.getElementById(containerId);
+    const { history, paramorph } = this;
 
     const resolve = (page : Page) => {
       this.router.resolve(page.url)
-        .then(component => {
-          const props = { history: this.history, paramorph: this.paramorph, page };
+        .then(Component => {
+          const component = createElement(Component, {});
+          const props = { history, paramorph, page };
           const app = createElement(ContextContainer, props, component);
           render(app, container);
         });
