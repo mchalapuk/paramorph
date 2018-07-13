@@ -25,7 +25,8 @@
     "target": "es5",
     "baseUrl": ".",
     "paths": {
-      "@website/*": [ "./" ],
+      "@website/*": [ "./*" ],
+      "paramorph/*": [ "../lib/*" ],
     },
     "types": [
       "node",
