@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 
-import { Page, Website } from 'paramorph/models';
+import { Page, Paramorph, Context, ContextTypes } from 'paramorph';
 
 import Tile from '../Tile';
 import { Branch as TocBranch } from '../TableOfContents';
@@ -13,19 +12,28 @@ export interface Props {
   respectLimit ?: boolean;
 };
 
-export function Feed({ website, page, feed, respectLimit = false, ...props } : Props) {
-  const pages = feed.filter(page => page.feed);
+export class Feed extends React.ReactComponent<Props, {}> {
+  static readonly contextTypes = ContextTypes;
+  context : Context;
 
-  if (respectLimit) {
-    return <TocBranch pages={ pages } shallow { ...props } />;
+  render() {
+    const { paramorph, page } = this.context;
+    const { feed, respectLimit = false, ...props } = this.props;
+
+    const pages = feed
+      .filter(page => page.feed)
+      .sort((a, b) => b.compareTo(a));
+
+    if (respectLimit) {
+      return <TocBranch pages={ pages } shallow { ...props } />;
+    }
+
+    return (
+      <div>
+        { pages.map(page => (<Tile key={ page.url } page={ page } />)) }
+      </div>
+    );
   }
-
-  return (
-    <div>
-      { pages.sort((a, b) => b.compareTo(a))
-        .map(page => (<Tile key={ page.url } page={ page } website={ website } />)) }
-    </div>
-  );
 }
 
 export default Feed;
