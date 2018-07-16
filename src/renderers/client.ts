@@ -4,7 +4,7 @@ import { render } from 'react-dom';
 import { UniversalRouter, Route, Context } from '../router';
 import { History, createBrowserHistory } from 'history';
 
-import { ContextContainer } from './ContextContainer';
+import { ContextContainer } from '../react';
 import { Paramorph, Page } from '../model';
 
 export class ClientRenderer {

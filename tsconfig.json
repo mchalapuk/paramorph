@@ -35,8 +35,8 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "paramorph/components/Content": [ "./src/components/Content" ],
-      "paramorph/renderers/ContextContainer": [ "./src/renderers/ContextContainer" ]
+      "paramorph": [ "./src" ],
+      "paramorph/*": [ "./src/*" ],
     }
   },
   "include": [

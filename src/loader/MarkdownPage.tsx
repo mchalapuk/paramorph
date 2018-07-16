@@ -1,14 +1,15 @@
 import * as React from 'react';
 
 import Content from 'paramorph/components/Content';
-import ContextContainer from 'paramorph/renderers/ContextContainer';
+import { ContextTypes, Context } from 'paramorph';
 
 export interface Props {
   children : React.ReactNode;
 }
 
 export class MarkdownPage extends React.Component<Props, {}> {
-  static readonly contextTypes = ContextContainer.childContextTypes;
+  static readonly contextTypes = ContextTypes;
+  context : Context;
 
   render() {
     const { children, ...data } = this.props;

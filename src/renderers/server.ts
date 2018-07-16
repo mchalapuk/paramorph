@@ -7,7 +7,7 @@ import { History } from 'history';
 
 import { default as DefaultRoot, RootProps } from '../components/Root';
 import { Paramorph, Page } from '../model';
-import { ContextContainer } from './ContextContainer';
+import { ContextContainer } from '../react';
 
 export interface Locals {
   Root ?: ComponentType<RootProps>;
