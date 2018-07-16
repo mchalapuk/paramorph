@@ -27,6 +27,7 @@
     "paths": {
       "@website/*": [ "./*" ],
       "paramorph/*": [ "../lib/*" ],
+      "paramorph": [ "../lib" ],
     },
     "types": [
       "node",

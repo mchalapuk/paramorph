@@ -1,27 +1,22 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 
-import { Page, Tag, Website } from 'paramorph/models';
+import { Tag, PureComponent, Link } from 'paramorph';
 
 export interface Props {
-  website : Website;
-  page : Page;
-}
-export interface State {
+  children : React.ReactNode;
 }
 
-export class DefaultLayout extends React.Component<Props, State> {
+export class DefaultLayout extends PureComponent<Props, {}> {
   render() {
-    const { website, page } = this.props;
-
-    const Body = page.body;
+    const { paramorph, page } = this.context;
+    const { children } = this.props;
 
     return (
       <div>
         <div className='header'>
           <nav>
             <ul>
-            { website.menu.map(entry => (
+            { paramorph.config.menu.map(entry => (
               <li key={ entry.url }><Link to={ entry.url }>{ entry.short }</Link></li>
             )) }
             </ul>
@@ -33,19 +28,21 @@ export class DefaultLayout extends React.Component<Props, State> {
               <h1><Link to={ page.url }>{ page.title }</Link></h1>
               <ul className='tags'>
               { page.tags
-                .map((title : string) => website.getTagOfTitle(title))
+                .map(title => paramorph.tags[title] as Tag)
                 .map(({ title, url } : Tag) => (
                   <li key={ url }><Link to={ url }>{ title }</Link></li>
                 )) }
               </ul>
             </div>
-            <Body website={ website } page={ page } />
+
+            { children }
+
           </main>
         </div>
         <div className='footer'>
           <nav>
             <ul>
-            { website.menu.map(entry => (
+            { paramorph.config.menu.map(entry => (
               <li key={ entry.url }><Link to={ entry.url }>{ entry.short }</Link></li>
             )) }
               <li><Link to='/sitemap'>Sitemap</Link></li>

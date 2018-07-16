@@ -1,21 +1,16 @@
 import * as React from 'react';
 
-import { Page, Paramorph, Context, ContextTypes } from 'paramorph';
+import { Page, PureComponent } from 'paramorph';
 
 import Tile from '../Tile';
 import { Branch as TocBranch } from '../TableOfContents';
 
 export interface Props {
-  website : Website;
-  page : Page;
   feed : Page[];
   respectLimit ?: boolean;
 };
 
-export class Feed extends React.ReactComponent<Props, {}> {
-  static readonly contextTypes = ContextTypes;
-  context : Context;
-
+export class Feed extends PureComponent<Props, {}> {
   render() {
     const { paramorph, page } = this.context;
     const { feed, respectLimit = false, ...props } = this.props;
