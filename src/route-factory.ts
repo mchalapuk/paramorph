@@ -17,7 +17,7 @@ export class RoutesFactory {
         path,
         action: async () => {
           const layout = await paramorph.loadLayout(page.layout);
-          const component = await paramorph.loadPage(path);
+          const component = await paramorph.loadPage(page.url);
           return (() => createElement(layout, { component, page, paramorph })) as ComponentType;
         },
       };
