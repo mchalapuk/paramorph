@@ -52,7 +52,11 @@ export class Paramorph {
   }
   loadLayout(name : string) : Promise<ComponentType> {
     if (!this.layoutLoaders.hasOwnProperty(name)) {
-      throw new Error(`couldn't find layout loader for path: ${name}`);
+      throw new Error(`couldn't find layout loader for path: ${
+        name
+      }; available loaders: ${
+        JSON.stringify(Object.keys(this.layoutLoaders))
+      }`);
     }
     return this.layoutLoaders[name] as Promise<ComponentType>;
   }
@@ -65,7 +69,11 @@ export class Paramorph {
   }
   loadInclude(name : string) : Promise<ComponentType> {
     if (!this.includeLoaders.hasOwnProperty(name)) {
-      throw new Error(`couldn't find include loader for path: ${name}`);
+      throw new Error(`couldn't find include loader for path: ${
+        name
+      }; available loaders: ${
+        JSON.stringify(Object.keys(this.includeLoaders))
+      }`);
     }
     return this.includeLoaders[name] as Promise<ComponentType>;
   }
@@ -78,7 +86,11 @@ export class Paramorph {
   }
   loadPage(url : string) : Promise<ComponentType> {
     if (!this.pageLoaders.hasOwnProperty(url)) {
-      throw new Error(`couldn't find page loader for path: ${url}`);
+      throw new Error(`couldn't find page loader for path: ${
+        url
+      }; available loaders: ${
+        JSON.stringify(Object.keys(this.pageLoaders))
+      }`);
     }
     return this.pageLoaders[url] as Promise<ComponentType>;
   }
