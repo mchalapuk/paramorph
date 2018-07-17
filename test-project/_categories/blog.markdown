@@ -12,6 +12,6 @@ role: category
 ---
 
 <div>
-  <Feed { ...data } feed={ data.website.getCollectionOfTitle('Posts').pages } />
+  <Feed feed={ paramorph.collections['Posts'].pages } />
 </div>
 
