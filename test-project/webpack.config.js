@@ -26,8 +26,9 @@ module.exports = {
     libraryTarget: 'umd',
   },
 
+  mode: 'development',
   target: 'web',
-  devtool: 'source-map',
+  devtool: 'eval-source-map',
 
   resolve: {
     extensions: [
