@@ -9,5 +9,7 @@ export interface Props {
 }
 export declare class Link extends PureComponent<Props, {}> {
     render(): JSX.Element;
+    private wrap;
+    private isLocal;
 }
 export default Link;
