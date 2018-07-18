@@ -20,10 +20,9 @@ export class ClientRenderer {
 
     const resolve = (page : Page) => {
       this.router.resolve(page.url)
-        .then(Component => {
-          const component = createElement(Component, {});
+        .then(pageComponent => {
           const props = { history, paramorph, page };
-          const app = createElement(ContextContainer, props, component);
+          const app = createElement(ContextContainer, props, pageComponent);
           render(app, container);
         });
     };

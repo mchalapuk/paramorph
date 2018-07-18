@@ -5,7 +5,11 @@ import { AppContainer } from 'react-hot-loader';
 import { Context } from './Context';
 import { ContextTypes } from './ContextTypes';
 
-export class ContextContainer extends React.Component<Context, {}> {
+export interface Props extends Context {
+  children ?: React.ReactNode;
+}
+
+export class ContextContainer extends React.Component<Props, {}> {
   static readonly childContextTypes = ContextTypes;
 
   getChildContext() : Context {
