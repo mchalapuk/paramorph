@@ -87,4 +87,6 @@ paramorph.addIncludeLoader("BreadCrumbs", () => import("@website/_includes/Bread
 
 // PAGE LOADERS //
 paramorph.addPageLoader("/", () => import("@website/index.markdown"));
+paramorph.addPageLoader("/diy", () => import("@website/diy.markdown"));
+paramorph.addPageLoader("/tags/exciting", () => import("@website/tag.markdown"));
 

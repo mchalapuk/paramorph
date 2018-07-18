@@ -103,7 +103,7 @@ ${
 }
 // PAGE LOADERS //
 ${
-  pages
+  all
     .map(page => `${varName}.addPageLoader("${page.url}", ${loaderOf(page.source)});\n`)
     .join('')
 }
