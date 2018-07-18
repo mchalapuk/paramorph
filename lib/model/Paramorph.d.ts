@@ -1,5 +1,6 @@
 import { Config } from '../config';
 import { Layout, Include, Page, Category, ComponentType } from '.';
+export declare type Loader = () => Promise<ComponentType>;
 export declare class Paramorph {
     readonly config: Config;
     readonly layouts: HashMap<Layout>;
@@ -7,18 +8,18 @@ export declare class Paramorph {
     readonly pages: HashMap<Page>;
     readonly categories: HashMap<Category>;
     readonly tags: HashMap<Category>;
-    readonly layoutLoaders: HashMap<Promise<ComponentType>>;
-    readonly includeLoaders: HashMap<Promise<ComponentType>>;
-    readonly pageLoaders: HashMap<Promise<ComponentType>>;
+    readonly layoutLoaders: HashMap<Loader>;
+    readonly includeLoaders: HashMap<Loader>;
+    readonly pageLoaders: HashMap<Loader>;
     constructor(config: Config);
     addLayout(layout: Layout): void;
     addInclude(include: Include): void;
     addPage(page: Page): void;
-    addLayoutLoader(name: string, loader: Promise<ComponentType>): void;
+    addLayoutLoader(name: string, loader: Loader): void;
     loadLayout(name: string): Promise<ComponentType>;
-    addIncludeLoader(name: string, loader: Promise<ComponentType>): void;
+    addIncludeLoader(name: string, loader: Loader): void;
     loadInclude(name: string): Promise<ComponentType>;
-    addPageLoader(url: string, loader: Promise<ComponentType>): void;
+    addPageLoader(url: string, loader: Loader): void;
     loadPage(url: string): Promise<ComponentType>;
 }
 export default Paramorph;

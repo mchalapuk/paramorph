@@ -4,6 +4,8 @@ import { createElement } from 'react';
 import { Config } from '../config';
 import { Layout, Include, Page, Category, Tag, ComponentType } from '.';
 
+export type Loader = () => Promise<ComponentType>;
+
 export class Paramorph {
   readonly layouts : HashMap<Layout> = {};
   readonly includes : HashMap<Include> = {};
@@ -11,9 +13,9 @@ export class Paramorph {
   readonly categories : HashMap<Category> = {};
   readonly tags : HashMap<Category> = {};
 
-  readonly layoutLoaders : HashMap<Promise<ComponentType>> = {};
-  readonly includeLoaders : HashMap<Promise<ComponentType>> = {};
-  readonly pageLoaders : HashMap<Promise<ComponentType>> = {};
+  readonly layoutLoaders : HashMap<Loader> = {};
+  readonly includeLoaders : HashMap<Loader> = {};
+  readonly pageLoaders : HashMap<Loader> = {};
 
   constructor(readonly config : Config) {
   }
@@ -44,7 +46,7 @@ export class Paramorph {
     }
   }
 
-  addLayoutLoader(name : string, loader : Promise<ComponentType>) {
+  addLayoutLoader(name : string, loader : Loader) {
     if (this.layoutLoaders.hasOwnProperty(name)) {
       throw new Error(`layout loader for name ${name} is already set`);
     }
@@ -58,10 +60,10 @@ export class Paramorph {
         JSON.stringify(Object.keys(this.layoutLoaders))
       }`);
     }
-    return this.layoutLoaders[name] as Promise<ComponentType>;
+    return (this.layoutLoaders[name] as Loader)();
   }
 
-  addIncludeLoader(name : string, loader : Promise<ComponentType>) {
+  addIncludeLoader(name : string, loader : Loader) {
     if (this.includeLoaders.hasOwnProperty(name)) {
       throw new Error(`include loader for name ${name} is already set`);
     }
@@ -75,10 +77,10 @@ export class Paramorph {
         JSON.stringify(Object.keys(this.includeLoaders))
       }`);
     }
-    return this.includeLoaders[name] as Promise<ComponentType>;
+    return (this.includeLoaders[name] as Loader)();
   }
 
-  addPageLoader(url : string, loader : Promise<ComponentType>) {
+  addPageLoader(url : string, loader : Loader) {
     if (this.pageLoaders.hasOwnProperty(url)) {
       throw new Error(`page loader for url ${url} is already set`);
     }
@@ -92,7 +94,7 @@ export class Paramorph {
         JSON.stringify(Object.keys(this.pageLoaders))
       }`);
     }
-    return this.pageLoaders[url] as Promise<ComponentType>;
+    return (this.pageLoaders[url] as Loader)();
   }
 /*
   getCrumbs(page : Page) : Page[][] {
