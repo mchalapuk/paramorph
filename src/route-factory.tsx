@@ -1,7 +1,8 @@
-import { createElement, ReactElement } from 'react';
+
+import * as React from 'react';
 
 import { Route } from './router';
-import { Paramorph, Page, ComponentType } from './model';
+import { Paramorph, Page } from './model';
 
 const NOT_FOUND_URL = '/404';
 
@@ -16,9 +17,14 @@ export class RoutesFactory {
       return {
         path,
         action: async () => {
-          const layout = await paramorph.loadLayout(page.layout);
-          const component = await paramorph.loadPage(page.url);
-          return (() => createElement(layout, { component, page, paramorph })) as ComponentType;
+          const LayoutComponent = await paramorph.loadLayout(page.layout);
+          const PageComponent = await paramorph.loadPage(page.url);
+
+          return (
+            <LayoutComponent>
+              <PageComponent/>
+            </LayoutComponent>
+          );
         },
       };
     }

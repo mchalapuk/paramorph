@@ -32,18 +32,18 @@ export class ServerRenderer {
     const pages = Object.keys(this.paramorph.pages)
       .map(key => this.paramorph.pages[key] as Page);
     const result = {} as HashMap<string>;
-    const { paramorph, history } = this;
+    const { paramorph, history, router } = this;
 
     await Promise.all(pages.map(async (page : Page) => {
       // react root contents rendered with react ids
-      const Component = await this.router.resolve(page.url);
-      const component = createElement(Component, {});
+      const pageElement = await router.resolve(page.url);
+
       const props = { history, paramorph, page };
-      const app = createElement(ContextContainer, props, component);
+      const app = createElement(ContextContainer, props, pageElement);
       const body = renderToString(app);
 
       // site skeleton rendered without react ids
-      const root = createElement(Root, getRootProps(locals, this.paramorph, page));
+      const root = createElement(Root, getRootProps(locals, paramorph, page));
       const html = renderToStaticMarkup(root);
 
       result[page.url] = '<!DOCTYPE html>\n' + html.replace("%%%BODY%%%", body);

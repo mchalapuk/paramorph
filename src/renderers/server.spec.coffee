@@ -62,7 +62,7 @@ describe "ServerRenderer", ->
 
     describe "and after resoling router promise", ->
       beforeEach ->
-        routerPromise.resolve Layout
+        routerPromise.resolve React.createElement Layout
 
       it "renders single page", ->
         resultPromise.then (result) ->
