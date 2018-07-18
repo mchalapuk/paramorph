@@ -8,22 +8,32 @@ const template = loadTemplate();
 
 const DELIMITER = '---\n';
 const MAX_FM_SIZE = 2048;
+const CHILDREN_PLACEHOLDER = '{ PLACEHOLDER }';
 
 module.exports = function markdownLoader(source : string) {
   const that = this as any;
 
   that.cacheable && that.cacheable();
   const opts = getOptions(that) || {};
-  const md = newMarkdown(opts);
+  const md = newMarkdown(Object.assign({}, opts, {
+    html: true,
+    xhtmlOut: true,
+    breaks: true,
+    linkify: true,
+  }));
 
   const markdownSource = removeFrontMatter(that.resourcePath, source);
   const html = md.render(markdownSource)
-    .replace('&lt;', '<')
-    .replace('&gt;', '>')
-    .replace('…', '...')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/…/g, '...')
   ;
+  if (template.indexOf(CHILDREN_PLACEHOLDER) === -1) {
+    throw new Error(`template does not contain placeholder for children: ${CHILDREN_PLACEHOLDER}`);
+  }
+  const output = template.replace(CHILDREN_PLACEHOLDER, html);
 
-  return template.replace('{ this.props.children }', html);
+  return output;
 };
 
 function newMarkdown(opts : any) {
@@ -50,6 +60,6 @@ function removeFrontMatter(path : string, source : string) {
 }
 
 function loadTemplate() {
-  return readFileSync(path.join(__dirname, './MarkdownPage.js')).toString('utf8');
+  return readFileSync(path.join(__dirname, './MarkdownPage.tsx')).toString('utf8');
 }
 
