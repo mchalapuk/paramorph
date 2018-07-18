@@ -2,7 +2,7 @@
 import * as React from 'react';
 
 import { Route } from './router';
-import { Paramorph, Page } from './model';
+import { Paramorph, Page, Layout, ComponentType } from './model';
 
 const NOT_FOUND_URL = '/404';
 
@@ -17,8 +17,13 @@ export class RoutesFactory {
       return {
         path,
         action: async () => {
-          const LayoutComponent = await paramorph.loadLayout(page.layout);
-          const PageComponent = await paramorph.loadPage(page.url);
+          const layout = paramorph.layouts[page.layout] as Layout;
+
+          const layoutExports = await paramorph.loadLayout(page.layout);
+          const pageExports = await paramorph.loadPage(page.url);
+
+          const LayoutComponent = validateDefaultReactExport(layoutExports, layout.path);
+          const PageComponent = validateDefaultReactExport(pageExports, page.source);
 
           return (
             <LayoutComponent>
@@ -42,4 +47,17 @@ export class RoutesFactory {
 };
 
 export default RoutesFactory;
+
+function validateDefaultReactExport(exports : any, url : string) : ComponentType {
+  if (exports.default === undefined) {
+    throw new Error(`${url} must have a default export`);
+  }
+  const candidate = exports.default;
+
+  if (React.isValidElement(candidate) && typeof candidate.type === 'function') {
+    const got = JSON.stringify(candidate);
+    throw new Error(`${url} must have react component as default export; got ${got}`);
+  }
+  return exports.default;
+}
 
