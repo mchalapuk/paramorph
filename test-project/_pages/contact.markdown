@@ -6,6 +6,7 @@ tags:
 - paramorph
 - contact
 - info
+category: Blog
 feed: false
 ---
 
