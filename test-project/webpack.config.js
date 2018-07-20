@@ -3,7 +3,7 @@ const path = require('path');
 const StaticSiteGeneratorPlugin = require('static-site-generator-webpack-plugin');
 const ExternalReact = require('webpack-external-react');
 
-const { JSDOM } = require('jsdom');
+const { JSDOM, VirtualConsole } = require('jsdom');
 
 const React = require('react');
 const ReactDOM = require('react-dom');
@@ -28,7 +28,7 @@ module.exports = {
 
   mode: 'development',
   target: 'web',
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
 
   resolve: {
     extensions: [
@@ -96,7 +96,17 @@ module.exports = {
 };
 
 function newFakeBrowserGlobals() {
-  const window = new JSDOM().window;
+  const virtualConsole = new VirtualConsole();
+  virtualConsole.sendTo(console);
+
+  const jsdom = new JSDOM('', {
+    url: 'file://' + path.join(__dirname, '_output/index.html'),
+    resources: 'usable',
+    runScripts: 'dangerously',
+    virtualConsole,
+  });
+
+  const window = jsdom.window;
   const self = window;
   const document = window.document;
 
