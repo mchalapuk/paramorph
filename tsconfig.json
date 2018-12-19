@@ -43,7 +43,8 @@
     "./src/@types/**/*.tsx",
     "./src/@types/**/*.ts",
     "./src/**/*.tsx",
-    "./src/**/*.ts"
+    "./src/**/*.ts",
+    "./node_modules/offensive/**/*.ts"
   ],
   "exclude": [
   ]

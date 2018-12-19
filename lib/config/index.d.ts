@@ -1,3 +1,11 @@
+import 'offensive/assertions/aString/register';
+import 'offensive/assertions/aBoolean/register';
+import 'offensive/assertions/anArray/register';
+import 'offensive/assertions/Undefined/register';
+import 'offensive/assertions/Empty/register';
+import 'offensive/assertions/allElementsThat/register';
+import 'offensive/assertions/fieldThat/register';
+import 'offensive/assertions/allFieldsThat/register';
 export interface Config {
     title: string;
     timezone: string;

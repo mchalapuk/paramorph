@@ -1,3 +1,11 @@
+import 'offensive/assertions/anObject/register';
+import 'offensive/assertions/aString/register';
+import 'offensive/assertions/aBoolean/register';
+import 'offensive/assertions/aDate/register';
+import 'offensive/assertions/oneOf/register';
+import 'offensive/assertions/Undefined/register';
+import 'offensive/assertions/fieldThat/register';
+import 'offensive/assertions/allElementsThat/register';
 import { Page } from '../model';
 import { SourceFile } from './ProjectStructure';
 export interface Matter {

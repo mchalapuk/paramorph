@@ -1,5 +1,13 @@
 
 import check from 'offensive';
+import 'offensive/assertions/anObject/register';
+import 'offensive/assertions/aString/register';
+import 'offensive/assertions/aBoolean/register';
+import 'offensive/assertions/aDate/register';
+import 'offensive/assertions/oneOf/register';
+import 'offensive/assertions/Undefined/register';
+import 'offensive/assertions/fieldThat/register';
+import 'offensive/assertions/allElementsThat/register';
 
 import { Page, Category } from '../model';
 import { SourceFile } from './ProjectStructure';
@@ -88,69 +96,26 @@ export default PageFactory;
 const VALID_ROLES = ['', null, 'page', 'Page', 'PAGE', 'category', 'Category', 'CATEGORY'];
 
 function validateFrontMatter(fileName : string, matter : any) {
-  const namePrefix = `pages['${fileName}']`;
-  check(matter, `${namePrefix}.matter`).is.anObject();
-
-  const date = check(matter.date, `${namePrefix}.date`).is.aDate() as Date;
-  const role = check(matter.role, `${namePrefix}.role`)
-    .is.either.containedIn(VALID_ROLES, '\'page\' or \'category\'')
-    .or.Undefined() as string | undefined
-  ;
-  const title = check(matter.title, `${namePrefix}.title`)
-    .is.either.aString
-    .or.Undefined() as string | undefined
-  ;
-  const description = check(matter.description, `${namePrefix}.description`)
-    .is.either.aString
-    .or.Undefined() as string | undefined
-  ;
-  const permalink = check(matter.permalink, `${namePrefix}.permalink`)
-    .is.either.aString
-    .or.Undefined() as string | undefined
-  ;
-  const layout = check(matter.layout, `${namePrefix}.layout`)
-    .is.either.aString
-    .or.Undefined() as string | undefined
-  ;
-  const image = check(matter.image, `${namePrefix}.image`)
-    .is.either.aString
-    .or.Undefined() as string | undefined
-  ;
-  const output = check(matter.output, `${namePrefix}.output`)
-    .is.either.aBoolean
-    .or.Undefined() as boolean | undefined
-  ;
-  const categories = check(matter.categories, `${namePrefix}.categories`)
-    .either.contains.onlyStrings
-    .or.is.Undefined() as string[] | undefined
-  ;
-  const category = check(matter.category, `${namePrefix}.category`)
-    .is.either.aString
-    .or.Undefined() as string | undefined
-  ;
-  const tags = check(matter.tags, `${namePrefix}.tags`)
-    .either.contains.onlyStrings
-    .or.is.Undefined() as string[] | undefined
-  ;
-  const feed = check(matter.feed, `${namePrefix}.feed`)
-    .is.either.aBoolean
-    .or.Undefined() as boolean | undefined
-  ;
-
-  return {
-    date,
-    role,
-    title,
-    description,
-    permalink,
-    layout,
-    image,
-    output,
-    categories,
-    category,
-    tags,
-    feed,
-  };
+  return check(matter, `pages['${fileName}']`)
+    .has.fieldThat('date', date => date.is.aDate)
+    .and.fieldThat('role', role => role
+      .is.oneOf(VALID_ROLES, `be 'page' or 'category'`)
+      .or.Undefined
+    )
+    .and.fieldThat('title', title => title.is.aString.or.Undefined)
+    .and.fieldThat('description', desc => desc.is.aString.or.Undefined)
+    .and.fieldThat('permalink', permalink => permalink.is.aString.or.Undefined)
+    .and.fieldThat('layout', layout => layout.is.aString.or.Undefined)
+    .and.fieldThat('image', image => image.is.aString.or.Undefined)
+    .and.fieldThat('output', output => output.is.aBoolean.or.Undefined)
+    .and.fieldThat('categories', categories => categories
+      .has.allElementsThat(elem => elem.is.aString)
+      .or.is.Undefined
+    )
+    .and.fieldThat('category', category => category.is.aString.or.Undefined)
+    .and.fieldThat('tags', tags => tags.has.allElementsThat(elem => elem.is.aString).or.Undefined)
+    .and.fieldThat('feed', feed => feed.is.aBoolean.or.Undefined)
+  () as Matter;
 }
 
 function defaultTitle(file : SourceFile) {

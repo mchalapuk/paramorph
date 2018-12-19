@@ -1,5 +1,15 @@
-import check from 'offensive';
+
 import { safeLoad } from 'js-yaml';
+
+import 'offensive/assertions/aString/register';
+import 'offensive/assertions/aBoolean/register';
+import 'offensive/assertions/anArray/register';
+import 'offensive/assertions/Undefined/register';
+import 'offensive/assertions/Empty/register';
+import 'offensive/assertions/allElementsThat/register';
+import 'offensive/assertions/fieldThat/register';
+import 'offensive/assertions/allFieldsThat/register';
+import check from 'offensive';
 
 export interface Config {
   title : string;
@@ -35,30 +45,30 @@ export function parse(yaml : string) : Config {
     throw new Error('Couldn\'t parse config file; is it empty?');
   }
 
-  check(config.title, 'config.title').is.aString();
-  check(config.timezone, 'config.timezone').is.aString();
-
-  check(config.collections, 'config.collections').is.anObject();
-  Object.keys(config.collections)
-    .forEach((name : string) => {
-      const collection = config.collections[name];
-      check(collection.title, `config.collections[${name}].title`).is.either.Undefined.or.aString();
-      check(collection.layout, `config.collections[${name}].layout`).is.either.Undefined.or.aString();
-      check(collection.output, `config.collections[${name}].output`).is.either.Undefined.or.aBoolean();
-    })
-  ;
-
-  check(config.image, 'config.image').is.either.Empty.or.aString();
-  check(config.baseUrl, 'config.baseUrl').is.aString();
-  check(config.locale, 'config.locale').is.aString();
-
-  check(config.menu, 'config.menu').is.anArray();
-  (config.menu as any[]).forEach((entry, i) => {
-    check(entry.title, `config.menu[${i}].title`).is.aString();
-    check(entry.short, `config.menu[${i}].short`).is.aString();
-    check(entry.url, `config.menu[${i}].url`).is.aString();
-    check(entry.icon, `config.menu[${i}].icon`).is.either.Empty.or.aString();
-  });
+  check(config, 'config')
+    .has.fieldThat('title', title => title.is.aString)
+    .and.fieldThat('timezone', timezone => timezone.is.aString)
+    .and.fieldThat('collections', collections => collections
+      .is.anObject
+      .and.has.allFieldsThat(collection => collection
+        .has.fieldThat('title', title => title.is.Undefined.or.aString)
+        .and.fieldThat('layout', layout => layout.is.Undefined.or.aString)
+        .and.fieldThat('output', output => output.is.Undefined.or.aBoolean)
+      )
+    )
+    .and.fieldThat('image', image => image.is.Empty.or.aString)
+    .and.fieldThat('baseUrl', baseUrl => baseUrl.is.aString)
+    .and.fieldThat('locale', locale => locale.is.aString)
+    .and.fieldThat('menu', menu => menu
+      .is.anArray
+      .and.has.allElementsThat(elem => elem
+        .has.fieldThat('title', title => title.is.aString)
+        .and.fieldThat('short', short => short.is.aString)
+        .and.fieldThat('url', url => url.is.aString)
+        .and.fieldThat('icon', icon => icon.is.Empty.or.aString)
+      )
+    )
+    ();
 
   return config as Config;
 }

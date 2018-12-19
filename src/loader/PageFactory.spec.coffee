@@ -20,82 +20,82 @@ describe "PageFactory", ->
     [
       "{}"
       {}
-      "pages['test-page'].date must be a Date; got undefined"
+      "pages['test-page'].date must be a date (got undefined)"
     ]
     [
       "{ date: 'jibberish' }"
       { date: 'jibberish' }
-      "pages['test-page'].date must be a Date; got 'jibberish'"
+      "pages['test-page'].date must be a date (got 'jibberish')"
     ]
     [
       "{ role: 0 }"
       matter role: 0
-      "pages['test-page'].role must be 'page' or 'category' or undefined; got 0"
+      "pages['test-page'].role must be 'page' or 'category' or undefined (got 0)"
     ]
     [
       "{ role: 'superhero' }"
       matter role: "superhero"
-      "pages['test-page'].role must be 'page' or 'category' or undefined; got 'superhero'"
+      "pages['test-page'].role must be 'page' or 'category' or undefined (got 'superhero')"
     ]
     [
       "{ title: true }"
       matter title: true
-      "pages['test-page'].title must be a string or undefined; got true"
+      "pages['test-page'].title must be a string or undefined (got true)"
     ]
     [
       "{ description: null }"
       matter description: null
-      "pages['test-page'].description must be a string or undefined; got null"
+      "pages['test-page'].description must be a string or undefined (got null)"
     ]
     [
       "{ permalink: 3.1415 }"
       matter permalink: 3.1415
-      "pages['test-page'].permalink must be a string or undefined; got 3.1415"
+      "pages['test-page'].permalink must be a string or undefined (got 3.1415)"
     ]
     [
       "{ layout: Infinity }"
       matter layout: Infinity
-      "pages['test-page'].layout must be a string or undefined; got Infinity"
+      "pages['test-page'].layout must be a string or undefined (got Infinity)"
     ]
     [
       "{ image: true }"
       matter image: true
-      "pages['test-page'].image must be a string or undefined; got true"
+      "pages['test-page'].image must be a string or undefined (got true)"
     ]
     [
       "{ output: 12345 }"
       matter output: 12345
-      "pages['test-page'].output must be a boolean or undefined; got 12345"
+      "pages['test-page'].output must be a boolean or undefined (got 12345)"
     ]
     [
       "{ categories: {} }"
       matter categories: {}
-      "pages['test-page'].categories must be an array or undefined; got {}"
+      "pages['test-page'].categories[0] must be a string (got no array operator ({})) or pages['test-page'].categories be undefined (got {})"
     ]
     [
       "{ categories: [ 0 ] }"
       matter categories: [ 0 ]
-      "pages['test-page'].categories[0] must be a string; got 0 or pages['test-page'].categories must be undefined; got [0]"
+      "pages['test-page'].categories[0] must be a string (got 0) or pages['test-page'].categories be undefined (got [0])"
     ]
     [
       "{ category: function() {} }"
       matter category: ->
-      "pages['test-page'].category must be a string or undefined; got function category"
+      "pages['test-page'].category must be a string or undefined (got function category)"
     ]
     [
       "{ tags: 0 }"
       matter tags: 0
-      "pages['test-page'].tags must be an array or undefined; got 0"
+      "pages['test-page'].tags[0] must be a string (got no array operator (0)) or pages['test-page'].tags be undefined (got 0)"
     ]
     [
       "{ tags: [ 0 ] }"
       matter tags: [ 0 ]
-      "pages['test-page'].tags[0] must be a string; got 0 or pages['test-page'].tags must be undefined; got [0]"
+      "pages['test-page'].tags[0] must be a string (got 0) or pages['test-page'].tags be undefined (got [0])"
     ]
     [
       "{ feed: 12345 }"
       matter feed: 12345
-      "pages['test-page'].feed must be a boolean or undefined; got 12345"
+      "pages['test-page'].feed must be a boolean or undefined (got 12345)"
     ]
   ]
 
@@ -226,5 +226,4 @@ describe "PageFactory", ->
 
     it "contains given categories", ->
       result.categories.should.eql [ 'a', 'b', 'c', 'd' ]
-
 

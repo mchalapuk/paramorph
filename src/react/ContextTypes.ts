@@ -1,7 +1,6 @@
 
 import * as React from 'react';
-
-const PropTypes : React.ReactPropTypes = require('prop-types');
+import * as PropTypes from 'prop-types';
 
 export const ContextTypes = {
   paramorph: PropTypes.shape({
