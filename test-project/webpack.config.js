@@ -1,12 +1,13 @@
 const path = require('path');
 
-const StaticSiteGeneratorPlugin = require('static-site-generator-webpack-plugin');
+const IsomorphicHtmlPlugin = require('isomorphic-html-webpack-plugin');
 const ExternalReact = require('webpack-external-react');
 
 const { JSDOM, VirtualConsole } = require('jsdom');
 
 const React = require('react');
 const ReactDOM = require('react-dom');
+const PropTypes = require('prop-types');
 const ReactDOMServer = require('react-dom/server');
 const ReactRouterDOM = require('react-router-dom');
 
@@ -56,14 +57,12 @@ module.exports = {
       {
         test: /\.tsx?$/,
         use: [
-          'babel-loader',
           'ts-loader',
         ],
       },
       {
         test: /\.markdown$/,
         use: [
-          'babel-loader',
           'paramorph/loader/markdown',
         ],
       },
@@ -71,12 +70,8 @@ module.exports = {
   },
 
   plugins: [
-    new StaticSiteGeneratorPlugin({
+    new IsomorphicHtmlPlugin({
       entry: 'entry',
-
-      paths: [
-        '/',
-      ],
 
       locals: {
         Root,
@@ -90,39 +85,14 @@ module.exports = {
         ],
       },
 
-      globals: newFakeBrowserGlobals(),
+      globals:  {
+        React,
+        PropTypes,
+        ReactDOM,
+        ReactDOMServer,
+        ReactRouterDOM,
+      },
     }),
   ],
 };
-
-function newFakeBrowserGlobals() {
-  const virtualConsole = new VirtualConsole();
-  virtualConsole.sendTo(console);
-
-  const jsdom = new JSDOM('', {
-    url: 'file://' + path.join(__dirname, '_output/index.html'),
-    resources: 'usable',
-    runScripts: 'dangerously',
-    virtualConsole,
-  });
-
-  const window = jsdom.window;
-  const self = window;
-  const document = window.document;
-
-  self.window = window;
-  Object.defineProperty(document, 'readyState', {
-    value: 'server-side',
-  });
-
-  return {
-    self,
-    window,
-    document,
-    React,
-    ReactDOM,
-    ReactDOMServer,
-    ReactRouterDOM,
-  };
-}
 
