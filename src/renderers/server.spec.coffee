@@ -48,16 +48,16 @@ describe "ServerRenderer", ->
     beforeEach ->
       locals =
         Root: Root
-        webpackStats:
-          compilation:
-            assets:
-              "bundle.css": {}
-              "bundle.js": {}
+      webpackStats =
+        compilation:
+          assets:
+            "bundle.css": {}
+            "bundle.js": {}
 
       routerPromise = new FakePromise
       router.resolve.returns routerPromise
 
-      resultPromise = testedRenderer.render locals
+      resultPromise = testedRenderer.render locals, webpackStats
       undefined
 
     describe "and after resoling router promise", ->

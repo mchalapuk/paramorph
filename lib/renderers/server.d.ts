@@ -9,18 +9,14 @@ export interface Locals {
     js?: string[];
     css?: string[];
     assets: HashMap<string>;
-    webpackStats: {
-        compilation: {
-            assets: HashMap<any>;
-        };
-    };
 }
 export declare class ServerRenderer {
     private history;
     private router;
     private paramorph;
     constructor(history: History, router: UniversalRouter<Context, ComponentType<any>>, paramorph: Paramorph);
-    render(locals: Locals): Promise<HashMap<string>>;
+    render(locals: Locals, assets: HashMap<any>): Promise<HashMap<string>>;
+    private getRootProps;
 }
 export default ServerRenderer;
 export interface HashMap<T> {

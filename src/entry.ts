@@ -13,10 +13,12 @@ const routesFactory = new RoutesFactory();
 const routes = routesFactory.getRoutes(paramorph);
 const router = new UniversalRouter<Context, ComponentType<any>>(routes);
 
-const serverRender = (locals : Locals) => {
+type WebpackStats = { compilation: { assets: HashMap<any>; } };
+
+const serverRender = (locals : Locals, stats : WebpackStats) => {
   const history = createMemoryHistory();
   const renderer = new ServerRenderer(history, router, paramorph);
-  return renderer.render(locals);
+  return renderer.render(locals, stats.compilation.assets);
 }
 
 const clientRender = () => {
