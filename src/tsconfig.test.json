@@ -18,7 +18,7 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    "outDir": "./lib/",
+    "outDir": "../lib/",
     "strictNullChecks": true,
     "sourceMap": true,
     "target": "es5",
@@ -29,22 +29,24 @@
       "react-dom",
       "react-router-dom",
       "js-yaml",
-      "html-entities",
       "offensive",
-      "history"
+      "history",
+      "mocha",
+      "sinon",
+      "should",
+      "should-sinon"
     ],
     "baseUrl": ".",
     "paths": {
-      "paramorph": [ "./src" ],
-      "paramorph/*": [ "./src/*" ],
+      "paramorph": [ "." ],
+      "paramorph/*": [ "./*" ],
+      "*": [ "../node_modules/*" ]
     }
   },
   "include": [
-    "./src/@types/**/*.tsx",
-    "./src/@types/**/*.ts",
-    "./src/**/*.tsx",
-    "./src/**/*.ts",
-    "./node_modules/offensive/**/*.ts"
+    "**/*.tsx",
+    "**/*.ts",
+    "../node_modules/offensive/**/*.ts"
   ],
   "exclude": [
   ]
