@@ -7,7 +7,7 @@
     "compile-ts": "tsc --project src/tsconfig.prod.json",
     "copy-js": "rsync -avm --include='*.js' --include='*/' --exclude='*' ./src/ ./lib/",
     "compile": "npm run compile-ts && npm run copy-js",
-    "test": "mocha --use_strict lib/mocha.config.js $(find lib -name \"*.spec.js\")",
+    "test": "TS_NODE_PROJECT=./src/tsconfig.test.json TS_NODE_FILES=1 mocha -r source-map-support/register -r ts-node/register ./src/mocha.config.ts $(find -name \"*.spec.ts*\")",
     "copy-package.json": "mkdir -p lib/ && cp package.json lib/",
     "copy-static-files": "mkdir -p lib/loader && cp src/loader/MarkdownPage.tsx lib/loader",
     "copy": "npm run copy-package.json && npm run copy-static-files",
@@ -66,6 +66,7 @@
     "should": "^13.2.3",
     "should-sinon": "0.0.6",
     "sinon": "^7.2.2",
+    "ts-node": "^7.0.1",
     "typescript": "^3.2.2",
     "watch": "^1.0.2",
     "webpack": "^4.27.1"
