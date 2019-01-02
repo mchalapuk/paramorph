@@ -1,9 +1,8 @@
 
-import FileSystem from '../interface/FileSystem';
 import FakeFileSystem from './FileSystem';
 
 describe('FakeFileSystem', () => {
-  let testedFs : FileSystem;
+  let testedFs : FakeFileSystem;
 
   beforeEach(() => {
     testedFs = new FakeFileSystem();
@@ -12,7 +11,7 @@ describe('FakeFileSystem', () => {
   it('throws when reading unexisting directory', () => {
     return testedFs.readDir('/')
       .then(
-        result => throw new Error(`expected an error got result: ${result}`),
+        result => { throw new Error(`expected an error got result: ${result}`); },
         err => err.should.eql(new Error('no such file or directory: /')),
       )
     ;
@@ -20,7 +19,7 @@ describe('FakeFileSystem', () => {
   it('throws when stating unexisting directory', () => {
     return testedFs.lstat('/')
       .then(
-        result => throw new Error(`expected an error got result: ${result}`),
+        result => { throw new Error(`expected an error got result: ${result}`); },
         err => err.should.eql(new Error('no such file or directory: /')),
       )
     ;
@@ -28,7 +27,7 @@ describe('FakeFileSystem', () => {
   it('throws when reading unexisting file', () => {
     return testedFs.read('/nope', 7)
       .then(
-        result => throw new Error(`expected an error got result: ${result}`),
+        result => { throw new Error(`expected an error got result: ${result}`); },
         err => err.should.eql(new Error('no such file or directory: /nope')),
       )
     ;

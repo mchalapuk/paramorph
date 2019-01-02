@@ -1,29 +1,32 @@
 
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
+import { History } from 'history';
 
 import * as sinon from 'sinon';
 import FakePromise from 'fake-promise';
 
+import { Config } from '../config';
 import * as model from '../model';
-import ServerRenderer from './server';
+import { ServerRenderer, Locals, HashMap } from './server';
+import { RootProps as BaseProps } from '../components/Root';
 
 function elem(tag : string, ...children : React.ReactNode[]) {
   return React.createElement(tag, children);
 }
 
-interface Props {
-  page : Page;
+interface RootProps extends BaseProps {
+  title ?: string;
 }
 
-class Root extends React.Component<Props> {
+class Root extends React.Component<RootProps> {
   render() {
-    const { title, paramorph } = this.props;
+    const { paramorph, title } = this.props;
 
     return (
       <html>
         <head>
-         <title>{ title | paramorph.config.title}</title>
+         <title>{ title || paramorph.config.title }</title>
         </head>
         <body>
           %%%BODY%%%
@@ -33,7 +36,11 @@ class Root extends React.Component<Props> {
   }
 }
 
-class Layout extends React.Component<any> {
+interface Props {
+  page : model.Page;
+}
+
+class Layout extends React.Component<Props> {
   static readonly contextTypes = {
     page: PropTypes.object,
   };
@@ -50,7 +57,7 @@ class Layout extends React.Component<any> {
   }
 }
 
-function createPage(url : string, title : string, date : Date) {
+function createPage(url : string, title : string, date : number) {
   return new model.Page(url, title, '', null, 'test', 'test', './test.md', true, true, [], [], date);
 }
 
@@ -59,27 +66,27 @@ describe('ServerRenderer', () => {
     resolve: sinon.stub(),
   };
 
-  let testedRenderer : ServerRenderer = null;
+  let testedRenderer : ServerRenderer;
 
   beforeEach(() => {
     const page = createPage('/', 'Meeting', 0);
     const layout = new model.Layout('test', './layouts/test.md');
 
-    const paramorph = new model.Paramorph({ title: 'website.test' });
+    const paramorph = new model.Paramorph({ title: 'website.test' } as Config);
     paramorph.addLayout(layout);
     paramorph.addPage(page);
 
-    testedRenderer = new ServerRenderer({}, router, paramorph);
+    testedRenderer = new ServerRenderer({} as History, router, paramorph);
   });
 
   describe('after calling render', () => {
     let routerPromise : FakePromise<any>;
-    let resultPromise : FakePromise<any>;
+    let resultPromise : Promise<HashMap<string>>;
 
     beforeEach(() => {
       const locals = {
         Root,
-      };
+      } as Locals;
       const webpackStats = {
         compilation: {
           assets: {
@@ -102,8 +109,10 @@ describe('ServerRenderer', () => {
 
       it('renders single page', () => {
         resultPromise.then(result => {
-          (Object.keys result).should.eql([ '/' ]);
-          result['/'].should.equal('' +
+          Object.keys(result)
+            .should.eql([ '/' ])
+          ;
+          (result['/'] as any).should.equal('' +
             '<!DOCTYPE html>\n' +
             '<html>' +
               '<head><title>Meeting | website.test</title></head>' +

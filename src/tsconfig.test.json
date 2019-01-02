@@ -27,7 +27,6 @@
       "webpack-env",
       "react",
       "react-dom",
-      "react-router-dom",
       "js-yaml",
       "offensive",
       "history",

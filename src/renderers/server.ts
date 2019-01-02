@@ -11,10 +11,8 @@ import { ContextContainer } from '../react';
 
 export interface Locals {
   Root ?: ComponentType<RootProps>;
-  path : string;
   js ?: string[];
   css ?: string[];
-  assets : HashMap<string>;
 }
 
 export class ServerRenderer {
