@@ -6,7 +6,6 @@ install:
   - 'npm install'
 script:
   - 'npm run clean-build'
-  - 'npm run integration-test'
 deploy:
   provider: 'script'
   skip_cleanup: true

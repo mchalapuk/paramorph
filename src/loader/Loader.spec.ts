@@ -26,6 +26,9 @@ describe('Loader', () => {
     pageFactory: {
       create: sinon.stub(),
     },
+    renderer: {
+      render: sinon.stub(),
+    },
   };
 
   let testedLoader : Loader;
@@ -36,6 +39,7 @@ describe('Loader', () => {
       mocks.projectStructure as any,
       mocks.frontMatter as any,
       mocks.pageFactory as any,
+      mocks.renderer as any,
     );
   });
   afterEach(() => {
@@ -45,6 +49,8 @@ describe('Loader', () => {
     mocks.frontMatter.read.resetHistory();
     mocks.pageFactory.create.resetBehavior();
     mocks.pageFactory.create.resetHistory();
+    mocks.renderer.render.resetBehavior();
+    mocks.renderer.render.resetHistory();
   });
 
   const tagPage = {
@@ -212,6 +218,10 @@ describe('Loader', () => {
   });
 
   describe('when loading a project structure containing page', () => {
+    const tagSource = {
+      name: 'tag',
+      path: './_pages/tag.markdown',
+    };
     const postSource = {
       name: 'hello-world',
       path: './_post/hello-world.md',
@@ -222,34 +232,56 @@ describe('Loader', () => {
       includes: [
       ],
       collections: {
+        pages: [
+          tagSource,
+        ],
         posts: [
           postSource,
         ],
       },
     };
-    let matterPromise : FakePromise<any>;
+    let matterPromise0 : FakePromise<any>;
+    let matterPromise1 : FakePromise<any>;
     let paramorphPromise : Promise<Paramorph>;
 
     beforeEach(end => {
       mocks.projectStructure.scan.returns(FakePromise.resolve(struct));
-      matterPromise = new FakePromise();
-      mocks.frontMatter.read.returns(matterPromise);
+      matterPromise0 = new FakePromise();
+      matterPromise1 = new FakePromise();
+      mocks.frontMatter.read.onCall(0).returns(matterPromise0);
+      mocks.frontMatter.read.onCall(1).returns(matterPromise1);
       paramorphPromise = testedLoader.load(config);
       setImmediate(end);
     });
 
     it('calls frontMatter.read(...)', () => {
-      mocks.frontMatter.read.should.have.callCount(1);
+      mocks.frontMatter.read.should.have.callCount(2);
+      mocks.frontMatter.read.should.have.been.calledWith(tagSource);
       mocks.frontMatter.read.should.have.been.calledWith(postSource);
-      ;
     });
 
     describe('and after resolving frontMatter promise', () => {
-      const matter = {
+      const matter0 = {
+      };
+      const matter1 = {
         title: 'Hello, World!',
         description: 'Just a first post.',
       };
-      const page = new Page(
+      const page0 = new Page(
+        '/tag',
+        'Tag',
+        '',
+        null,
+        'pages',
+        'default',
+        './_pages/tag.md',
+        false,
+        false,
+        [],
+        [],
+        0,
+      );
+      const page1 = new Page(
         '/hello-world',
         'Hello, World!',
         'Just a first post.',
@@ -264,15 +296,24 @@ describe('Loader', () => {
         0,
       );
 
-      beforeEach(end => {
-        mocks.pageFactory.create.returns(page);
-        matterPromise.resolve(matter);
-        setImmediate(end);
+      beforeEach(async () => {
+        mocks.pageFactory.create.onCall(0).returns(page0);
+        mocks.pageFactory.create.onCall(1).returns(page1);
+        mocks.renderer.render.returns('<a>Description</a>');
+        matterPromise0.resolve(matter0);
+        matterPromise1.resolve(matter1);
+        paramorph = await paramorphPromise;
       });
 
       it('calls pageFactory.create(...)', () => {
-        mocks.pageFactory.create.should.have.callCount(1);
-        mocks.pageFactory.create.should.have.been.calledWith(postSource, 'posts', matter);
+        mocks.pageFactory.create.should.have.callCount(2);
+        mocks.pageFactory.create.should.have.been.calledWith(tagSource, 'pages', matter0);
+        mocks.pageFactory.create.should.have.been.calledWith(postSource, 'posts', matter1);
+      });
+
+      it('calls renderer.render(...)', () => {
+        mocks.renderer.render.should.have.callCount(1);
+        mocks.renderer.render.should.have.been.calledWith(page1);
       });
     });
   });

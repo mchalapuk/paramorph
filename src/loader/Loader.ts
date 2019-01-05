@@ -18,6 +18,7 @@ export class Loader {
     private structure : ProjectStructure,
     private frontMatter : FrontMatter,
     private pageFactory : PageFactory,
+    private renderer : LoaderRenderer,
   ) {
   }
 
@@ -86,7 +87,6 @@ export class Loader {
 
   private async generateMissingDescriptions(paramorph : Paramorph) {
     const history = createMemoryHistory();
-    const renderer = new LoaderRenderer();
 
     const pages = Object.keys(paramorph.pages)
       .map(key => paramorph.pages[key] as Page);
@@ -104,7 +104,7 @@ export class Loader {
           set: () => { throw new Error('Page.description is readonly'); },
         });
       } else {
-        const description = await this.descriptionFromContent(renderer, page);
+        const description = await this.descriptionFromContent(page);
 
         Object.defineProperty(page, 'description', {
           get: () => description,
@@ -117,7 +117,6 @@ export class Loader {
 
   private async addDefaultImages(paramorph : Paramorph) {
     const history = createMemoryHistory();
-    const renderer = new LoaderRenderer();
 
     const pages = Object.keys(paramorph.pages)
       .map(key => paramorph.pages[key] as Page);
@@ -126,7 +125,7 @@ export class Loader {
       if (page.image || !page.output) {
         return;
       }
-      const description = await this.imageFromContent(renderer, page);
+      const description = await this.imageFromContent(page);
 
       Object.defineProperty(page, 'image', {
         get: () => description,
@@ -136,8 +135,8 @@ export class Loader {
     return Promise.all(promises);
   }
 
-  private async descriptionFromContent(renderer : LoaderRenderer, page : Page) {
-    const markup = await renderer.render(page);
+  private async descriptionFromContent(page : Page) {
+    const markup = await this.renderer.render(page);
     return removeEntities(stripTags(markup));
   }
 
@@ -145,8 +144,8 @@ export class Loader {
     return removeEntities(`${index.title} ${page.title}: ${page.pages.map(p => p.title).join(', ')}`);
   }
 
-  private async imageFromContent(renderer : LoaderRenderer, page : Page) {
-    const markup = await renderer.render(page);
+  private async imageFromContent(page : Page) {
+    const markup = await this.renderer.render(page);
     const found = /<img[^>]* src="([^"]*)"[^>]*>/.exec(markup);
     if (!found) {
       console.warn(`Couldn't find image on page ${page.url}; page.image is null`);

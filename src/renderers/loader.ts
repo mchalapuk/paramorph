@@ -1,19 +1,22 @@
 
 import * as Markdown from 'markdown-it';
-import { readFile } from 'fs';
 import { promisify } from 'util';
 
+import { FileSystem } from '../platform/interface/FileSystem';
 import { Page } from '../model';
-
-const readFileAsync = promisify(readFile);
 
 const DELIMITER = '---\n';
 const MAX_FM_SIZE = 2048;
 
 export class LoaderRenderer {
+  constructor(
+    private fs : FileSystem,
+  ) {
+  }
+
   async render(page : Page) : Promise<string> {
-    const source = await readFileAsync(page.source);
-    const markdownSource = removeFrontMatter(page.source, source.toString('utf-8'));
+    const source = await fs.read(page.source, 2048);
+    const markdownSource = removeFrontMatter(page.source, source);
 
     const md = new Markdown();
     const html = md.render(markdownSource)

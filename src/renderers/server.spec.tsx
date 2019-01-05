@@ -9,24 +9,20 @@ import FakePromise from 'fake-promise';
 import { Config } from '../config';
 import * as model from '../model';
 import { ServerRenderer, Locals, HashMap } from './server';
-import { RootProps as BaseProps } from '../components/Root';
+import { RootProps } from '../components/Root';
 
 function elem(tag : string, ...children : React.ReactNode[]) {
   return React.createElement(tag, children);
 }
 
-interface RootProps extends BaseProps {
-  title ?: string;
-}
-
 class Root extends React.Component<RootProps> {
   render() {
-    const { paramorph, title } = this.props;
+    const { paramorph, page } = this.props;
 
     return (
       <html>
         <head>
-         <title>{ title || paramorph.config.title }</title>
+         <title>{ page.title } | { paramorph.config.title }</title>
         </head>
         <body>
           %%%BODY%%%
@@ -108,7 +104,7 @@ describe('ServerRenderer', () => {
       });
 
       it('renders single page', () => {
-        resultPromise.then(result => {
+        return resultPromise.then(result => {
           Object.keys(result)
             .should.eql([ '/' ])
           ;
