@@ -15,7 +15,7 @@ export class LoaderRenderer {
   }
 
   async render(page : Page) : Promise<string> {
-    const source = await fs.read(page.source, 2048);
+    const source = await this.fs.read(page.source, 2048);
     const markdownSource = removeFrontMatter(page.source, source);
 
     const md = new Markdown();
