@@ -20,7 +20,7 @@
     "noImplicitThis": true,
     "outDir": "../lib/",
     "strictNullChecks": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "target": "es5",
     "types": [
       "webpack",
@@ -45,6 +45,7 @@
   ],
   "exclude": [
     "**/*.spec.ts",
+    "**/*.spec.tsx",
     "mocha.config.ts"
   ]
 }
