@@ -1,6 +1,7 @@
 
 import FakeFileSystem from '../platform/fake/FileSystem';
 import ProjectStructure from './ProjectStructure';
+import { Config } from '../config';
 
 describe('ProjectStructure', () => {
   let fs : FakeFileSystem;
@@ -18,9 +19,9 @@ describe('ProjectStructure', () => {
     });
 
     it('.scan() complains about lack of _layouts folder', () => {
-      testedStructure.scan({ collections: {} })
+      testedStructure.scan({ collections: {} } as Config)
         .then(
-          result => throw new Error(`expected an error; got result ${result}`),
+          result => { throw new Error(`expected an error; got result ${result}`); },
           err => err.should.eql(new Error('couldn\'t find ./_layouts folder')),
         )
       ;
@@ -34,10 +35,10 @@ describe('ProjectStructure', () => {
     });
 
     it('.scan() complains about lack of _includes folder', () => {
-      testedStructure.scan({ collections: {} })
+      testedStructure.scan({ collections: {} } as Config)
         .then(
-          result => throw new Error(`expected an error; got result ${result}`),
-          err => err.should.eql new Error('couldn\'t find ./_includes folder'),
+          result => { throw new Error(`expected an error; got result ${result}`); },
+          err => err.should.eql(new Error('couldn\'t find ./_includes folder')),
         )
       ;
     });
@@ -58,22 +59,22 @@ describe('ProjectStructure', () => {
           $root: [],
         },
       };
-      testedStructure.scan({ collections: {} })
+      testedStructure.scan({ collections: {} } as Config)
         .then(result => result.should.eql(expectedResult))
       ;
     });
 
     it('.scan() doesn\'t throw when encountering collection without its folder', () => {
-      testedStructure.scan({ collections: { nonexistent: {} } });
+      testedStructure.scan({ collections: { nonexistent: {} } } as any);
     });
 
     [ 'layouts', 'includes', '$root' ].forEach(forbiddenName => {
       it(`.scan() complains about collection named '${forbiddenName}'`, () => {
         const collections : any = {};
         collections[forbiddenName] = {};
-        testedStructure.scan({ collections })
+        testedStructure.scan({ collections } as Config)
           .then(
-            result => throw new Error(`expected an error; got result ${result}`),
+            result => { throw new Error(`expected an error; got result ${result}`); },
             err => err.should.eql(new Error(`collection name forbidden: '${forbiddenName}'`)),
           )
         ;
@@ -108,7 +109,7 @@ describe('ProjectStructure', () => {
           $root: [],
         },
       };
-      testedStructure.scan({ collections: {} })
+      testedStructure.scan({ collections: {} } as Config)
         .then(result => result.should.eql(expectedResult))
       ;
     });
@@ -126,12 +127,12 @@ describe('ProjectStructure', () => {
     });
 
     it('.scan() produces specialDirs containing all layouts', () => {
-      testedStructure.scan({ collections: {} })
+      testedStructure.scan({ collections: {} } as Config)
         .then(
-          result => throw new Error(`expected an error; got result ${result}`),
-          err => err.should.eql new Error(
+          result => { throw new Error(`expected an error; got result ${result}`); },
+          err => err.should.eql(new Error(
             'multiple index files found in subfolder: ./_layouts/sub: index.js,index.ts'
-          ),
+          )),
         )
       ;
     });
@@ -164,7 +165,7 @@ describe('ProjectStructure', () => {
           $root: [],
         },
       };
-      testedStructure.scan({ collections: {} })
+      testedStructure.scan({ collections: {} } as Config)
         .then(result => result.should.eql(expectedResult))
       ;
     });
@@ -195,7 +196,7 @@ describe('ProjectStructure', () => {
           ],
         },
       };
-      testedStructure.scan({ collections: {} })
+      testedStructure.scan({ collections: {} } as Config)
         .then(result => result.should.eql(expectedResult))
       ;
     });
@@ -230,11 +231,10 @@ describe('ProjectStructure', () => {
           ],
         },
       };
-      testedStructure.scan({ collections: posts: {} })
+      testedStructure.scan({ collections: { posts: {} } } as any)
         .then(result => result.should.eql(expectedResult))
       ;
     });
   });
 });
-
 

@@ -39,7 +39,7 @@ export class FakeFileSystem implements FileSystem {
     return content.substring(0, maxLength);
   }
 
-  writeFile(path : string, content : string) {
+  writeFile(path : string, content : string = '') {
     this.files[path] = content;
   }
   createDir(path : string) {

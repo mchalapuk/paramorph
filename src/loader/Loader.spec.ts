@@ -3,13 +3,14 @@ import * as sinon from 'sinon';
 import { FakePromise } from 'fake-promise';
 
 import { Loader } from './Loader';
-import { Layout, Include, Page } from '../model';
+import { Paramorph, Layout, Include, Page } from '../model';
+import { Config } from '../config';
 
 describe('Loader', () => {
-  const config = {
+  const config : Config = {
     title: 'test',
     timezone: 'UTC',
-    collections: [],
+    collections: {},
     baseUrl: 'http://paramorph.github.io/',
     image: '',
     locale: 'en_US',
@@ -31,7 +32,11 @@ describe('Loader', () => {
   let paramorph : Paramorph;
 
   beforeEach(() => {
-    testedLoader = new Loader(mocks.projectStructure, mocks.frontMatter, mocks.pageFactory);
+    testedLoader = new Loader(
+      mocks.projectStructure as any,
+      mocks.frontMatter as any,
+      mocks.pageFactory as any,
+    );
   });
   afterEach(() => {
     mocks.projectStructure.scan.resetBehavior();
@@ -69,7 +74,7 @@ describe('Loader', () => {
     it('.load() throws Error with complain about missing tag page', () => {
       testedLoader.load(config)
         .then(
-          result => throw new Error(`expected rejection; got ${JSON.stringify result}`),
+          result => { throw new Error(`expected rejection; got ${JSON.stringify(result)}`); },
           error => error.message.should.eql('Couldn\'t find page of url \'/tag\' (used to render tag pages)'),
         )
       ;
@@ -126,13 +131,13 @@ describe('Loader', () => {
     beforeEach(() => {
       mocks.projectStructure.scan.returns(FakePromise.resolve(struct));
       mocks.frontMatter.read.returns(FakePromise.resolve({}));
-      mocks.pageFactory.create.returns({ ..tagPage, categories: ['missing'] });
+      mocks.pageFactory.create.returns({ ...tagPage, categories: ['missing'] });
     });
 
     it('.load() throws Error', () => {
       testedLoader.load(config)
         .then(
-          result => throw new Error(`expected rejection; got result=${JSON.stringify result}`),
+          result => { throw new Error(`expected rejection; got result=${JSON.stringify(result)}`); },
           error => error.message.should.equal(
             'Couldn\'t find category page(s): [{"page":"/tag","category":"missing"}]'
           ),
@@ -144,8 +149,10 @@ describe('Loader', () => {
   describe('when loading a project structure containing layouts', () => {
     const struct = {
       layouts: [
-        name: 'default',
-        path: './_layouts/default.ts',
+        {
+          name: 'default',
+          path: './_layouts/default.ts',
+        },
       ],
       includes: [],
       collections: {
@@ -167,7 +174,7 @@ describe('Loader', () => {
 
     it('.load() returns Paramorph containing layouts', () => {
       Object.keys(paramorph.layouts).should.have.length(1);
-      paramorph.layouts.default.should.eql(new Layout('default', './_layouts/default.ts'));
+      (paramorph.layouts['default'] as any).should.eql(new Layout('default', './_layouts/default.ts'));
     });
   });
 
@@ -176,8 +183,10 @@ describe('Loader', () => {
       layouts: [
       ],
       includes: [
-        name: 'Feed',
-        path: './_includes/Feed.ts',
+        {
+          name: 'Feed',
+          path: './_includes/Feed.ts',
+        },
       ],
       collections: {
         pages: [
@@ -198,7 +207,7 @@ describe('Loader', () => {
 
     it('.load() returns Paramorph containing includes', () => {
       Object.keys(paramorph.includes).should.have.length(1);
-      paramorph.includes.Feed.should.eql(new Include('Feed', './_includes/Feed.ts'));
+      (paramorph.includes['Feed'] as any).should.eql(new Include('Feed', './_includes/Feed.ts'));
     });
   });
 
@@ -218,7 +227,7 @@ describe('Loader', () => {
         ],
       },
     };
-    let matterPromise : Promise<any>;
+    let matterPromise : FakePromise<any>;
     let paramorphPromise : Promise<Paramorph>;
 
     beforeEach(end => {
@@ -230,8 +239,8 @@ describe('Loader', () => {
     });
 
     it('calls frontMatter.read(...)', () => {
-      mocks.frontMatter.read.should.have.callCount(1)
-        .and.have.been.calledWith(postSource)
+      mocks.frontMatter.read.should.have.callCount(1);
+      mocks.frontMatter.read.should.have.been.calledWith(postSource);
       ;
     });
 
@@ -262,9 +271,8 @@ describe('Loader', () => {
       });
 
       it('calls pageFactory.create(...)', () => {
-        mocks.pageFactory.create.should.have.callCount(1)
-          .and.have.been.calledWith(postSource, 'posts', matter)
-        ;
+        mocks.pageFactory.create.should.have.callCount(1);
+        mocks.pageFactory.create.should.have.been.calledWith(postSource, 'posts', matter);
       });
     });
   });

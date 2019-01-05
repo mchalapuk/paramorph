@@ -8,7 +8,7 @@ import ContentLimiter from './Content';
 
 let key = 0;
 
-function elem(name : string, ...children : React.ReactNode[]) {
+function elem(name : string | React.ComponentType<any>, ...children : React.ReactNode[]) {
   return React.createElement(
     name,
     { key: key++ },
@@ -30,7 +30,7 @@ class TestComponent extends React.Component<{}> {
 
 describe('Content', () => {
   let props : any;
-  let testedContent : ReactNode;
+  let testedContent : React.ReactElement<any>;
 
   beforeEach(() => {
     props = {
@@ -40,7 +40,7 @@ describe('Content', () => {
     };
   });
 
-  const renderingTests : [string, ReactNode, string][] = [
+  const renderingTests : [string, React.ReactNode, string][] = [
     [
       'empty div',
       elem('div'),
@@ -53,7 +53,7 @@ describe('Content', () => {
     ],
     [
       "react component without children",
-      elem TestComponent,
+      elem(TestComponent),
       "<div class=\"test\"></div>",
     ],
     [
@@ -64,7 +64,7 @@ describe('Content', () => {
   ];
 
   renderingTests.forEach(params => {
-    [ testName, children, expectedResult ] = params;
+    const [ testName, children, expectedResult ] = params;
 
     it(`renders ${testName}`, () => {
       testedContent = React.createElement(ContentLimiter, props, children);
@@ -76,24 +76,26 @@ describe('Content', () => {
     });
   });
 
-  const limitTests : [string, [ReactNode, string], string][] = [
+  const limitTests : [string, React.ReactNode[], string][] = [
     [
       'two sentences',
       [
         elem('p', elem('b', 'Ignorance'), ' is a lack of ', elem('a', 'knowledge'), '. '),
         'Knowledge is a lack of ignorance.',
-      ]
+      ],
       '<p><b>Ignorance</b> is a lack of <a>knowledge</a>.</p>',
     ],
     [
       'images',
-      elem('div', elem('img'), elem('img'), elem('img')),
+      [
+        elem('div', elem('img'), elem('img'), elem('img')),
+      ],
       '<div></div>',
     ],
   ];
 
   limitTests.forEach(params => {
-    [ testName, children, expectedResult ] = params;
+    const [ testName, children, expectedResult ] = params;
 
     describe(`when limiting ${testName}`, () => {
       beforeEach(() => {
@@ -110,11 +112,11 @@ describe('Content', () => {
   });
 
   describe('with mapper configured', () => {
-    let mapper : (node : React.ReactNode) => React.ReactNode;
+    let mapper : sinon.SinonSpy;
     let testedContent : React.ReactNode;
 
     beforeEach(() => {
-      mapper = sinon.spy(node => elem('strong', 'mapped'));
+      mapper = sinon.spy((node : React.ReactNode) => elem('strong', 'mapped'));
       props = { mapper, ...props };
     });
 
@@ -123,7 +125,7 @@ describe('Content', () => {
       const testedContent = React.createElement(ContentLimiter, props, children);
 
       const expected = '<div class="content"><strong>mapped</strong></div>';
-      const actual = ReactDOMServer.renderToStaticMarkup testedContent;
+      const actual = ReactDOMServer.renderToStaticMarkup(testedContent);
 
       actual.should.equal(expected);
     });

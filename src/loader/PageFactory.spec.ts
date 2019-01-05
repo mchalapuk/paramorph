@@ -1,9 +1,10 @@
 
 import { PageFactory } from './PageFactory';
 import { Page, Category } from '../model';
+import * as should from 'should';
 
 const date = new Date('Jun 05 2018 00:00 UTC');
-const matter = (arg : any) => ({ date, arg... });
+const matter = (arg : any = {}) => ({ date, ...arg });
 
 describe('PageFactory', () => {
   const sourceFile = {
@@ -18,7 +19,7 @@ describe('PageFactory', () => {
     testedFactory = new PageFactory();
   });
 
-  const preconditionTests : [string, any, string] = [
+  const preconditionTests : [string, any, string][] = [
     [
       '{}',
       {},
@@ -26,16 +27,16 @@ describe('PageFactory', () => {
     ],
     [
       '{ date: \'jibberish\' }',
-      { date: \'jibberish\' },
+      { date: 'jibberish' },
       'pages[\'test-page\'].date must be a date (got \'jibberish\')',
     ],
     [
-      '{ role: 0 }'
+      '{ role: 0 }',
       matter({ role: 0 }),
       'pages[\'test-page\'].role must be \'page\' or \'category\' or undefined (got 0)',
     ],
     [
-      '{ role: 'superhero' }'
+      '{ role: \'superhero\' }',
       matter({ role: 'superhero' }),
       'pages[\'test-page\'].role must be \'page\' or \'category\' or undefined (got \'superhero\')',
     ],
@@ -90,7 +91,7 @@ describe('PageFactory', () => {
       'pages[\'test-page\'].tags[0] must be a string (got no array operator (0)) or pages[\'test-page\'].tags be undefined (got 0)',
     ],
     [
-      '{ tags: [ 0 ] }'
+      '{ tags: [ 0 ] }',
       matter({ tags: [ 0 ] }),
       'pages[\'test-page\'].tags[0] must be a string (got 0) or pages[\'test-page\'].tags be undefined (got [0])',
     ],
@@ -102,14 +103,14 @@ describe('PageFactory', () => {
   ];
 
   preconditionTests.forEach(params => {
-    [ argDesc, arg, expectedMessage ] = params;
+    const [ argDesc, arg, expectedMessage ] = params;
 
     it('throws when calling .create(#{argDesc})', () => {
-      should(() => testedFactory.create(sourceFile, collection, arg)).throw(expectedMessage);
+      (() => testedFactory.create(sourceFile, collection, arg)).should.throw(expectedMessage);
     });
   });
 
-  const roleTests : [any, any] = [
+  const roleTests : [any, any][] = [
     [ undefined, Page ],
     [ null, Page ],
     [ 'page', Page ],
@@ -121,9 +122,9 @@ describe('PageFactory', () => {
   ];
 
   roleTests.forEach(params => {
-    [ role, ExpectedPrototype ] = params;
+    const [ role, ExpectedPrototype ] = params;
 
-    describe(`when calling .create(${JSON.stringify { role }}`, () => {
+    describe(`when calling .create(${JSON.stringify(role)}`, () => {
       let result : Page;
 
       beforeEach(() => {
@@ -181,7 +182,7 @@ describe('PageFactory', () => {
     feed: false,
   };
 
-  describe(`when calling .create(${JSON.stringify fullMatter})`, () => {
+  describe(`when calling .create(${JSON.stringify(fullMatter)})`, () => {
     let result : Page;
 
     beforeEach(() => {
@@ -212,7 +213,7 @@ describe('PageFactory', () => {
     tags: [ 'a', 'b', 'c' ],
   };
 
-  describe(`when calling .create(${JSON.stringify tagsMatter})`, () => {
+  describe(`when calling .create(${JSON.stringify(tagsMatter)})`, () => {
     let result : Page;
 
     beforeEach(() => {
@@ -228,7 +229,7 @@ describe('PageFactory', () => {
     categories: [ 'a', 'b', 'c' ],
   };
 
-  describe(`when calling .create(${JSON.stringify categoriesMatter})`, () => {
+  describe(`when calling .create(${JSON.stringify(categoriesMatter)})`, () => {
     let result : Page;
 
     beforeEach(() => {
@@ -244,7 +245,7 @@ describe('PageFactory', () => {
     category: 'a',
   };
 
-  describe(`when calling .crate(${JSON.stringify categoryMatter})`, () => {
+  describe(`when calling .crate(${JSON.stringify(categoryMatter)})`, () => {
     let result : Page;
 
     beforeEach(() => {
@@ -261,8 +262,8 @@ describe('PageFactory', () => {
     category: 'd',
   };
 
-  describe(`when calling .create(${JSON.stringify categoriesCategoryMatter})`, () => {
-    result : Page;
+  describe(`when calling .create(${JSON.stringify(categoriesCategoryMatter)})`, () => {
+    let result : Page;
 
     beforeEach(() => {
       result = testedFactory.create(sourceFile, collection, matter(categoriesCategoryMatter));

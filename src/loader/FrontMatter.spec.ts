@@ -3,6 +3,7 @@ import FakeFileSystem from '../platform/fake/FileSystem';
 import FrontMatter from './FrontMatter';
 
 const source = {
+  name: 'file.markdown',
   path: 'file.markdown',
 };
 
@@ -19,7 +20,7 @@ describe('FrontMatter,', () => {
     it('throws when reading a source file', () => {
       testedFrontMatter.read(source)
         .then(
-          result => throw new Error(`expected rejection; got result ${result}`),
+          result => { throw new Error(`expected rejection; got result ${result}`); },
           error => error.should.eql(new Error('no such file or directory: file.markdown')),
         )
       ;
@@ -32,7 +33,7 @@ describe('FrontMatter,', () => {
     it('throws when reading a source file', () => {
       testedFrontMatter.read(source)
         .then(
-          result => throw new Error(`expected rejection; got result ${result}`),
+          result => { throw new Error(`expected rejection; got result ${result}`); },
           error => error.should.eql(new Error(
             `Couldn't find front matter data at the beginning of ${
               source.path}; expected '---\\n'; got ''.`,
@@ -48,8 +49,8 @@ describe('FrontMatter,', () => {
     it('throws when reading a source file', () => {
       testedFrontMatter.read(source)
         .then(
-          result => throw new Error(`expected rejection; got result ${result}`),
-          error =>error.should.eql(new Error(
+          result => { throw new Error(`expected rejection; got result ${result}`); },
+          error => error.should.eql(new Error(
             `Couldn't find end of front matter data in first 2048 bytes of ${source.path}.`,
           )),
         )
@@ -63,8 +64,8 @@ describe('FrontMatter,', () => {
     it('throws when reading a source file', () => {
       testedFrontMatter.read(source)
         .then(
-          result => throw new Error(`expected rejection; got result ${result}`),
-          error -> error.name.should.equal('YAMLException'),
+          result => { throw new Error(`expected rejection; got result ${result}`); },
+          error => error.name.should.equal('YAMLException'),
         )
       ;
     });

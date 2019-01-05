@@ -96,7 +96,7 @@ describe('FakeFileSystem', () => {
 
       it('.readDir(\'/\') returns added subfolder', () => {
         return testedFs.readDir('/')
-          .then(result => result.should.eql('subdir0', 'subdir1'))
+          .then(result => result.should.eql(['subdir0', 'subdir1']))
         ;
       });
       it('.lstat(\'/subdir0\') returns proper stats', () => {

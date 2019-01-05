@@ -10,7 +10,7 @@ describe('uneval', () => {
   ;
 
   it('produces proper source', () => {
-    const original = new Paramorph({ title: 'Test' });
+    const original = new Paramorph({ title: 'Test' } as any);
     original.addLayout(new Layout('default', './_layouts/default.ts'));
     original.addInclude(new Include('BreadCrumbs', './_includes/BreadCrumbs/index.ts'));
     original.addPage(new Page(
@@ -18,7 +18,7 @@ describe('uneval', () => {
       'Home',
       'This is a test page',
       'http://some.address/image.jpg',
-      'pages',,
+      'pages',
       'default',
       './index.markdown',
       true,
@@ -32,7 +32,7 @@ describe('uneval', () => {
       'Do It Yourself!',
       'Yes, you can!',
       'http://some.address/diy.jpg',
-      'posts',,
+      'posts',
       'default',
       './diy.markdown',
       true,
