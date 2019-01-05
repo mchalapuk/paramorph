@@ -5,7 +5,7 @@
   "scripts": {
     "clean": "rm -rf lib #",
     "compile-ts": "tsc --project src/tsconfig.prod.json",
-    "copy-js": "rsync -avm --include='*.js' --include='*/' --exclude='*' ./src/ ./lib/",
+    "copy-js": "rsync -avm --include='*.js' --include='*.d.ts' --include='*/' --exclude='*' ./src/ ./lib/",
     "compile": "npm run compile-ts && npm run copy-js",
     "test": "TS_NODE_PROJECT=./src/tsconfig.test.json TS_NODE_FILES=1 mocha -r source-map-support/register -r ts-node/register ./src/mocha.config.ts $(find -name \"*.spec.ts*\")",
     "copy-package.json": "mkdir -p lib/ && cp package.json lib/",
