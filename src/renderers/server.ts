@@ -55,7 +55,10 @@ export class ServerRenderer {
   private getRootProps(locals : Locals, assets : HashMap<any>) {
     const { paramorph } = this;
     const assetUrls = Object.keys(assets)
+      // filtering out static generator entry point
       .filter(url => !url.match(/^server-.*\.js$/))
+      // filtering out async bundles
+      .filter(url => !url.match(/^[0-9]+-.*\.js$/))
       .map(url => `/${url}`)
     ;
     return {
