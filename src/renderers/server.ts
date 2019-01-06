@@ -55,7 +55,7 @@ export class ServerRenderer {
   private getRootProps(locals : Locals, assets : HashMap<any>) {
     const { paramorph } = this;
     const assetUrls = Object.keys(assets)
-      .filter(url => url.match(/^server-.*\.js$/))
+      .filter(url => !url.match(/^server-.*\.js$/))
       .map(url => `/${url}`)
     ;
     return {
