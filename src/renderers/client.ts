@@ -1,6 +1,6 @@
 
-import { createElement, Component, ComponentType, Children } from 'react';
-import { render } from 'react-dom';
+import * as React from 'react';
+import * as ReactDom from 'react-dom';
 import { UniversalRouter, Route, Context } from '../router';
 import { History, createBrowserHistory } from 'history';
 
@@ -10,7 +10,7 @@ import { Paramorph, Page } from '../model';
 export class ClientRenderer {
   constructor(
     private history : History,
-    private router : UniversalRouter<Context, ComponentType<any>>,
+    private router : UniversalRouter<Context, React.ComponentType<any>>,
     private paramorph : Paramorph
   ) {
   }
@@ -22,8 +22,8 @@ export class ClientRenderer {
       this.router.resolve(page.url)
         .then(pageComponent => {
           const props = { history, paramorph, page };
-          const app = createElement(ContextContainer, props, pageComponent);
-          render(app, container);
+          const app = React.createElement(ContextContainer, props, pageComponent);
+          ReactDom.hydrate(app, container);
         });
     };
 
