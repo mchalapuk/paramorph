@@ -10,6 +10,7 @@ import { Config } from '../config';
 import * as model from '../model';
 import { ServerRenderer, Locals, HashMap } from './server';
 import { RootProps } from '../components/Root';
+import { PageComponents } from '../router';
 
 function elem(tag : string, ...children : React.ReactNode[]) {
   return React.createElement(tag, children);
@@ -32,11 +33,19 @@ class Root extends React.Component<RootProps> {
   }
 }
 
-interface Props {
-  page : model.Page;
+class LayoutComponent extends React.Component<{}> {
+  render() {
+    const { children } = this.props;
+
+    return (
+      <div className='layout'>
+        { children }
+      </div>
+    );
+  }
 }
 
-class Layout extends React.Component<Props> {
+class PageComponent extends React.Component<{}> {
   static readonly contextTypes = {
     page: PropTypes.object,
   };
@@ -44,11 +53,9 @@ class Layout extends React.Component<Props> {
     const { page } = this.context;
 
     return (
-      <div>
-        <p>
-          { page.title }
-        </p>
-      </div>
+      <p>
+        { page.title }
+      </p>
     );
   }
 }
@@ -92,7 +99,7 @@ describe('ServerRenderer', () => {
         },
       };
 
-      routerPromise = new FakePromise()
+      routerPromise = new FakePromise<PageComponents>()
       router.resolve.returns(routerPromise);
 
       resultPromise = testedRenderer.render(locals, webpackStats);
@@ -100,7 +107,10 @@ describe('ServerRenderer', () => {
 
     describe('and after resoling router promise', () => {
       beforeEach(() => {
-        routerPromise.resolve(React.createElement(Layout));
+        routerPromise.resolve({
+          LayoutComponent,
+          PageComponent,
+        });
       });
 
       it('renders single page', () => {
@@ -112,7 +122,7 @@ describe('ServerRenderer', () => {
             '<!DOCTYPE html>\n' +
             '<html>' +
               '<head><title>Meeting | website.test</title></head>' +
-              '<body><div data-reactroot=""><p>Meeting</p></div></body>' +
+              '<body><div class="layout" data-reactroot=""><p>Meeting</p></div></body>' +
             '</html>'
           );
         });

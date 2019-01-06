@@ -1,8 +1,8 @@
 
-import { ComponentType, ReactElement, createElement } from 'react';
+import * as React from 'react';
+import * as ReactDomServer from 'react-dom/server';
 
-import { UniversalRouter, Context } from '../router';
-import { renderToStaticMarkup, renderToString } from 'react-dom/server';
+import { Router } from '../router';
 import { History } from 'history';
 
 import { default as DefaultRoot, RootProps } from '../components/Root';
@@ -10,7 +10,7 @@ import { Paramorph, Page } from '../model';
 import { ContextContainer } from '../react';
 
 export interface Locals {
-  Root ?: ComponentType<RootProps>;
+  Root ?: React.ComponentType<RootProps>;
   js ?: string[];
   css ?: string[];
 }
@@ -18,7 +18,7 @@ export interface Locals {
 export class ServerRenderer {
   constructor(
     private history : History,
-    private router : UniversalRouter<Context, ComponentType<any>>,
+    private router : Router,
     private paramorph : Paramorph
   ) {
   }
@@ -36,15 +36,18 @@ export class ServerRenderer {
 
     await Promise.all(pages.map(async (page : Page) => {
       // react root contents rendered with react ids
-      const pageElement = await router.resolve(page.url);
+      const { LayoutComponent, PageComponent } = await router.resolve(page.url);
+
+      const pageElement = React.createElement(PageComponent);
+      const layoutElement = React.createElement(LayoutComponent, {}, pageElement);
 
       const props = { history, paramorph, page };
-      const app = createElement(ContextContainer, props, pageElement);
-      const body = renderToString(app);
+      const app = React.createElement(ContextContainer, props, layoutElement);
+      const body = ReactDomServer.renderToString(app);
 
       // site skeleton rendered without react ids
-      const root = createElement(Root, { ...rootProps, page });
-      const html = renderToStaticMarkup(root);
+      const root = React.createElement(Root, { ...rootProps, page });
+      const html = ReactDomServer.renderToStaticMarkup(root);
 
       result[page.url] = '<!DOCTYPE html>\n' + html.replace("%%%BODY%%%", body);
     }));

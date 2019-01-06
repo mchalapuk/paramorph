@@ -25,11 +25,10 @@ export class RoutesFactory {
           const LayoutComponent = validateDefaultReactExport(layoutExports, layout.path);
           const PageComponent = validateDefaultReactExport(pageExports, page.source);
 
-          return (
-            <LayoutComponent>
-              <PageComponent/>
-            </LayoutComponent>
-          );
+          return {
+            LayoutComponent,
+            PageComponent,
+          };
         },
       };
     }

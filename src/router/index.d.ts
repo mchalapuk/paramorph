@@ -1,15 +1,15 @@
 
 import pathToRegexp = require('path-to-regexp');
 
-export class UniversalRouter<C extends Context = Context, R = any> {
-  constructor(routes: Routes<C, R> | Route<C, R>, options?: Options<C>);
+export class Router<C = {}> {
+  constructor(routes: Route<C>[] | Route<C>, options?: Options<C>);
 
-  resolve(pathnameOrContext: string | PathnameContext): Promise<R>;
+  resolve(pathnameOrContext: string | PathnameContext): Promise<PageComponents>;
 
   static pathToRegexp: typeof pathToRegexp;
 }
 
-export default UniversalRouter;
+export default Router;
 
 export interface Params {
   [_: string]: any;
@@ -22,30 +22,33 @@ export interface PathnameContext extends Context {
   pathname: string;
 }
 
-export interface ActionContext<C extends Context, R = any> extends PathnameContext {
-  router: UniversalRouter<C, R>;
-  route: Route;
-  next: (resume?: boolean, parent?: Route, prevResult?: any) => Promise<R>;
+export interface ActionContext<C> extends PathnameContext {
+  router: Router<C>;
+  route: Route<C>;
+  next: (resume?: boolean, parent?: Route, prevResult?: any) => Promise<PageComponents>;
   baseUrl: string;
   path: string;
   params: Params;
   keys: pathToRegexp.Key[];
 }
 
-export interface Route<C extends Context = any, R = any> {
+export interface Route<C = {}> {
   path?: string | RegExp | Array<string | RegExp>;
   name?: string;
-  parent?: Route | null;
-  children?: Routes<C, R> | null;
-  action?: (context: ActionContext<C, R> & C, params: Params) => R | Promise<R> | void;
+  parent?: Route<C> | null;
+  children?: Route[] | null;
+  action?: (context: ActionContext<C> & C) => Promise<PageComponents>;
 }
 
-export type Routes<C extends Context = Context, R = any> = Array<Route<C, R>>;
+export interface PageComponents {
+  LayoutComponent : React.ComponentType<{}>;
+  PageComponent : React.ComponentType<{}>;
+}
 
-export interface Options<C extends Context = Context, R = any> {
+export interface Options<C = {}> {
   context?: C;
   baseUrl?: string;
-  resolveRoute?: (context: ActionContext<C, R> & C, params: Params) => any;
+  resolveRoute?: (context: ActionContext<C> & C, params: Params) => any;
   errorHandler?: (error: Error & { context: C, code: number }) => any;
 }
 

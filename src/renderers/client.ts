@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { UniversalRouter, Route, Context } from '../router';
+import { Router } from '../router';
 import { History, createBrowserHistory } from 'history';
 
 import { ContextContainer } from '../react';
@@ -10,7 +10,7 @@ import { Paramorph, Page } from '../model';
 export class ClientRenderer {
   constructor(
     private history : History,
-    private router : UniversalRouter<Context, React.ComponentType<any>>,
+    private router : Router,
     private paramorph : Paramorph
   ) {
   }
@@ -20,9 +20,12 @@ export class ClientRenderer {
 
     const resolve = (page : Page) => {
       this.router.resolve(page.url)
-        .then(pageComponent => {
+        .then(({ PageComponent, LayoutComponent}) => {
+          const pageElement = React.createElement(PageComponent);
+          const layoutElement = React.createElement(LayoutComponent, {}, pageElement);
+
           const props = { history, paramorph, page };
-          const app = React.createElement(ContextContainer, props, pageComponent);
+          const app = React.createElement(ContextContainer, props, layoutElement);
           ReactDom.hydrate(app, container);
         });
     };
