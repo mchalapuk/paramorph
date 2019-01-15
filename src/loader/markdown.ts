@@ -1,3 +1,5 @@
+import * as ts from "typescript";
+
 import { getOptions } from 'loader-utils';
 const Markdown = require('markdown-it');
 
@@ -31,9 +33,33 @@ module.exports = function markdownLoader(source : string) {
   if (template.indexOf(CHILDREN_PLACEHOLDER) === -1) {
     throw new Error(`template does not contain placeholder for children: ${CHILDREN_PLACEHOLDER}`);
   }
-  const output = template.replace(CHILDREN_PLACEHOLDER, html);
+  const tsSource = template.replace(CHILDREN_PLACEHOLDER, html);
 
-  return output;
+  const output = ts.transpileModule(source, {
+    compilerOptions: {
+      module: ts.ModuleKind.CommonJS,
+      allowJs: true,
+      alwaysStrict: true,
+      jsx: ts.JsxEmit.React,
+      target: ts.ScriptTarget.ES5,
+    },
+    reportDiagnostics: true,
+    fileName: that.resourcePath,
+  });
+
+  if (output.diagnostics && output.diagnostics.length !== 0) {
+    const errors = output.diagnostics.map(diagnostic => {
+      if (!diagnostic.file) {
+        return `${ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n')}`;
+      }
+      const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start!);
+      const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
+      return `${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`;
+    });
+    throw new Error(errors.join('\n'));
+  }
+
+  return output.outputText;
 };
 
 function newMarkdown(opts : any) {

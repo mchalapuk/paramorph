@@ -1,6 +1,6 @@
 {
   "name": "paramorph",
-  "version": "2.0.0-beta.6",
+  "version": "2.0.0-beta.12",
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf lib #",
@@ -15,7 +15,7 @@
     "build": "npm run compile && npm run copy && npm run link-modules && npm run test",
     "clean-build": "npm run clean && npm run build",
     "watch": "watch 'npm run clean-build' src",
-    "deploy": "npm run clean-build && npm publish lib"
+    "deploy": "npm install && npm run clean-build && npm publish lib"
   },
   "repository": {
     "type": "git",
@@ -48,6 +48,7 @@
     "react-dom": "^16.7.0",
     "react-hot-loader": "^4.6.2",
     "source-map-support": "^0.5.9",
+    "typescript": "^3.2.2",
     "universal-router": "^7.0.0"
   },
   "devDependencies": {
@@ -71,7 +72,6 @@
     "should-sinon": "0.0.6",
     "sinon": "^7.2.2",
     "ts-node": "^7.0.1",
-    "typescript": "^3.2.2",
     "watch": "^1.0.2",
     "webpack": "^4.27.1"
   }
