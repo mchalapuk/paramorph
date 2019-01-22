@@ -1,4 +1,6 @@
-import * as ts from "typescript";
+
+import * as ts from 'typescript';
+import * as webpack from 'webpack';
 
 import { getOptions } from 'loader-utils';
 const Markdown = require('markdown-it');
@@ -12,7 +14,7 @@ const DELIMITER = '---\n';
 const MAX_FM_SIZE = 2048;
 const CHILDREN_PLACEHOLDER = '{ PLACEHOLDER }';
 
-module.exports = function markdownLoader(source : string) {
+export function MarkdownLoader(this : webpack.loader.Loader, source : string) {
   const that = this as any;
 
   that.cacheable && that.cacheable();
@@ -61,6 +63,8 @@ module.exports = function markdownLoader(source : string) {
 
   return output.outputText;
 };
+
+export default MarkdownLoader;
 
 function newMarkdown(opts : any) {
   let md = new Markdown(opts);
