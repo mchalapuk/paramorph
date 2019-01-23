@@ -1,5 +1,5 @@
 
-import { Paramorph, Layout, Include, Page, Category, Tag } from '..';
+import { Paramorph, Layout, Include, Page, Category, Tag } from '../../model';
 
 export function uneval(paramorph : Paramorph, varName : string = 'paramorph') : string {
   const layouts = Object.keys(paramorph.layouts)

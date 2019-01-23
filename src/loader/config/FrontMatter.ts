@@ -1,14 +1,16 @@
 
 import { safeLoad } from 'js-yaml';
 
+import { FileSystem } from '../../platform/interface/FileSystem';
 import { SourceFile } from './ProjectStructure';
-import { FileSystem } from '../platform/interface/FileSystem';
 
 const DELIMITER = '---\n';
 const MAX_FM_SIZE = 2048;
 
 export class FrontMatter {
-  constructor(private fs : FileSystem) {
+  constructor(
+    private fs : FileSystem,
+  ) {
   }
 
   async read(file : SourceFile) : Promise<any> {

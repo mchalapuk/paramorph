@@ -1,10 +1,10 @@
 
 import { createMemoryHistory } from 'history';
 
-import { Config } from '../config';
-import { Paramorph, Layout, Include, Page, Tag } from '../model';
-import { LoaderRenderer } from '../renderers';
-import { stripTags, removeEntities } from '../utils';
+import { Config } from '../../config';
+import { Paramorph, Layout, Include, Page, Tag } from '../../model';
+import { LoaderRenderer } from '../../renderers';
+import { stripTags, removeEntities } from '../../utils';
 
 import { ProjectStructure, SpecialDirs, SourceFile } from './ProjectStructure';
 import { FrontMatter } from './FrontMatter';
@@ -13,7 +13,7 @@ import { TagFactory } from './TagFactory';
 
 const TAG_PAGE_URL = '/tag';
 
-export class Loader {
+export class ConfigLoader {
   constructor(
     private structure : ProjectStructure,
     private frontMatter : FrontMatter,
@@ -188,5 +188,5 @@ export class Loader {
   }
 }
 
-export default Loader;
+export default ConfigLoader;
 

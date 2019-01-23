@@ -1,7 +1,8 @@
+
 import { resolve } from 'path';
 
-import { FileSystem } from '../platform/interface/FileSystem';
-import { Config } from '../config';
+import { FileSystem } from '../../platform/interface/FileSystem';
+import { Config } from '../../config';
 
 export interface SpecialDirs {
   readonly layouts : SourceFile[];

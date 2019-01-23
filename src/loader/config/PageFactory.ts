@@ -9,7 +9,8 @@ import 'offensive/assertions/Undefined/register';
 import 'offensive/assertions/fieldThat/register';
 import 'offensive/assertions/allElementsThat/register';
 
-import { Page, Category } from '../model';
+import { Page, Category } from '../../model';
+
 import { SourceFile } from './ProjectStructure';
 
 export interface Matter {

@@ -1,7 +1,9 @@
 
-import { PageFactory } from './PageFactory';
-import { Page, Category } from '../model';
 import * as should from 'should';
+
+import { Page, Category } from '../../model';
+
+import { PageFactory } from './PageFactory';
 
 const date = new Date('Jun 05 2018 00:00 UTC');
 const matter = (arg : any = {}) => ({ date, ...arg });

@@ -1,7 +1,8 @@
 
-import FakeFileSystem from '../platform/fake/FileSystem';
+import FakeFileSystem from '../../platform/fake/FileSystem';
+import { Config } from '../../config';
+
 import ProjectStructure from './ProjectStructure';
-import { Config } from '../config';
 
 describe('ProjectStructure', () => {
   let fs : FakeFileSystem;

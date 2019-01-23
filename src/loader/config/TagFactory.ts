@@ -1,5 +1,5 @@
 
-import { Page, Tag } from '../model';
+import { Page, Tag } from '../../model';
 
 export class TagFactory {
   constructor(private tagPage : Page) {

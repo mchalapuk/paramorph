@@ -1,27 +1,24 @@
 
-import { parse } from '../config';
-import FileSystem from '../platform/node/FileSystem';
+import * as webpack from 'webpack';
 
-import Loader from './Loader';
+import { parse } from '../../config';
+import FileSystem from '../../platform/node/FileSystem';
+import LoaderRenderer from '../../renderers/loader';
+
+import ConfigLoader from './ConfigLoader';
 import ProjectStructure from './ProjectStructure';
 import FrontMatter from './FrontMatter';
 import PageFactory from './PageFactory';
-import LoaderRenderer from '../renderers/loader';
 import uneval from './uneval';
 
-export type Callback = (error : any | null, source ?: string, map ?: any, meta ?: any) => void;
+export = loader;
 
-export interface WebpackLoader {
-  async() : Callback;
-}
-
-module.exports = function configLoader(source : string, map : any, meta : any) {
-  const that = this as any as WebpackLoader;
-  const callback = that.async();
+function loader(this : webpack.loader.LoaderContext, source : string, map : any) {
+  const callback = this.async() as webpack.loader.loaderCallback;
 
   const fs = new FileSystem();
 
-  const loader = new Loader(
+  const loader = new ConfigLoader(
     new ProjectStructure(fs),
     new FrontMatter(fs),
     new PageFactory(),
@@ -35,10 +32,11 @@ module.exports = function configLoader(source : string, map : any, meta : any) {
         + uneval(paramorph, 'paramorph')
         +';\nmodule.exports.default = paramorph;\n'
       ;
-      callback(null, source, map, meta);
+      callback(null, source, map);
     })
     .catch(err => {
       callback(err);
-    });
+    })
+  ;
 };
 

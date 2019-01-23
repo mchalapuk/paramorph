@@ -1,5 +1,5 @@
 
-import FakeFileSystem from '../platform/fake/FileSystem';
+import FakeFileSystem from '../../platform/fake/FileSystem';
 import FrontMatter from './FrontMatter';
 
 const source = {

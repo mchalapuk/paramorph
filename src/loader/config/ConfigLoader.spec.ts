@@ -2,11 +2,12 @@
 import * as sinon from 'sinon';
 import { FakePromise } from 'fake-promise';
 
-import { Loader } from './Loader';
-import { Paramorph, Layout, Include, Page } from '../model';
-import { Config } from '../config';
+import { Config } from '../../config';
+import { Paramorph, Layout, Include, Page } from '../../model';
 
-describe('Loader', () => {
+import { ConfigLoader } from './ConfigLoader';
+
+describe('ConfigLoader', () => {
   const config : Config = {
     title: 'test',
     timezone: 'UTC',
@@ -31,11 +32,11 @@ describe('Loader', () => {
     },
   };
 
-  let testedLoader : Loader;
+  let testedLoader : ConfigLoader;
   let paramorph : Paramorph;
 
   beforeEach(() => {
-    testedLoader = new Loader(
+    testedLoader = new ConfigLoader(
       mocks.projectStructure as any,
       mocks.frontMatter as any,
       mocks.pageFactory as any,

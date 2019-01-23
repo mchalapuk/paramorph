@@ -1,7 +1,8 @@
 
 import { readFileSync } from 'fs';
 
-import { Paramorph, Layout, Include, Page, Category, Tag } from '..';
+import { Paramorph, Layout, Include, Page, Category, Tag } from '../../model';
+
 import { uneval } from './uneval';
 
 describe('uneval', () => {
