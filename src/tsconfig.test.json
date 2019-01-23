@@ -30,6 +30,7 @@
       "js-yaml",
       "offensive",
       "history",
+      "markdown-it",
       "mocha",
       "sinon",
       "should",
@@ -45,7 +46,8 @@
   "include": [
     "**/*.tsx",
     "**/*.ts",
-    "../node_modules/offensive/**/*.ts"
+    "../node_modules/offensive/**/*.ts",
+    "../node_modules/markdown-it/**/*.ts"
   ],
   "exclude": [
   ]

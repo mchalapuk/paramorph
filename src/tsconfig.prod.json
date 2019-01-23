@@ -29,7 +29,8 @@
       "react-dom",
       "js-yaml",
       "offensive",
-      "history"
+      "history",
+      "markdown-it"
     ],
     "baseUrl": ".",
     "paths": {
@@ -41,7 +42,8 @@
   "include": [
     "**/*.tsx",
     "**/*.ts",
-    "../node_modules/offensive/**/*.ts"
+    "../node_modules/offensive/**/*.ts",
+    "../node_modules/markdown-it/**/*.ts"
   ],
   "exclude": [
     "**/*.spec.ts",
