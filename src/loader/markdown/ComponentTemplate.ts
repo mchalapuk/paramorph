@@ -3,15 +3,18 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 const CHILDREN_PLACEHOLDER = '{ PLACEHOLDER }';
-
-const template = loadTemplate();
-if (template.indexOf(CHILDREN_PLACEHOLDER) === -1) {
-  throw new Error(`template does not contain placeholder for children: ${CHILDREN_PLACEHOLDER}`);
-}
+const DEFAULT_TEMPLATE = loadTemplate();
 
 export class ComponentTemplate {
+  constructor(
+    private readonly templateSource : string = DEFAULT_TEMPLATE,
+  ) {
+    if (templateSource.indexOf(CHILDREN_PLACEHOLDER) === -1) {
+      throw new Error(`template does not contain placeholder for children: ${CHILDREN_PLACEHOLDER}`);
+    }
+  }
   compile(source : string) {
-    return template.replace(CHILDREN_PLACEHOLDER, source);
+    return this.templateSource.replace(CHILDREN_PLACEHOLDER, source);
   }
 }
 
