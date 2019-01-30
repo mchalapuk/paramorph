@@ -3,7 +3,7 @@ import * as should from 'should';
 
 import ComponentTemplate from './ComponentTemplate';
 
-describe('ComponentTemplate', () => {
+describe('markdown/ComponentTemplate', () => {
   it('throws when created with a template without a content placeholder', () => {
     should(() => new ComponentTemplate(''))
       .throw('template does not contain placeholder for children: { PLACEHOLDER }')
