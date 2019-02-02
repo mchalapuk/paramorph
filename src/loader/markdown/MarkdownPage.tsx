@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 
-import Content from 'paramorph/components/Content';
+import Content from 'paramorph/react/Content';
 import { PureComponent } from 'paramorph';
 
 const include = require.context('@website/_includes', true, /.(j|t)sx?$/);

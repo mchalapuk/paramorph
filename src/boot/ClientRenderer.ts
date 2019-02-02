@@ -1,9 +1,9 @@
 
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { Router } from '../router';
 import { History, createBrowserHistory } from 'history';
 
+import { Router } from '../boot';
 import { ContextContainer } from '../react';
 import { Paramorph, Page } from '../model';
 

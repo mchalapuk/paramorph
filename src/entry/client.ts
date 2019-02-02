@@ -3,14 +3,13 @@ import * as React from 'react';
 import { createBrowserHistory } from 'history';
 
 import { Paramorph } from '../model';
-import { ClientRenderer } from '../renderers/client';
-import { Router } from '../router';
-import RoutesFactory from '../route-factory';
+import { ClientRenderer, Router } from '../boot';
+import RouteFactory from '../RouteFactory';
 
 const paramorph : Paramorph = require('@website/_config.yml').default;
 
-const routesFactory = new RoutesFactory();
-const routes = routesFactory.getRoutes(paramorph);
+const routeFactory = new RouteFactory();
+const routes = routeFactory.getRoutes(paramorph);
 const router = new Router(routes);
 
 export function render() {

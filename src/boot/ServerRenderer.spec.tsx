@@ -6,11 +6,9 @@ import { History } from 'history';
 import * as sinon from 'sinon';
 import FakePromise from 'fake-promise';
 
-import { Config } from '../config';
 import * as model from '../model';
-import { ServerRenderer, Locals, HashMap } from './server';
-import { RootProps } from '../components/Root';
-import { PageComponents } from '../router';
+import { RootProps } from '../react';
+import { ServerRenderer, Locals, HashMap, PageComponents } from '../boot';
 
 function elem(tag : string, ...children : React.ReactNode[]) {
   return React.createElement(tag, children);
@@ -75,7 +73,7 @@ describe('ServerRenderer', () => {
     const page = createPage('/', 'Meeting', 0);
     const layout = new model.Layout('test', './layouts/test.md');
 
-    const paramorph = new model.Paramorph({ title: 'website.test' } as Config);
+    const paramorph = new model.Paramorph({ title: 'website.test' } as model.Config);
     paramorph.addLayout(layout);
     paramorph.addPage(page);
 

@@ -2,8 +2,7 @@
 import * as sinon from 'sinon';
 import { FakePromise } from 'fake-promise';
 
-import { Config } from '../../config';
-import { Paramorph, Layout, Include, Page } from '../../model';
+import { Paramorph, Layout, Include, Page, Config } from '../../model';
 
 import { ConfigLoader } from './ConfigLoader';
 

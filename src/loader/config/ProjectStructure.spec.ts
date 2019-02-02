@@ -1,6 +1,6 @@
 
 import FakeFileSystem from '../../platform/fake/FileSystem';
-import { Config } from '../../config';
+import { Config } from '../../model';
 
 import ProjectStructure from './ProjectStructure';
 

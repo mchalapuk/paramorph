@@ -3,14 +3,13 @@ import * as React from 'react';
 import { createMemoryHistory } from 'history';
 
 import { Paramorph } from '../model';
-import { HashMap, Locals, ServerRenderer } from '../renderers/server';
-import { Router } from '../router';
-import RoutesFactory from '../route-factory';
+import { HashMap, Locals, ServerRenderer, Router } from '../boot';
+import RouteFactory from '../RouteFactory';
 
 const paramorph : Paramorph = require('@website/_config.yml').default;
 
-const routesFactory = new RoutesFactory();
-const routes = routesFactory.getRoutes(paramorph);
+const routeFactory = new RouteFactory();
+const routes = routeFactory.getRoutes(paramorph);
 const router = new Router(routes);
 
 export type WebpackStats = { compilation: { assets: HashMap<any>; } };

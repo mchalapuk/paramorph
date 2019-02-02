@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 
-import { Route } from './router';
+import { Route } from './boot';
 import { Paramorph, Page, Layout, ComponentType } from './model';
 
 const NOT_FOUND_URL = '/404';

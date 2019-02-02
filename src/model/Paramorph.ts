@@ -1,8 +1,5 @@
 
-import { createElement } from 'react';
-
-import { Config } from '../config';
-import { Layout, Include, Page, Category, Tag, ComponentType } from '.';
+import { Config, Layout, Include, Page, Category, Tag, ComponentType } from '.';
 
 export type Loader = () => Promise<ComponentType>;
 

@@ -1,9 +1,8 @@
 
 import { createMemoryHistory } from 'history';
 
-import { Config } from '../../config';
-import { Paramorph, Layout, Include, Page, Tag } from '../../model';
-import { LoaderRenderer } from '../../renderers';
+import { Config, Paramorph, Layout, Include, Page, Tag } from '../../model';
+import { LoaderRenderer } from '../../boot';
 import { stripTags, removeEntities } from '../../utils';
 
 import { ProjectStructure, SpecialDirs, SourceFile } from './ProjectStructure';

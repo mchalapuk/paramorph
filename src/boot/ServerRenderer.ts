@@ -1,13 +1,11 @@
 
 import * as React from 'react';
 import * as ReactDomServer from 'react-dom/server';
-
-import { Router } from '../router';
 import { History } from 'history';
 
-import { default as DefaultRoot, RootProps } from '../components/Root';
+import { Router } from '../boot';
 import { Paramorph, Page } from '../model';
-import { ContextContainer } from '../react';
+import { ContextContainer, Root as DefaultRoot, RootProps } from '../react';
 
 export interface Locals {
   Root ?: React.ComponentType<RootProps>;
