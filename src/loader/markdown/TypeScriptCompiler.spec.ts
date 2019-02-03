@@ -14,16 +14,16 @@ describe('markdown/TypeScriptCompiler', () => {
 
   it('throws Error when compiling code with syntax error', () => {
     try {
-      testedCompiler.compile('>', 'test.ts');
+      testedCompiler.compile('>', 'test.md');
     } catch (e) {
       e.message.should.equal(`
-TSError: test.ts (1,1):
+TSError: test.md.tsx (1,1):
 
  1  >
     ⬆
    Expression expected.
 
-TSError: test.ts (1,2):
+TSError: test.md.tsx (1,2):
 
  1  >
      ⬆
@@ -32,8 +32,13 @@ TSError: test.ts (1,2):
   });
 
   it('transpiles valid typescript', () => {
-    const compiled = testedCompiler.compile('export const a : string = "b";', 'test.ts');
+    const compiled = testedCompiler.compile('export const a : string = "b";', 'test.md');
     compiled.should.equal(`${MODULE_HEADER}exports.a = "b";\n`);
+  });
+
+  it('transpiles jsx', () => {
+    const compiled = testedCompiler.compile('export const a = (<div></div>);', 'test.md');
+    compiled.should.equal(`${MODULE_HEADER}exports.a = (React.createElement("div", null));\n`);
   });
 });
 

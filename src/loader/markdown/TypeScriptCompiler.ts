@@ -3,7 +3,7 @@ import * as ts from 'typescript';
 
 const COMPILER_OPTIONS = {
   module: ts.ModuleKind.CommonJS,
-  allowJs: true,
+  allowJs: false,
   alwaysStrict: true,
   jsx: ts.JsxEmit.React,
   target: ts.ScriptTarget.ES5,
@@ -17,7 +17,7 @@ export class TypeScriptCompiler {
     const output = ts.transpileModule(source, {
       compilerOptions: COMPILER_OPTIONS,
       reportDiagnostics: true,
-      fileName,
+      fileName : `${fileName}.tsx`,
     });
 
     const { diagnostics } = output;
