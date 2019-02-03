@@ -13,9 +13,22 @@ describe('markdown/TypeScriptCompiler', () => {
   });
 
   it('throws Error when compiling code with syntax error', () => {
-    should(() => testedCompiler.compile('>', 'test.ts'))
-      .throw('test.ts (1,1): Expression expected.\ntest.ts (1,2): Expression expected.')
-    ;
+    try {
+      testedCompiler.compile('>', 'test.ts');
+    } catch (e) {
+      e.message.should.equal(`
+TSError: test.ts (1,1):
+
+ 1  >
+    ⬆
+   Expression expected.
+
+TSError: test.ts (1,2):
+
+ 1  >
+     ⬆
+   Expression expected.`);
+    }
   });
 
   it('transpiles valid typescript', () => {

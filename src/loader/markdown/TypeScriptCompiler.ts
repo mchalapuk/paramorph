@@ -22,7 +22,7 @@ export class TypeScriptCompiler {
 
     const { diagnostics } = output;
     if (diagnostics && diagnostics.length !== 0) {
-      throw toError(diagnostics);
+      throw toError(source, diagnostics);
     }
     return output.outputText;
   }
@@ -30,16 +30,35 @@ export class TypeScriptCompiler {
 
 export default TypeScriptCompiler;
 
-function toError(diagnostics : ts.Diagnostic[]) {
+function toError(source : string, diagnostics : ts.Diagnostic[]) {
+  const lines = source.split('\n');
+
   const errors = diagnostics.map(diagnostic => {
     if (!diagnostic.file) {
       return `${ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n')}`;
     }
     const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start!);
     const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
-    return `${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`;
+
+    const arrow = renderArrow(character);
+
+    return `
+TSError: ${diagnostic.file.fileName} (${line + 1},${character + 1}):
+
+ ${line + 1}  ${lines[line]}
+ ${`${line + 1}`.replace(/./g, ' ')}  ${arrow}
+ ${`${line + 1}`.replace(/./g, ' ')} ${message}`;
   });
 
   return new Error(errors.join('\n'));
+}
+
+function renderArrow(character : number) {
+  const builder : string[] = [];
+  for (let i = 0; i < Math.floor(character / 10); ++i) {
+    builder.push('          ');
+  }
+  builder.push('          '.substring(0, character % 10));
+  return `${builder.join('')}⬆`;
 }
 
