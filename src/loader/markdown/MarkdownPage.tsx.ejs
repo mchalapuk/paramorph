@@ -3,7 +3,7 @@ import * as React from 'react';
 import { PureComponent, Content } from 'paramorph';
 
 <% Object.keys(paramorph.includes).forEach(name => { %>
-import <%= name %> from '<%= paramorph.includes[name].path %>';
+import <%= name %> from '@website/<%= paramorph.includes[name].path %>';
 <% }) %>
 
 /**
