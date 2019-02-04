@@ -16,7 +16,11 @@ export class MarkdownPage extends PureComponent<Props, {}> {
     const { paramorph, page, history } = this.context;
 
     const includes = Object.keys(paramorph.includes)
-      .map(name => `var ${name} = include('${name}');`)
+      .map(name => {
+        const include = paramorph.includes[name];
+        const path = include.path.replace('_includes/', '');
+        return `var ${name} = include('${path}');`;
+      })
       .join('\n')
     ;
     eval(includes);
