@@ -1,26 +1,25 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import * as ejs from 'ejs';
 
-const CHILDREN_PLACEHOLDER = '{ PLACEHOLDER }';
+import { Paramorph } from '../../model';
+
 const DEFAULT_TEMPLATE = loadTemplate();
 
 export class ComponentTemplate {
   constructor(
     private readonly templateSource : string = DEFAULT_TEMPLATE,
   ) {
-    if (templateSource.indexOf(CHILDREN_PLACEHOLDER) === -1) {
-      throw new Error(`template does not contain placeholder for children: ${CHILDREN_PLACEHOLDER}`);
-    }
   }
-  compile(source : string) {
-    return this.templateSource.replace(CHILDREN_PLACEHOLDER, source);
+  compile(html : string, paramorph : Paramorph) {
+    return ejs.render(this.templateSource, { paramorph, html });
   }
 }
 
 export default ComponentTemplate;
 
 function loadTemplate() {
-  return fs.readFileSync(path.join(__dirname, './MarkdownPage.tsx')).toString('utf8');
+  return fs.readFileSync(path.join(__dirname, './MarkdownPage.tsx.ejs')).toString('utf8');
 }
 

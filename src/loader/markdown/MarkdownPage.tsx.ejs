@@ -1,0 +1,26 @@
+
+import * as React from 'react';
+import { PureComponent, Content } from 'paramorph';
+
+<% Object.keys(paramorph.includes).forEach(name => { %>
+import <%= name %> from '<%= paramorph.includes[name].path %>';
+<% }) %>
+
+/**
+ * @author Maciej Chałapuk (maciej@chalapuk.pl)
+ */
+export class MarkdownPage extends PureComponent<{}, {}> {
+  render() {
+    const { children, ...data } = this.props;
+    const { paramorph, page, history } = this.context;
+
+    return (
+      <Content limit={ 5 } { ...data }>
+        <%- html %>
+      </Content>
+    );
+  }
+}
+
+export default MarkdownPage;
+

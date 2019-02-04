@@ -1,26 +1,19 @@
 
 import * as should from 'should';
 
+import { Paramorph } from '../../model';
 import ComponentTemplate from './ComponentTemplate';
 
 describe('markdown/ComponentTemplate', () => {
-  it('throws when created with a template without a content placeholder', () => {
-    should(() => new ComponentTemplate(''))
-      .throw('template does not contain placeholder for children: { PLACEHOLDER }')
-    ;
+  let testedTemplate : ComponentTemplate;
+
+  beforeEach(() => {
+    testedTemplate = new ComponentTemplate('<h1><%= paramorph.title %></h1><div><%- html %></div>');
   });
 
-  describe('after creation', () => {
-    let testedTemplate : ComponentTemplate;
-
-    beforeEach(() => {
-      testedTemplate = new ComponentTemplate('<div>{ PLACEHOLDER }</div>');
-    });
-
-    it('properly compiles', () => {
-      const result = testedTemplate.compile('<a>link</a>');
-      result.should.equal('<div><a>link</a></div>');
-    });
+  it('properly compiles', () => {
+    const result = testedTemplate.compile('<a>link</a>', { title: 'test' } as any);
+    result.should.equal('<h1>test</h1><div><a>link</a></div>');
   });
 });
 

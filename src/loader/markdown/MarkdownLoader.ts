@@ -11,12 +11,34 @@ const typescript = new TypeScriptCompiler();
 
 export function MarkdownLoader(this : webpack.loader.LoaderContext, source : string) {
   this.cacheable && this.cacheable();
+  const callback = this.async();
 
-  const html = markdown.toHtml(source, this.resourcePath);
-  const tsSource = template.compile(html);
-  const output = typescript.compile(tsSource, this.resourcePath);
+  if (!callback) {
+    throw new Error('MarkdownLoader: couldn\'t create callback.');
+  }
+  const configUrl = this.resolveSync(this.context, '@website/_config');
+  this.addDependency(configUrl);
 
-  return output;
+  this.loadModule(configUrl, (err, configSource) => {
+    if (err) {
+      this.emitError(err);
+      return;
+    }
+
+    try {
+      const exports = this.exec(configSource, '_config.yml');
+      const paramorph = exports.default;
+
+      const html = markdown.toHtml(source, this.resourcePath);
+      const tsSource = template.compile(html, paramorph);
+      const output = typescript.compile(tsSource, this.resourcePath);
+
+      callback(null, output);
+
+    } catch (e) {
+      callback(err);
+    }
+  });
 };
 
 export default MarkdownLoader;

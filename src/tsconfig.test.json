@@ -31,6 +31,7 @@
       "offensive",
       "history",
       "markdown-it",
+      "ejs",
       "mocha",
       "sinon",
       "should",

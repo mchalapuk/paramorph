@@ -30,7 +30,8 @@
       "js-yaml",
       "offensive",
       "history",
-      "markdown-it"
+      "markdown-it",
+      "ejs"
     ],
     "baseUrl": ".",
     "paths": {
