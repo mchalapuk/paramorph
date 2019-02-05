@@ -22,7 +22,6 @@ export function MarkdownLoader(this : webpack.loader.LoaderContext, source : str
       this.emitError(err);
       return;
     }
-    this.addDependency(configUrl);
 
     this.loadModule(configUrl, (err, configSource) => {
       if (err) {
