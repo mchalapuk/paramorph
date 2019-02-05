@@ -5,6 +5,7 @@ export {
   Include,
   Page,
   Category,
+  Collection,
   Tag,
   Paramorph,
   ComponentType,
