@@ -1,5 +1,6 @@
 
 import * as webpack from 'webpack';
+import * as path from 'path'
 
 import FileSystem from '../../platform/node/FileSystem';
 import { LoaderRenderer } from '../../boot';
@@ -27,6 +28,11 @@ function loader(this : webpack.loader.LoaderContext, source : string, map : any)
   );
   loader.load(parser.parse(source))
     .then(paramorph => {
+      Object.keys(paramorph.pages)
+        .map(url => path.join(process.cwd(), url))
+        .forEach(url => this.addDependency(url))
+      ;
+
       const source = 'const { Paramorph, Layout, Include, Page, Collection, Category, Tag } '
         +'= require(\'paramorph/model\');\n'
         + uneval(paramorph, 'paramorph')
