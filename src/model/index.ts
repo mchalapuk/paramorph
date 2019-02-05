@@ -1,5 +1,5 @@
 
-export { Config } from './Config';
+export { Config, CollectionConfig, MenuEntryConfig } from './Config';
 export { Layout } from './Layout';
 export { Include } from './Include';
 export { Page } from './Page';

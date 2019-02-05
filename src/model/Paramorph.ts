@@ -1,5 +1,5 @@
 
-import { Config, Layout, Include, Page, Category, Tag, ComponentType } from '.';
+import { Config, Layout, Include, Page, Category, Collection, Tag, ComponentType } from '.';
 
 export type Loader = () => Promise<ComponentType>;
 
@@ -9,7 +9,7 @@ export class Paramorph {
   readonly pages : HashMap<Page> = {};
   readonly categories : HashMap<Category> = {};
   readonly tags : HashMap<Category> = {};
-  readonly collections : HashMap<Page[]> = {};
+  readonly collections : HashMap<Collection> = {};
 
   readonly layoutLoaders : HashMap<Loader> = {};
   readonly includeLoaders : HashMap<Loader> = {};
@@ -30,20 +30,34 @@ export class Paramorph {
     }
     this.includes[include.name] = include;
   }
+  addCollection(collection : Collection) {
+    if (this.collections.hasOwnProperty(collection.title)) {
+      throw new Error(`collection of title '${collection.title}' is already set`);
+    }
+    this.collections[collection.title] = collection;
+  }
   addPage(page : Page) {
     if (this.pages.hasOwnProperty(page.url)) {
       throw new Error(`page of url ${page.url} is already set`);
     }
-
     this.pages[page.url] = page;
-    const collection : Page[] = this.collections[page.collection] || [];
-    collection.push(page);
-    this.collections[page.collection] = collection;
+
+    if (page instanceof Tag) {
+      this.tags[(page as Tag).originalTitle] = page;
+      // not adding to collection if the page is a tag
+      return;
+    }
+
+    const collection = this.collections[page.collection];
+    if (!collection) {
+      throw new Error(
+        `coulnd't find collection of title '${page.collection}' when adding page of url '${page.url}'`
+      );
+    }
+    collection.pages.push(page);
 
     if (page instanceof Category) {
       this.categories[page.title] = page;
-    } else if (page instanceof Tag) {
-      this.tags[(page as Tag).originalTitle] = page;
     }
   }
 

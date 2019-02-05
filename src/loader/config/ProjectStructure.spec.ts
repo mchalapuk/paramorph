@@ -56,9 +56,9 @@ describe('ProjectStructure', () => {
       const expectedResult = {
         layouts: [],
         includes: [],
-        collections: {
-          $root: [],
-        },
+        collections: [
+          { name: '$root', path: '.', files: [] },
+        ],
       };
       testedStructure.scan({ collections: {} } as Config)
         .then(result => result.should.eql(expectedResult))
@@ -106,9 +106,9 @@ describe('ProjectStructure', () => {
           { name: 'ts', path: './_layouts/ts.ts' },
         ],
         includes: [],
-        collections: {
-          $root: [],
-        },
+        collections: [
+          { name: '$root', path: '.', files: [] },
+        ],
       };
       testedStructure.scan({ collections: {} } as Config)
         .then(result => result.should.eql(expectedResult))
@@ -127,7 +127,7 @@ describe('ProjectStructure', () => {
       fs.writeFile('./_layouts/sub/index.ts');
     });
 
-    it('.scan() produces specialDirs containing all layouts', () => {
+    it('.scan() complains about two index files', () => {
       testedStructure.scan({ collections: {} } as Config)
         .then(
           result => { throw new Error(`expected an error; got result ${result}`); },
@@ -162,9 +162,9 @@ describe('ProjectStructure', () => {
           { name: 'sub-ts', path: './_includes/sub-ts/index.ts' },
           { name: 'ts', path: './_includes/ts.ts' },
         ],
-        collections: {
-          $root: [],
-        },
+        collections: [
+          { name: '$root', path: '.', files: [] },
+        ],
       };
       testedStructure.scan({ collections: {} } as Config)
         .then(result => result.should.eql(expectedResult))
@@ -188,14 +188,18 @@ describe('ProjectStructure', () => {
       const expectedResult = {
         layouts: [],
         includes: [],
-        collections: {
-          $root: [
-            { name: '404', path: './404.markdown' },
-            { name: 'about', path: './about.markdown' },
-            { name: 'index', path: './index.markdown' },
-            { name: 'sitemap', path: './sitemap.markdown' },
-          ],
-        },
+        collections: [
+          {
+            name: '$root',
+            path: '.',
+            files: [
+              { name: '404', path: './404.markdown' },
+              { name: 'about', path: './about.markdown' },
+              { name: 'index', path: './index.markdown' },
+              { name: 'sitemap', path: './sitemap.markdown' },
+            ]
+          },
+        ],
       };
       testedStructure.scan({ collections: {} } as Config)
         .then(result => result.should.eql(expectedResult))
@@ -218,19 +222,23 @@ describe('ProjectStructure', () => {
       const expectedResult = {
         layouts: [],
         includes: [],
-        collections: {
-          $root: [],
-          posts: [
-            {
-              name: '2007-06-01-hello-world',
-              path: './_posts/2007-06-01-hello-world.markdown',
-            },
-            {
-              name: '2018-03-21-need-to-blog-more-often',
-              path: './_posts/2018-03-21-need-to-blog-more-often.markdown',
-            },
-          ],
-        },
+        collections: [
+          { name: '$root', path: '.', files: [] },
+          {
+            name: 'posts',
+            path: './_posts',
+            files: [
+              {
+                name: '2007-06-01-hello-world',
+                path: './_posts/2007-06-01-hello-world.markdown',
+              },
+              {
+                name: '2018-03-21-need-to-blog-more-often',
+                path: './_posts/2018-03-21-need-to-blog-more-often.markdown',
+              },
+            ],
+          },
+        ],
       };
       testedStructure.scan({ collections: { posts: {} } } as any)
         .then(result => result.should.eql(expectedResult))

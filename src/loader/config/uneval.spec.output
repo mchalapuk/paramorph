@@ -24,6 +24,26 @@ paramorph.addInclude(
   )
 );
 
+// COLLECTIONS //
+paramorph.addCollection(
+  new Collection(
+    "pages",
+    "Pages",
+    "./_pages",
+    undefined,
+    undefined,
+  )
+);
+paramorph.addCollection(
+  new Collection(
+    "posts",
+    "Posts",
+    "./_posts",
+    undefined,
+    undefined,
+  )
+);
+
 // PAGES //
 paramorph.addPage(
   new Page(
@@ -31,7 +51,7 @@ paramorph.addPage(
     "Home",
     "This is a test page",
     "http://some.address/image.jpg",
-    "pages",
+    "Pages",
     "default",
     "./index.markdown",
     true,
@@ -49,7 +69,7 @@ paramorph.addPage(
     "Do It Yourself!",
     "Yes, you can!",
     "http://some.address/diy.jpg",
-    "posts",
+    "Posts",
     "default",
     "./diy.markdown",
     true,

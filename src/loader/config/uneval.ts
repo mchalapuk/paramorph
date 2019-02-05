@@ -1,11 +1,13 @@
 
-import { Paramorph, Layout, Include, Page, Category, Tag } from '../../model';
+import { Paramorph, Layout, Include, Page, Collection, Category, Tag } from '../../model';
 
 export function uneval(paramorph : Paramorph, varName : string = 'paramorph') : string {
   const layouts = Object.keys(paramorph.layouts)
     .map(key => paramorph.layouts[key] as Layout);
   const includes = Object.keys(paramorph.includes)
     .map(key => paramorph.includes[key] as Layout);
+  const collections = Object.keys(paramorph.collections)
+    .map(key => paramorph.collections[key] as Collection);
 
   const pages : Page[] = [];
   const categories : Category[] = [];
@@ -57,6 +59,12 @@ ${
 ${
   includes
     .map(include => `${varName}.addInclude(\n${unevalInclude(include)}\n);\n`)
+    .join('')
+}
+// COLLECTIONS //
+${
+  collections
+    .map(collection => `${varName}.addCollection(\n${unevalCollection(collection)}\n);\n`)
     .join('')
 }
 // PAGES //
@@ -125,6 +133,20 @@ export function unevalInclude(include : Include) {
     JSON.stringify(include.name)
   },\n    ${
     JSON.stringify(include.path)
+  },\n  )`;
+}
+
+export function unevalCollection(collection : Collection) {
+  return `  new Collection(\n    ${
+    JSON.stringify(collection.name)
+  },\n    ${
+    JSON.stringify(collection.title)
+  },\n    ${
+    JSON.stringify(collection.path)
+  },\n    ${
+    JSON.stringify(collection.layout)
+  },\n    ${
+    JSON.stringify(collection.output)
   },\n  )`;
 }
 

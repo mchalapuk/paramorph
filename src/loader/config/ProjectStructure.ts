@@ -7,7 +7,13 @@ import { Config } from '../../model';
 export interface SpecialDirs {
   readonly layouts : SourceFile[];
   readonly includes : SourceFile[];
-  readonly collections : HashMap<SourceFile[]>;
+  readonly collections : SourceDirectory[];
+}
+
+export interface SourceDirectory {
+  readonly name : string;
+  readonly path : string;
+  readonly files : SourceFile[];
 }
 
 export interface SourceFile {
@@ -43,7 +49,7 @@ export class ProjectStructure {
     const specialDirs = {
       layouts: [] as SourceFile[],
       includes: [] as SourceFile[],
-      collections: {} as HashMap<SourceFile[]>,
+      collections: [] as SourceDirectory[],
     };
 
     const underscoredFolders = (await this.fs.readDir('.'))
@@ -60,11 +66,11 @@ export class ProjectStructure {
       .filter(folder => requiredFolders.indexOf(folder) === -1);
 
     await this.scanDir(`./${LAYOUTS_DIR}`, JS_REGEX)
-      .then(sourceFiles => specialDirs.layouts = sourceFiles);
+      .then(files => specialDirs.layouts = files);
     await this.scanDir(`./${INCLUDES_DIR}`, JS_REGEX)
-      .then(sourceFiles => specialDirs.includes = sourceFiles);
+      .then(files => specialDirs.includes = files);
     await this.scanDir(ROOT_DIR, MD_REGEX, false)
-      .then(sourceFiles => specialDirs.collections['$root'] = sourceFiles);
+      .then(files => specialDirs.collections.push({ name: '$root', path: '.', files }));
 
     for (let i = 0; i < collectionNames.length; ++i) {
       const name = collectionNames[i];
@@ -73,8 +79,9 @@ export class ProjectStructure {
         console.warn(`couldn't find folder ${folder} required by collection ${name}`);
         break;
       }
-      await this.scanDir(`./${folder}`, MD_REGEX)
-        .then(sourceFiles => specialDirs.collections[name] = sourceFiles);
+      const path = `./${folder}`;
+      await this.scanDir(path, MD_REGEX)
+        .then(files => specialDirs.collections.push({ name, path, files }));
     }
 
     return specialDirs;

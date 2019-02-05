@@ -1,6 +1,8 @@
 
 export {
   Config,
+  CollectionConfig,
+  MenuEntryConfig,
   Layout,
   Include,
   Page,

@@ -59,7 +59,7 @@ class PageComponent extends React.Component<{}> {
 }
 
 function createPage(url : string, title : string, date : number) {
-  return new model.Page(url, title, '', null, 'test', 'test', './test.md', true, true, [], [], date);
+  return new model.Page(url, title, '', null, 'Test', 'test', './test.md', true, true, [], [], date);
 }
 
 describe('ServerRenderer', () => {
@@ -70,11 +70,13 @@ describe('ServerRenderer', () => {
   let testedRenderer : ServerRenderer;
 
   beforeEach(() => {
+    const collection = new model.Collection('test', 'Test', './_test');
     const page = createPage('/', 'Meeting', 0);
     const layout = new model.Layout('test', './layouts/test.md');
 
     const paramorph = new model.Paramorph({ title: 'website.test' } as model.Config);
     paramorph.addLayout(layout);
+    paramorph.addCollection(collection);
     paramorph.addPage(page);
 
     testedRenderer = new ServerRenderer({} as History, router, paramorph);

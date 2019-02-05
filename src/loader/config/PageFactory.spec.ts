@@ -1,7 +1,7 @@
 
 import * as should from 'should';
 
-import { Page, Category } from '../../model';
+import { Page, Collection, Category } from '../../model';
 
 import { PageFactory } from './PageFactory';
 
@@ -13,7 +13,7 @@ describe('PageFactory', () => {
     name: 'test-page',
     path: './_posts/test.md',
   };
-  const collection = 'posts';
+  const collection = new Collection('posts', 'Posts', './_posts');
 
   let testedFactory : PageFactory;
 

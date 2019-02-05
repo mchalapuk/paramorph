@@ -9,7 +9,7 @@ import 'offensive/assertions/Undefined/register';
 import 'offensive/assertions/fieldThat/register';
 import 'offensive/assertions/allElementsThat/register';
 
-import { Page, Category } from '../../model';
+import { Page, Collection, Category } from '../../model';
 
 import { SourceFile } from './ProjectStructure';
 
@@ -48,7 +48,7 @@ export interface PageConstructor {
 const DEFAULT_LAYOUT_NAME = "default";
 
 export class PageFactory {
-  create(file : SourceFile, collection : string, maybeMatter : any) : Page {
+  create(file : SourceFile, collection : Collection, maybeMatter : any) : Page {
     const frontMatter = validateFrontMatter(file.name, maybeMatter);
 
     const role = (frontMatter.role || 'page').toLowerCase();
@@ -65,7 +65,7 @@ export class PageFactory {
   private create0(
     PageType : PageConstructor,
     file : SourceFile,
-    collection : string,
+    collection : Collection,
     matter : Matter,
   ) {
     const title = matter.title || defaultTitle(file);
@@ -80,10 +80,12 @@ export class PageFactory {
       title,
       matter.description || '',
       matter.image || null,
-      collection,
-      matter.layout || DEFAULT_LAYOUT_NAME,
+      collection.title,
+      matter.layout || collection.layout || DEFAULT_LAYOUT_NAME,
       file.path,
-      matter.output !== undefined ? matter.output : true,
+      matter.output !== undefined
+        ? matter.output
+        : (collection.output !== undefined ? collection.output : true ),
       matter.feed !== undefined ? matter.feed : true,
       categories,
       matter.tags || [],

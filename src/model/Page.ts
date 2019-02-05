@@ -29,3 +29,5 @@ export class Page {
   }
 }
 
+export default Page;
+

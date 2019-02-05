@@ -2,7 +2,7 @@
 import * as sinon from 'sinon';
 import { FakePromise } from 'fake-promise';
 
-import { Paramorph, Layout, Include, Page, Config } from '../../model';
+import { Paramorph, Layout, Include, Page, Collection, Config } from '../../model';
 
 import { ConfigLoader } from './ConfigLoader';
 
@@ -10,7 +10,10 @@ describe('ConfigLoader', () => {
   const config : Config = {
     title: 'test',
     timezone: 'UTC',
-    collections: {},
+    collections: {
+      pages: {},
+      posts: {},
+    },
     baseUrl: 'http://paramorph.github.io/',
     image: '',
     locale: 'en_US',
@@ -58,19 +61,14 @@ describe('ConfigLoader', () => {
     tags: [],
     categories: [],
     output: false,
-  };
-  const indexPage = {
-    url: '/',
-    tags: [],
-    categories: [],
-    output: true,
+    collection: 'Pages',
   };
 
   describe('when loading empty project structure', () => {
     const struct = {
       layouts: [],
       includes: [],
-      collections: {},
+      collections: [],
     };
 
     beforeEach(() => {
@@ -91,14 +89,18 @@ describe('ConfigLoader', () => {
     const struct = {
       layouts: [],
       includes: [],
-      collections: {
-        pages: [
-          {
-            name: 'tag',
-            path: './_pages/tag.markdown',
-          },
-        ],
-      },
+      collections: [
+        {
+          name: 'pages',
+          path: '_pages',
+          files: [
+            {
+              name: 'tag',
+              path: './_pages/tag.markdown',
+            },
+          ],
+        },
+      ],
     };
 
     beforeEach(async () => {
@@ -124,14 +126,18 @@ describe('ConfigLoader', () => {
     const struct = {
       layouts: [],
       includes: [],
-      collections: {
-        pages: [
-          {
-            name: 'tag',
-            path: './_pages/tag.markdown',
-          },
-        ],
-      },
+      collections: [
+        {
+          name: 'pages',
+          path: '_pages',
+          files: [
+            {
+              name: 'tag',
+              path: './_pages/tag.markdown',
+            },
+          ],
+        },
+      ],
     };
 
     beforeEach(() => {
@@ -161,14 +167,18 @@ describe('ConfigLoader', () => {
         },
       ],
       includes: [],
-      collections: {
-        pages: [
-          {
-            name: 'tag',
-            path: './_pages/tag.markdown',
-          },
-        ],
-      },
+      collections: [
+        {
+          name: 'pages',
+          path: '_pages',
+          files: [
+            {
+              name: 'tag',
+              path: './_pages/tag.markdown',
+            },
+          ],
+        },
+      ],
     };
 
     beforeEach(async () => {
@@ -194,14 +204,18 @@ describe('ConfigLoader', () => {
           path: './_includes/Feed.ts',
         },
       ],
-      collections: {
-        pages: [
-          {
-            name: 'tag',
-            path: './_pages/tag.markdown',
-          },
-        ],
-      },
+      collections: [
+        {
+          name: 'pages',
+          path: '_pages',
+          files: [
+            {
+              name: 'tag',
+              path: './_pages/tag.markdown',
+            },
+          ],
+        },
+      ],
     };
 
     beforeEach(async () => {
@@ -231,14 +245,22 @@ describe('ConfigLoader', () => {
       ],
       includes: [
       ],
-      collections: {
-        pages: [
-          tagSource,
-        ],
-        posts: [
-          postSource,
-        ],
-      },
+      collections: [
+        {
+          name: 'pages',
+          path: './_pages',
+          files: [
+            tagSource,
+          ],
+        },
+        {
+          name: 'posts',
+          path: './_posts',
+          files: [
+            postSource,
+          ],
+        },
+      ],
     };
     let matterPromise0 : FakePromise<any>;
     let matterPromise1 : FakePromise<any>;
@@ -272,7 +294,7 @@ describe('ConfigLoader', () => {
         'Tag',
         '',
         null,
-        'pages',
+        'Pages',
         'default',
         './_pages/tag.md',
         false,
@@ -286,7 +308,7 @@ describe('ConfigLoader', () => {
         'Hello, World!',
         'Just a first post.',
         null,
-        'posts',
+        'Posts',
         'default',
         './_post/hello-world.md',
         true,
@@ -307,8 +329,20 @@ describe('ConfigLoader', () => {
 
       it('calls pageFactory.create(...)', () => {
         mocks.pageFactory.create.should.have.callCount(2);
-        mocks.pageFactory.create.should.have.been.calledWith(tagSource, 'pages', matter0);
-        mocks.pageFactory.create.should.have.been.calledWith(postSource, 'posts', matter1);
+
+        const source0 = mocks.pageFactory.create.getCall(0).args[0];
+        source0.should.eql(tagSource);
+        const category0 = mocks.pageFactory.create.getCall(0).args[1];
+        category0.title.should.equal('Pages');
+        const actualMatter0 = mocks.pageFactory.create.getCall(0).args[2];
+        actualMatter0.should.eql(matter0);
+
+        const source1 = mocks.pageFactory.create.getCall(1).args[0];
+        source1.should.eql(postSource);
+        const category1 = mocks.pageFactory.create.getCall(1).args[1];
+        category1.title.should.equal('Posts');
+        const actualMatter1 = mocks.pageFactory.create.getCall(1).args[2];
+        actualMatter1.should.eql(matter1);
       });
 
       it('calls renderer.render(...)', () => {

@@ -1,11 +1,11 @@
 
 import { createMemoryHistory } from 'history';
 
-import { Config, Paramorph, Layout, Include, Page, Tag } from '../../model';
+import { Config, CollectionConfig, Paramorph, Layout, Include, Page, Collection, Tag } from '../../model';
 import { LoaderRenderer } from '../../boot';
 import { stripTags, removeEntities } from '../../utils';
 
-import { ProjectStructure, SpecialDirs, SourceFile } from './ProjectStructure';
+import { ProjectStructure, SpecialDirs, SourceFile, SourceDirectory } from './ProjectStructure';
 import { FrontMatter } from './FrontMatter';
 import { PageFactory } from './PageFactory';
 import { TagFactory } from './TagFactory';
@@ -28,7 +28,17 @@ export class ConfigLoader {
     specialDirs.layouts.forEach(file => paramorph.addLayout(new Layout(file.name, file.path)));
     specialDirs.includes.forEach(file => paramorph.addInclude(new Include(file.name, file.path)));
 
-    const collectionFileTuples = this.getCollectionFileTuples(specialDirs);
+    const collectionFileTuples : { file : SourceFile, collection : Collection }[] = [];
+    specialDirs.collections.forEach(dir => {
+      const { name, path } = dir;
+      const cfg = config.collections[name] || {} as CollectionConfig;
+
+      const collection = new Collection(name, cfg.title || toTitle(name), path, cfg.layout, cfg.output);
+      paramorph.addCollection(collection);
+
+      dir.files.forEach(file => collectionFileTuples.push({ file, collection }));
+    });
+
     // TODO queue + limited number of workers?
     await Promise.all(
       collectionFileTuples.map(async ({ collection, file }) => {
@@ -48,17 +58,6 @@ export class ConfigLoader {
     this.validateCategories(paramorph);
 
     return paramorph;
-  }
-
-  private getCollectionFileTuples(specialDirs : SpecialDirs) {
-    return [].concat.apply(
-      [],
-      Object.keys(specialDirs.collections)
-        .map(collection => {
-          const sourceFiles = specialDirs.collections[collection] as SourceFile[];
-          return sourceFiles.map(file => ({ file, collection }));
-        })
-    ) as { file : SourceFile, collection : string }[];
   }
 
   private addTags(paramorph : Paramorph) {
@@ -188,4 +187,8 @@ export class ConfigLoader {
 }
 
 export default ConfigLoader;
+
+function toTitle(name : string) {
+  return name.substring(0, 1).toUpperCase() + name.substring(1);
+}
 

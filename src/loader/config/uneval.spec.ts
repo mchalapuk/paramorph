@@ -1,7 +1,7 @@
 
 import { readFileSync } from 'fs';
 
-import { Paramorph, Layout, Include, Page, Category, Tag } from '../../model';
+import { Paramorph, Layout, Include, Page, Collection, Category, Tag } from '../../model';
 
 import { uneval } from './uneval';
 
@@ -14,12 +14,14 @@ describe('uneval', () => {
     const original = new Paramorph({ title: 'Test' } as any);
     original.addLayout(new Layout('default', './_layouts/default.ts'));
     original.addInclude(new Include('BreadCrumbs', './_includes/BreadCrumbs/index.ts'));
+    original.addCollection(new Collection('pages', 'Pages', './_pages'));
+    original.addCollection(new Collection('posts', 'Posts', './_posts'));
     original.addPage(new Page(
       '/',
       'Home',
       'This is a test page',
       'http://some.address/image.jpg',
-      'pages',
+      'Pages',
       'default',
       './index.markdown',
       true,
@@ -33,7 +35,7 @@ describe('uneval', () => {
       'Do It Yourself!',
       'Yes, you can!',
       'http://some.address/diy.jpg',
-      'posts',
+      'Posts',
       'default',
       './diy.markdown',
       true,
