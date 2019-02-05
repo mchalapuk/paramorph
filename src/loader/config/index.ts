@@ -27,7 +27,7 @@ function loader(this : webpack.loader.LoaderContext, source : string, map : any)
   );
   loader.load(parser.parse(source))
     .then(paramorph => {
-      const source = 'const { Paramorph, Layout, Include, Page, Category, Tag } '
+      const source = 'const { Paramorph, Layout, Include, Page, Collection, Category, Tag } '
         +'= require(\'paramorph/model\');\n'
         + uneval(paramorph, 'paramorph')
         +';\nmodule.exports.default = paramorph;\n'
