@@ -1,5 +1,9 @@
 
 export {
+  Content,
+} from './Content';
+
+export {
   Context,
 } from './Context';
 

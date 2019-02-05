@@ -11,6 +11,7 @@ export {
 } from './model';
 
 export {
+  Content,
   Context,
   ContextTypes,
   ContextContainer,
