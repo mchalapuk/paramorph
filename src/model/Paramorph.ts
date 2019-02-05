@@ -9,6 +9,7 @@ export class Paramorph {
   readonly pages : HashMap<Page> = {};
   readonly categories : HashMap<Category> = {};
   readonly tags : HashMap<Category> = {};
+  readonly collections : HashMap<Page[]> = {};
 
   readonly layoutLoaders : HashMap<Loader> = {};
   readonly includeLoaders : HashMap<Loader> = {};
@@ -35,6 +36,9 @@ export class Paramorph {
     }
 
     this.pages[page.url] = page;
+    const collection : Page[] = this.collections[page.collection] || [];
+    collection.push(page);
+    this.collections[page.collection] = collection;
 
     if (page instanceof Category) {
       this.categories[page.title] = page;
