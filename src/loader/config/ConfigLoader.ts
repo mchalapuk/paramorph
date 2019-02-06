@@ -1,5 +1,11 @@
 
+import * as React from 'react';
+import * as ReactDomServer from 'react-dom/server';
+import { History, createMemoryHistory } from 'history';
+import Module = require('module');
+
 import { Config, CollectionConfig, Paramorph, Layout, Include, Page, Collection, Tag } from '../../model';
+import { ContextContainer } from '../../react';
 import MarkdownLoader from '../markdown/MarkdownLoader';
 import FileSystem from '../../platform/interface/FileSystem';
 
@@ -86,6 +92,7 @@ export class ConfigLoader {
     const pages = Object.keys(paramorph.pages)
       .map(key => paramorph.pages[key] as Page);
     const index = paramorph.pages['/'] as Page;
+    const history = createMemoryHistory();
 
     const promises = pages.map(async (page : Page) => {
       if (page.description || !page.output) {
@@ -99,7 +106,7 @@ export class ConfigLoader {
           set: () => { throw new Error('Page.description is readonly'); },
         });
       } else {
-        const description = await this.descriptionFromContent(page, paramorph);
+        const description = await this.descriptionFromContent(page, paramorph, history);
 
         Object.defineProperty(page, 'description', {
           get: () => description,
@@ -113,12 +120,13 @@ export class ConfigLoader {
   private async addDefaultImages(paramorph : Paramorph) {
     const pages = Object.keys(paramorph.pages)
       .map(key => paramorph.pages[key] as Page);
+    const history = createMemoryHistory();
 
     const promises = pages.map(async (page : Page) => {
       if (page.image || !page.output) {
         return;
       }
-      const description = await this.imageFromContent(page, paramorph);
+      const description = await this.imageFromContent(page, paramorph, history);
 
       Object.defineProperty(page, 'image', {
         get: () => description,
@@ -128,9 +136,10 @@ export class ConfigLoader {
     return Promise.all(promises);
   }
 
-  private async descriptionFromContent(page : Page, paramorph : Paramorph) {
-    const source = await this.fs.read(page.source, 2048);
-    const markup = this.markdownLoader.load(source, page.url, paramorph);
+  private async descriptionFromContent(page : Page, paramorph : Paramorph, history : History) {
+    const markdownSource = await this.fs.read(page.source, 2048);
+    const source = this.markdownLoader.load(markdownSource, page.url, paramorph);
+    const markup = this.render(source, page, paramorph, history);
     return removeEntities(stripTags(markup));
   }
 
@@ -138,9 +147,11 @@ export class ConfigLoader {
     return removeEntities(`${index.title} ${page.title}: ${page.pages.map(p => p.title).join(', ')}`);
   }
 
-  private async imageFromContent(page : Page, paramorph : Paramorph) {
-    const source = await this.fs.read(page.source, 2048);
-    const markup = this.markdownLoader.load(source, page.url, paramorph);
+  private async imageFromContent(page : Page, paramorph : Paramorph, history : History) {
+    const markdownSource = await this.fs.read(page.source, 2048);
+    const source = this.markdownLoader.load(markdownSource, page.url, paramorph);
+    const markup = this.render(source, page, paramorph, history);
+
     const found = /<img[^>]* src="([^"]*)"[^>]*>/.exec(markup);
     if (!found) {
       console.warn(`Couldn't find image on page ${page.url}; page.image is null`);
@@ -180,6 +191,20 @@ export class ConfigLoader {
     if (missing.length !== 0) {
       throw new Error(`Couldn't find category page(s): ${JSON.stringify(missing)}`);
     }
+  }
+
+  private render(source : string, page : Page, paramorph : Paramorph, history : History) {
+    const newModule = new Module(page.url);
+    newModule.paths = (Module as any)._nodeModulePaths(process.cwd());
+    newModule.filename = page.url;
+    (newModule as any)._compile(source, page.url);
+    const PageComponent = newModule.exports.default;
+
+    const pageElement = React.createElement(PageComponent, { respectLimit: true });
+    const container = React.createElement(ContextContainer, { history, paramorph, page }, pageElement);
+
+    const html = ReactDomServer.renderToStaticMarkup(container);
+    return html;
   }
 }
 

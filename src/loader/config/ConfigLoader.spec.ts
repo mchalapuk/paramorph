@@ -327,7 +327,10 @@ describe('ConfigLoader', () => {
       beforeEach(async () => {
         mocks.pageFactory.create.onCall(0).returns(page0);
         mocks.pageFactory.create.onCall(1).returns(page1);
-        mocks.markdownLoader.load.returns('<a>Description</a>');
+        mocks.markdownLoader.load.returns(
+          'const React = require("react");\n' +
+          'exports.default = () => React.createElement("a", {}, "Description");'
+        );
         matterPromise0.resolve(matter0);
         matterPromise1.resolve(matter1);
         paramorph = await paramorphPromise;
