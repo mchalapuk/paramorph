@@ -1,9 +1,5 @@
 
 export {
-  LoaderRenderer,
-} from './LoaderRenderer';
-
-export {
   ServerRenderer,
   Locals,
   HashMap,

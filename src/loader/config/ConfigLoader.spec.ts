@@ -29,9 +29,12 @@ describe('ConfigLoader', () => {
     pageFactory: {
       create: sinon.stub(),
     },
-    renderer: {
-      render: sinon.stub(),
+    markdownLoader: {
+      load: sinon.stub(),
     },
+    fs: {
+      read: sinon.stub(),
+    }
   };
 
   let testedLoader : ConfigLoader;
@@ -42,7 +45,8 @@ describe('ConfigLoader', () => {
       mocks.projectStructure as any,
       mocks.frontMatter as any,
       mocks.pageFactory as any,
-      mocks.renderer as any,
+      mocks.markdownLoader as any,
+      mocks.fs as any,
     );
   });
   afterEach(() => {
@@ -52,8 +56,10 @@ describe('ConfigLoader', () => {
     mocks.frontMatter.read.resetHistory();
     mocks.pageFactory.create.resetBehavior();
     mocks.pageFactory.create.resetHistory();
-    mocks.renderer.render.resetBehavior();
-    mocks.renderer.render.resetHistory();
+    mocks.markdownLoader.load.resetBehavior();
+    mocks.markdownLoader.load.resetHistory();
+    mocks.fs.read.resetBehavior();
+    mocks.fs.read.resetHistory();
   });
 
   const tagPage = {
@@ -321,7 +327,7 @@ describe('ConfigLoader', () => {
       beforeEach(async () => {
         mocks.pageFactory.create.onCall(0).returns(page0);
         mocks.pageFactory.create.onCall(1).returns(page1);
-        mocks.renderer.render.returns('<a>Description</a>');
+        mocks.markdownLoader.load.returns('<a>Description</a>');
         matterPromise0.resolve(matter0);
         matterPromise1.resolve(matter1);
         paramorph = await paramorphPromise;
@@ -345,9 +351,8 @@ describe('ConfigLoader', () => {
         actualMatter1.should.eql(matter1);
       });
 
-      it('calls renderer.render(...)', () => {
-        mocks.renderer.render.should.have.callCount(1);
-        mocks.renderer.render.should.have.been.calledWith(page1);
+      it('calls markdownLoader.loader(...)', () => {
+        mocks.markdownLoader.load.should.have.callCount(1);
       });
     });
   });

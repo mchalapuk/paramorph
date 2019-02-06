@@ -3,7 +3,7 @@ import * as webpack from 'webpack';
 import * as path from 'path'
 
 import FileSystem from '../../platform/node/FileSystem';
-import { LoaderRenderer } from '../../boot';
+import MarkdownLoader from '../markdown/MarkdownLoader';
 
 import ConfigParser from './ConfigParser';
 import ConfigLoader from './ConfigLoader';
@@ -24,8 +24,10 @@ function loader(this : webpack.loader.LoaderContext, source : string, map : any)
     new ProjectStructure(fs),
     new FrontMatter(fs),
     new PageFactory(),
-    new LoaderRenderer(fs),
+    new MarkdownLoader(),
+    fs,
   );
+
   loader.load(parser.parse(source))
     .then(paramorph => {
       Object.keys(paramorph.pages)
