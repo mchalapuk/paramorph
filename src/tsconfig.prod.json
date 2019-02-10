@@ -31,7 +31,8 @@
       "offensive",
       "history",
       "markdown-it",
-      "ejs"
+      "ejs",
+      "striptags"
     ],
     "baseUrl": ".",
     "paths": {

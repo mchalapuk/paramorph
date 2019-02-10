@@ -1,21 +1,25 @@
 
 import * as webpack from 'webpack';
+import * as utils from 'loader-utils';
 import * as path from 'path'
 
 import FileSystem from '../../platform/node/FileSystem';
-import MarkdownLoader from '../markdown/MarkdownLoader';
 
 import ConfigParser from './ConfigParser';
 import ConfigLoader from './ConfigLoader';
 import ProjectStructure from './ProjectStructure';
 import FrontMatter from './FrontMatter';
 import PageFactory from './PageFactory';
+import EmptyContentLoader from './EmptyContentLoader';
+import FullContentLoader from './FullContentLoader';
 import uneval from './uneval';
 
 export = loader;
 
 function loader(this : webpack.loader.LoaderContext, source : string, map : any) {
   const callback = this.async() as webpack.loader.loaderCallback;
+
+  const options = utils.getOptions(this);
 
   const fs = new FileSystem();
   const parser = new ConfigParser();
@@ -24,8 +28,10 @@ function loader(this : webpack.loader.LoaderContext, source : string, map : any)
     new ProjectStructure(fs),
     new FrontMatter(fs),
     new PageFactory(),
-    new MarkdownLoader(),
-    fs,
+    options.shallow
+      ? new EmptyContentLoader()
+      : new FullContentLoader(this)
+    ,
   );
 
   loader.load(parser.parse(source))

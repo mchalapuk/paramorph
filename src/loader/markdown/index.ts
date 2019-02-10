@@ -13,7 +13,7 @@ function markdownLoader(this : webpack.loader.LoaderContext, source : string) {
   if (!callback) {
     throw new Error('MarkdownLoader: couldn\'t create callback.');
   }
-  const configUrl = this.resolve(this.context, '@website/_config', (err, configUrl) => {
+  this.resolve(this.context, '?shallow!@website/_config', (err, configUrl) => {
     if (err) {
       this.emitError(err);
       return;

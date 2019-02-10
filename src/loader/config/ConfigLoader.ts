@@ -6,13 +6,12 @@ import Module = require('module');
 
 import { Config, CollectionConfig, Paramorph, Layout, Include, Page, Collection, Tag } from '../../model';
 import { ContextContainer } from '../../react';
-import MarkdownLoader from '../markdown/MarkdownLoader';
-import FileSystem from '../../platform/interface/FileSystem';
 
-import { ProjectStructure, SpecialDirs, SourceFile, SourceDirectory } from './ProjectStructure';
-import { FrontMatter } from './FrontMatter';
-import { PageFactory } from './PageFactory';
-import { TagFactory } from './TagFactory';
+import ProjectStructure, { SpecialDirs, SourceFile, SourceDirectory } from './ProjectStructure';
+import FrontMatter from './FrontMatter';
+import PageFactory from './PageFactory';
+import TagFactory from './TagFactory';
+import ContentLoader from './ContentLoader';
 
 const TAG_PAGE_URL = '/tag';
 
@@ -21,8 +20,7 @@ export class ConfigLoader {
     private structure : ProjectStructure,
     private frontMatter : FrontMatter,
     private pageFactory : PageFactory,
-    private markdownLoader : MarkdownLoader,
-    private fs : FileSystem,
+    private contentLoader : ContentLoader,
   ) {
   }
 
@@ -54,13 +52,10 @@ export class ConfigLoader {
     );
 
     this.addTags(paramorph);
-    const descriptions = this.generateMissingDescriptions(paramorph);
-    const images = this.addDefaultImages(paramorph);
-    await descriptions;
-    await images;
-
     this.validatePages(paramorph);
     this.validateCategories(paramorph);
+
+    await this.contentLoader.load(paramorph);
 
     return paramorph;
   }
@@ -86,78 +81,6 @@ export class ConfigLoader {
         paramorph.addPage(tag);
       });
     });
-  }
-
-  private async generateMissingDescriptions(paramorph : Paramorph) {
-    const pages = Object.keys(paramorph.pages)
-      .map(key => paramorph.pages[key] as Page);
-    const index = paramorph.pages['/'] as Page;
-    const history = createMemoryHistory();
-
-    const promises = pages.map(async (page : Page) => {
-      if (page.description || !page.output) {
-        return;
-      }
-      if (page instanceof Tag) {
-        const description = await this.descriptionFromPages(index, page);
-
-        Object.defineProperty(page, 'description', {
-          get: () => description,
-          set: () => { throw new Error('Page.description is readonly'); },
-        });
-      } else {
-        const description = await this.descriptionFromContent(page, paramorph, history);
-
-        Object.defineProperty(page, 'description', {
-          get: () => description,
-          set: () => { throw new Error('Page.description is readonly'); },
-        });
-      }
-    });
-    return Promise.all(promises);
-  }
-
-  private async addDefaultImages(paramorph : Paramorph) {
-    const pages = Object.keys(paramorph.pages)
-      .map(key => paramorph.pages[key] as Page);
-    const history = createMemoryHistory();
-
-    const promises = pages.map(async (page : Page) => {
-      if (page.image || !page.output) {
-        return;
-      }
-      const description = await this.imageFromContent(page, paramorph, history);
-
-      Object.defineProperty(page, 'image', {
-        get: () => description,
-        set: () => { throw new Error('Page.image is readonly'); }
-      });
-    });
-    return Promise.all(promises);
-  }
-
-  private async descriptionFromContent(page : Page, paramorph : Paramorph, history : History) {
-    const markdownSource = await this.fs.read(page.source, 2048);
-    const source = this.markdownLoader.load(markdownSource, page.url, paramorph);
-    const markup = this.render(source, page, paramorph, history);
-    return removeEntities(stripTags(markup));
-  }
-
-  private descriptionFromPages(index : Page, page : Tag) {
-    return removeEntities(`${index.title} ${page.title}: ${page.pages.map(p => p.title).join(', ')}`);
-  }
-
-  private async imageFromContent(page : Page, paramorph : Paramorph, history : History) {
-    const markdownSource = await this.fs.read(page.source, 2048);
-    const source = this.markdownLoader.load(markdownSource, page.url, paramorph);
-    const markup = this.render(source, page, paramorph, history);
-
-    const found = /<img[^>]* src="([^"]*)"[^>]*>/.exec(markup);
-    if (!found) {
-      console.warn(`Couldn't find image on page ${page.url}; page.image is null`);
-      return null;
-    }
-    return found[1];
   }
 
   private validatePages(paramorph : Paramorph) {
@@ -192,92 +115,12 @@ export class ConfigLoader {
       throw new Error(`Couldn't find category page(s): ${JSON.stringify(missing)}`);
     }
   }
-
-  private render(source : string, page : Page, paramorph : Paramorph, history : History) {
-    const newModule = new Module(page.url);
-    newModule.paths = (Module as any)._nodeModulePaths(process.cwd());
-    newModule.filename = page.url;
-    (newModule as any)._compile(source, page.url);
-    const PageComponent = newModule.exports.default;
-
-    const pageElement = React.createElement(PageComponent, { respectLimit: true });
-    const container = React.createElement(ContextContainer, { history, paramorph, page }, pageElement);
-
-    const html = ReactDomServer.renderToStaticMarkup(container);
-    return html;
-  }
 }
 
 export default ConfigLoader;
 
 function toTitle(name : string) {
   return name.substring(0, 1).toUpperCase() + name.substring(1);
-}
-
-function stripTags(htmlText : string) {
-	let uIndentionChar = "-";
-	let oIndentionChar = "-";
-
-	// removel all \n linebreaks
-	let tmp = String(htmlText).replace(/\n|\r/g, " ");
-
-	// remove everything before and after <body> tags including the tag itself
-	tmp = tmp.replace(/<\/body>.*/i, "");
-	tmp = tmp.replace(/.*<body[^>]*>/i, "");
-
-	// remove inbody scripts and styles
-	tmp = tmp.replace(/<(script|style)( [^>]*)*>((?!<\/\1( [^>]*)*>).)*<\/\1>/gi, "");
-
-	// remove all tags except that are being handled separately
-	tmp = tmp.replace(/<(\/)?((?!h[1-6]( [^>]*)*>)(?!img( [^>]*)*>)(?!a( [^>]*)*>)(?!ul( [^>]*)*>)(?!ol( [^>]*)*>)(?!li( [^>]*)*>)(?!p( [^>]*)*>)(?!div( [^>]*)*>)(?!td( [^>]*)*>)(?!br( [^>]*)*>)[^>\/])[^>]*>/gi, "");
-
-  // remove images
-  tmp = tmp.replace(/<img([^>]*)>/gi, '');
-
-	function createListReplaceCb() {
-		return (match : string, listType : string, listAttributes : string | null, listBody : string) => {
-			let liIndex = 0;
-			let startMatch : string[] | null;
-			if(listAttributes && (startMatch = /start="([0-9]+)"/i.exec(listAttributes)) !== null) {
-				liIndex = parseInt(startMatch[1]) - 1;
-			}
-			const plainListItem = "<p>" + listBody.replace(
-				/<li[^>]*>(((?!<li[^>]*>)(?!<\/li>).)*)<\/li>/gi,
-				(str, listItem) => {
-  				let actSubIndex = 0;
-  				const plainListLine = listItem.replace(/(^|(<br \/>))(?!<p>)/gi, function(){
-  					if(listType === "o" && actSubIndex === 0){
-  						liIndex += 1;
-  						actSubIndex += 1;
-  						return "<br />" + liIndex + oIndentionChar;
-  					}
-  					return "<br />";
-  				});
-  				return plainListLine;
-  			}
-			) +"</p>";
-			return plainListItem;
-		};
-	}
-
-	// handle lists
-	tmp = tmp.replace(/<\/?ul[^>]*>|<\/?ol[^>]*>|<\/?li[^>]*>/gi, "");
-	// handle headings
-	tmp = tmp.replace(/<h([1-6])[^>]*>([^<]*)<\/h\1>/gi, " $2 ");
-	// replace <br>s, <td>s, <divs> and <p>s with linebreaks
-	tmp = tmp.replace(/<br( [^>]*)*>|<p( [^>]*)*>|<\/p( [^>]*)*>|<div( [^>]*)*>|<\/div( [^>]*)*>|<td( [^>]*)*>|<\/td( [^>]*)*>/gi, "");
-	// replace <a href>b<a> links with b (href)
-	tmp = tmp.replace(/<a[^>]*href="([^"]*)"[^>]*>([^<]+)<\/a[^>]*>/gi, function(str, href, linkText) {
-		return " " + linkText +" ";
-	});
-	// remove duplicated spaces including non braking spaces
-	tmp = tmp.replace(/( |&nbsp;|\t)+/gi, " ");
-	// remove line starter spaces
-	tmp = tmp.replace(/\n +/gi, "");
-	// remove content starter spaces
-	tmp = tmp.replace(/^ +/gi, "");
-
-	return tmp;
 }
 
 function removeEntities(str : string) {
