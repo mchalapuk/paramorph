@@ -52,9 +52,7 @@ export class ConfigLoader {
     );
 
     this.addTags(paramorph);
-    this.validatePages(paramorph);
     this.validateCategories(paramorph);
-
     await this.contentLoader.load(paramorph);
 
     return paramorph;
@@ -81,20 +79,6 @@ export class ConfigLoader {
         paramorph.addPage(tag);
       });
     });
-  }
-
-  private validatePages(paramorph : Paramorph) {
-    const pages = Object.keys(paramorph.pages)
-      .map(key => paramorph.pages[key] as Page);
-    const missingDescription = pages
-      .filter(p => p.description === '' && p.output)
-      .map(p => p.title)
-    ;
-    if (missingDescription.length !== 0) {
-      throw new Error(`Description missing in pages ${
-        JSON.stringify(missingDescription)
-      }. Write some text in the article or add \'description\' field.`);
-    }
   }
 
   private validateCategories(paramorph : Paramorph) {

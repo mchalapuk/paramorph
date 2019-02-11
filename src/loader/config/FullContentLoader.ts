@@ -29,6 +29,8 @@ export class FullContentLoader implements ContentLoader {
       .map(page => this.loadPage(page, paramorph))
     ;
     await Promise.all(promises);
+
+    this.validateDescriptions(paramorph);
   }
 
   async loadPage(page : Page, paramorph : Paramorph) : Promise<void> {
@@ -137,6 +139,20 @@ export class FullContentLoader implements ContentLoader {
     (module as any)._compile(source, url);
 
     return module.exports.default;
+  }
+
+  private validateDescriptions(paramorph : Paramorph) {
+    const pages = Object.keys(paramorph.pages)
+      .map(key => paramorph.pages[key] as Page);
+    const missingDescription = pages
+      .filter(p => p.description === '' && p.output)
+      .map(p => p.title)
+    ;
+    if (missingDescription.length !== 0) {
+      throw new Error(`Description missing in pages ${
+        JSON.stringify(missingDescription)
+      }. Write some text in the article or add \'description\' field.`);
+    }
   }
 }
 
