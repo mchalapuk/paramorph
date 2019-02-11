@@ -19,7 +19,7 @@ export = loader;
 function loader(this : webpack.loader.LoaderContext, source : string, map : any) {
   const callback = this.async() as webpack.loader.loaderCallback;
 
-  const options = utils.getOptions(this);
+  const options = utils.getOptions(this) || {};
 
   const fs = new FileSystem();
   const parser = new ConfigParser();
