@@ -35,7 +35,8 @@ export class FullContentLoader implements ContentLoader {
 
   async loadPage(page : Page, paramorph : Paramorph) : Promise<void> {
     return new Promise((resolve, reject) => {
-      this.context.resolve(this.context.context, `@website${page.url}`, (err, pageUrl) => {
+      const moduleName = `@website${page.source.substring(1)}`;
+      this.context.resolve(this.context.context, moduleName, (err, pageUrl) => {
         if (err) {
           this.context.emitError(err);
           reject(err);
