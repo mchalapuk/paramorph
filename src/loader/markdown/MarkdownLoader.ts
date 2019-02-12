@@ -1,5 +1,5 @@
 
-import { Paramorph } from '../../model';
+import SourceFile from '../config/SourceFile';
 
 import MarkdownCompiler from './MarkdownCompiler';
 import ComponentTemplate from './ComponentTemplate';
@@ -13,9 +13,9 @@ export class MarkdownLoader {
   ) {
   }
 
-  load(source : string, fileName : string, paramorph : Paramorph) {
+  load(source : string, fileName : string, includes : SourceFile[]) {
     const html = this.markdown.toHtml(source, fileName);
-    const tsSource = this.template.compile(html, paramorph);
+    const tsSource = this.template.compile(html, { includes });
     const output = this.typescript.compile(tsSource, fileName);
     return output;
   }

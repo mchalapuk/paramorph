@@ -7,7 +7,8 @@ import Module = require('module');
 import { Config, CollectionConfig, Paramorph, Layout, Include, Page, Collection, Tag } from '../../model';
 import { ContextContainer } from '../../react';
 
-import ProjectStructure, { SpecialDirs, SourceFile, SourceDirectory } from './ProjectStructure';
+import SourceFile from './SourceFile';
+import ProjectStructure, { SpecialDirs } from './ProjectStructure';
 import FrontMatter from './FrontMatter';
 import PageFactory from './PageFactory';
 import TagFactory from './TagFactory';

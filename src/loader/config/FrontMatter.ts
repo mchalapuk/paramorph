@@ -2,7 +2,7 @@
 import { safeLoad } from 'js-yaml';
 
 import { FileSystem } from '../../platform/interface/FileSystem';
-import { SourceFile } from './ProjectStructure';
+import SourceFile from './SourceFile';
 
 const DELIMITER = '---\n';
 const MAX_FM_SIZE = 2048;

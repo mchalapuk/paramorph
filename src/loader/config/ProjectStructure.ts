@@ -4,29 +4,22 @@ import { resolve } from 'path';
 import { FileSystem } from '../../platform/interface/FileSystem';
 import { Config } from '../../model';
 
+import DirectoryScanner from './DirectoryScanner';
+import SourceDirectory from './SourceDirectory';
+import SourceFile from './SourceFile';
+
 export interface SpecialDirs {
   readonly layouts : SourceFile[];
   readonly includes : SourceFile[];
   readonly collections : SourceDirectory[];
 }
 
-export interface SourceDirectory {
-  readonly name : string;
-  readonly path : string;
-  readonly files : SourceFile[];
-}
+export const LAYOUTS_DIR = '_layouts';
+export const INCLUDES_DIR = '_includes';
+export const ROOT_DIR = '.';
 
-export interface SourceFile {
-  readonly name : string;
-  readonly path : string;
-}
-
-const LAYOUTS_DIR = '_layouts';
-const INCLUDES_DIR = '_includes';
-const ROOT_DIR = '.';
-
-const JS_REGEX = /\.(t|j)sx?$/;
-const MD_REGEX = /\.markdown$/;
+export const JS_REGEX = /\.(t|j)sx?$/;
+export const MD_REGEX = /\.markdown$/;
 
 const FORBIDDEN_NAMES = [
   'layouts',
@@ -35,7 +28,12 @@ const FORBIDDEN_NAMES = [
 ];
 
 export class ProjectStructure {
-  constructor(private fs : FileSystem) {
+  private readonly scanner : DirectoryScanner;
+
+  constructor(
+    private readonly fs : FileSystem,
+  ) {
+    this.scanner = new DirectoryScanner(fs);
   }
 
   async scan(config : Config) : Promise<SpecialDirs> {
@@ -65,11 +63,11 @@ export class ProjectStructure {
     const collectionFolders = underscoredFolders
       .filter(folder => requiredFolders.indexOf(folder) === -1);
 
-    await this.scanDir(`./${LAYOUTS_DIR}`, JS_REGEX)
+    await this.scanner.scanDir(`./${LAYOUTS_DIR}`, JS_REGEX)
       .then(files => specialDirs.layouts = files);
-    await this.scanDir(`./${INCLUDES_DIR}`, JS_REGEX)
+    await this.scanner.scanDir(`./${INCLUDES_DIR}`, JS_REGEX)
       .then(files => specialDirs.includes = files);
-    await this.scanDir(ROOT_DIR, MD_REGEX, false)
+    await this.scanner.scanDir(ROOT_DIR, MD_REGEX, false)
       .then(files => specialDirs.collections.push({ name: '$root', path: '.', files }));
 
     for (let i = 0; i < collectionNames.length; ++i) {
@@ -80,62 +78,18 @@ export class ProjectStructure {
         break;
       }
       const path = `./${folder}`;
-      await this.scanDir(path, MD_REGEX)
+      await this.scanner.scanDir(path, MD_REGEX)
         .then(files => specialDirs.collections.push({ name, path, files }));
     }
 
     return specialDirs;
   }
 
-  private async scanDir(
-    path : string,
-    fileRegex : RegExp,
-    subdirs : boolean = true,
-  ) : Promise<SourceFile[]> {
-
-    const result = [] as SourceFile[];
-    const rawContents = (await this.fs.readDir(path)).sort();
-
-    for (const name of rawContents) {
-      const subPath = `${path}/${name}`;
-      const stat = await this.fs.lstat(subPath);
-
-      if (subdirs && stat.isDirectory()) {
-        const subContents = (await this.fs.readDir(subPath))
-          .filter(subName => subName.match(fileRegex))
-          .filter(subName => subName.startsWith('index.') && !subName.substring(6).match(fileRegex))
-          .sort()
-        ;
-        if (subContents.length === 0) {
-          continue;
-        }
-        if (subContents.length > 1) {
-          throw new Error(`multiple index files found in subfolder: ${subPath}: ${subContents}`);
-        }
-        const subName = subContents[0];
-        const subSubPath = `${subPath}/${subName}`;
-        const subStat = await this.fs.lstat(subSubPath);
-
-        if (!subStat.isDirectory()) {
-          result.push({ name, path: subSubPath });
-        }
-      } else if (name.match(fileRegex)) {
-        result.push({ name : removeExtension(name), path: subPath });
-      }
-    }
-
-    return result;
-  }
 }
 
 export default ProjectStructure;
 
 export interface HashMap<T> {
   [name : string] : T | undefined;
-}
-
-function removeExtension(name : string) {
-  const dotIndex = name.indexOf('.');
-  return dotIndex !== -1 ? name.substring(0, dotIndex) : name;
 }
 

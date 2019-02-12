@@ -11,7 +11,7 @@ import 'offensive/assertions/allElementsThat/register';
 
 import { Page, Collection, Category } from '../../model';
 
-import { SourceFile } from './ProjectStructure';
+import SourceFile from './SourceFile';
 
 export interface Matter {
   date : Date;

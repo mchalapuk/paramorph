@@ -12,8 +12,8 @@ export class ComponentTemplate {
     private readonly templateSource : string = DEFAULT_TEMPLATE,
   ) {
   }
-  compile(html : string, paramorph : Paramorph) {
-    return ejs.render(this.templateSource, { paramorph, html });
+  compile(html : string, data : any) {
+    return ejs.render(this.templateSource, { ...data, html });
   }
 }
 
