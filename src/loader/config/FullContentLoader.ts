@@ -13,7 +13,6 @@ import { ContextContainer } from '../../react';
 
 import ContentLoader from './ContentLoader';
 
-const MARKDOWN_LOADER = '/paramorph/loader/markdown';
 const TEMPLATE = 'paramorph/loader/markdown/NoDependencyPage.tsx.ejs';
 
 export class FullContentLoader implements ContentLoader {
@@ -39,7 +38,7 @@ export class FullContentLoader implements ContentLoader {
 
   async loadPage(page : Page, paramorph : Paramorph) : Promise<void> {
     const loadModule = promisify(this.context.loadModule.bind(this.context));
-    const query = `!${MARKDOWN_LOADER}?template=${TEMPLATE}!@website${page.source.substring(1)}`;
+    const query = `!markdown-loader?template=${TEMPLATE}!@website${page.source.substring(1)}`;
 
     await loadModule(query)
       .then((pageSource : string) => {
@@ -56,7 +55,7 @@ export class FullContentLoader implements ContentLoader {
     const html = this.render(PageComponent, page, paramorph);
 
     if (!page.image) {
-      const image = this.imageFromContent(html, page);
+      const image = await this.imageFromContent(html, page);
 
       Object.defineProperty(page, 'image', {
         get: () => image,
@@ -82,7 +81,7 @@ export class FullContentLoader implements ContentLoader {
       console.log(`generated pages['${page.url}'].description = '${description}'`);
 
     } else {
-      const description = stripTags(html);
+      const description = removeEntities(stripTags(html));
 
       Object.defineProperty(page, 'description', {
         get: () => description,
@@ -116,7 +115,9 @@ export class FullContentLoader implements ContentLoader {
   private async imageFromContent(html : string, page : Page) {
     const found = /<img[^>]* src="([^"]*)"[^>]*>/.exec(html);
     if (!found) {
-      this.context.emitWarning(`Couldn't find image on page ${page.url}; page.image is null`);
+      this.context.emitWarning(
+        new Error(`Couldn't find image on page ${page.url}; page.image is null`),
+      );
       return null;
     }
     return found[1];
@@ -154,6 +155,8 @@ export default FullContentLoader;
 
 function removeEntities(str : string) {
   return str
+    .replace(/&#x22;/g, '\"')
+    .replace(/&#x27;/g, '\'')
     .replace(/&nbsp;/g, ' ')
     .replace(/&[^\s;]+;/g, '')
   ;
