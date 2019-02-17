@@ -96,6 +96,16 @@ export class PageFactory {
 
 export default PageFactory;
 
+export function defaultUrl(title : string) {
+  const converted = title.toLowerCase()
+    .replace(/[ ,_.`~+*()\[\]#?]/g, '-')
+    .replace(/--/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '')
+  ;
+  return `/${converted}`;
+}
+
 const VALID_ROLES = ['', null, 'page', 'Page', 'PAGE', 'category', 'Category', 'CATEGORY'];
 
 function validateFrontMatter(fileName : string, matter : any) {
@@ -125,9 +135,5 @@ function defaultTitle(file : SourceFile) {
   const title = `${file.name.charAt(0).toUpperCase()}${file.name.substring(1).replace(/-/g, ' ')}`;
   console.warn(`title of ${file.path} is not defined; defaulting to ${title}`);
   return title;
-}
-
-function defaultUrl(title : string) {
-  return `/${title.toLowerCase().replace(/ /g, '-')}`;
 }
 

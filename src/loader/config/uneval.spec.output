@@ -86,6 +86,7 @@ paramorph.categories["Do It Yourself!"].pages.push(paramorph.pages["/"]);
 // TAGS //
 paramorph.addPage(
   new Tag(
+    "/tags/exciting",
     "exciting",
     "This is an exciting tag.",
     "http://some.address/exciting.jpg",

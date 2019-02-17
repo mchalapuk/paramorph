@@ -45,6 +45,7 @@ describe('uneval', () => {
       1,
     ));
     original.addPage(new Tag(
+      '/tags/exciting',
       'exciting',
       'This is an exciting tag.',
       'http://some.address/exciting.jpg',

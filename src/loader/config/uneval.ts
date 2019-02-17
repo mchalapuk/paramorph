@@ -208,6 +208,8 @@ export function unevalCategory(page : Category) {
 
 export function unevalTag(page : Tag) {
   return `  new Tag(\n    ${
+    JSON.stringify(page.url)
+  },\n    ${
     JSON.stringify((page as Tag).originalTitle)
   },\n    ${
     JSON.stringify(page.description)

@@ -6,6 +6,7 @@ export class Tag extends Page {
   readonly pages : Page[] = [];
 
   constructor(
+    url : string,
     title : string,
     description : string,
     image : string | null,
@@ -15,7 +16,7 @@ export class Tag extends Page {
     timestamp : number,
   ) {
     super(
-      `/tags/${title}`,
+      url,
       `#${title}`,
       description,
       image,
