@@ -17,6 +17,8 @@ export class NoDependencyPage extends React.PureComponent<{}, {}> {
   };
 
   render() {
+    const { paramorph, page, history } = this.context;
+
     return (
       <div><%- html %></div>
     );
