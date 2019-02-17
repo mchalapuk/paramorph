@@ -11,7 +11,7 @@ export class MarkdownCompiler {
     this.markdownIt = new MarkdownIt({
       html: true,
       xhtmlOut: true,
-      breaks: true,
+      breaks: false,
       linkify: true,
     });
   }
