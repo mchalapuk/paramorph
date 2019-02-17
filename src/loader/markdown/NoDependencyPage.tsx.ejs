@@ -1,0 +1,32 @@
+
+import * as React from 'react';
+
+<% includes.forEach(file => { %>
+const <%= file.name %> = Include;
+<% }) %>
+
+/**
+ * @author Maciej Chałapuk (maciej@chalapuk.pl)
+ */
+export function NoDependencyPage(props : {}) {
+  return (
+    <div><%- html %></div>
+  );
+}
+
+export default NoDependencyPage;
+
+function Include(props : any) {
+  const propNames = [ 'title', 'name', 'description', 'details' ];
+
+  return (
+    <div>
+      { propNames.map(name => {
+          const value = props[name];
+          return typeof value === 'string' ? `${value}.` : null;
+        }) }
+      { props.children }
+    </div>
+  );
+}
+

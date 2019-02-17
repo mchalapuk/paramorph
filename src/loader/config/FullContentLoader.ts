@@ -2,6 +2,7 @@
 import * as webpack from 'webpack';
 import * as React from 'react';
 import * as ReactDomServer from 'react-dom/server';
+import { promisify } from 'util';
 
 import Module = require('module');
 import { createMemoryHistory } from 'history';
@@ -11,6 +12,8 @@ import { Paramorph, Page, Tag } from '../../model';
 import { ContextContainer } from '../../react';
 
 import ContentLoader from './ContentLoader';
+
+const TEMPLATE = 'paramorph/loader/markdown/NoDependencyPage.tsx.ejs';
 
 export class FullContentLoader implements ContentLoader {
   private history = createMemoryHistory();
@@ -34,34 +37,17 @@ export class FullContentLoader implements ContentLoader {
   }
 
   async loadPage(page : Page, paramorph : Paramorph) : Promise<void> {
-    return new Promise((resolve, reject) => {
-      const moduleName = `@website${page.source.substring(1)}`;
-      this.context.resolve(this.context.context, moduleName, (err, pageUrl) => {
-        if (err) {
-          this.context.emitError(err);
-          reject(err);
-          return;
-        }
+    const loadModule = promisify(this.context.loadModule.bind(this.context));
+    const query = `?template=${TEMPLATE}@website${page.source.substring(1)}`;
 
-        this.context.loadModule(pageUrl, (err, pageSource) => {
-          if (err) {
-            this.context.emitError(err);
-            reject(err);
-            return;
-          }
-
-          this.loadPage0(pageSource, page, paramorph)
-            .then(
-              () => resolve(),
-              err => {
-                this.context.emitError(err);
-                reject(err);
-              },
-            )
-          ;
-        });
-      });
-    });
+    loadModule(query)
+      .then((pageSource : string) => {
+        return this.loadPage0(pageSource, page, paramorph);
+      })
+    .catch((err : any) => {
+        this.context.emitError(err);
+      })
+    ;
   }
 
   private async loadPage0(pageSource : string, page : Page, paramorph : Paramorph) {
@@ -76,26 +62,29 @@ export class FullContentLoader implements ContentLoader {
         set: () => { throw new Error('Page.image is readonly'); }
       });
     }
-    if (!page.description) {
-      if (page instanceof Tag) {
-        const index = paramorph.pages['/'];
-        if (index === undefined) {
-          throw new Error('coundn\'t find page of url \'/\' (index page)');
-        }
-        const description = await this.descriptionFromPages(index, page);
+    if (page.description) {
+      return;
+    }
 
-        Object.defineProperty(page, 'description', {
-          get: () => description,
-          set: () => { throw new Error('Page.description is readonly'); },
-        });
-      } else {
-        const description = stripTags(html);
-
-        Object.defineProperty(page, 'description', {
-          get: () => description,
-          set: () => { throw new Error('Page.description is readonly'); },
-        });
+    if (page instanceof Tag) {
+      const index = paramorph.pages['/'];
+      if (index === undefined) {
+        throw new Error('coundn\'t find page of url \'/\' (index page)');
       }
+      const description = await this.descriptionFromPages(index, page);
+
+      Object.defineProperty(page, 'description', {
+        get: () => description,
+        set: () => { throw new Error('Page.description is readonly'); },
+      });
+
+    } else {
+      const description = stripTags(html);
+
+      Object.defineProperty(page, 'description', {
+        get: () => description,
+        set: () => { throw new Error('Page.description is readonly'); },
+      });
     }
   }
 
