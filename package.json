@@ -9,7 +9,7 @@
     "compile": "npm run compile-ts && npm run copy-js",
     "test": "TS_NODE_PROJECT=./src/tsconfig.test.json TS_NODE_FILES=1 mocha -r source-map-support/register -r ts-node/register ./src/mocha.config.ts $(find -name \"*.spec.ts*\")",
     "copy-package.json": "mkdir -p lib/ && cp package.json lib/",
-    "copy-static-files": "mkdir -p lib/loader && cp src/loader/markdown/MarkdownPage.tsx.ejs lib/loader/markdown",
+    "copy-static-files": "mkdir -p lib/loader && cp src/loader/markdown/*.ejs lib/loader/markdown",
     "copy": "npm run copy-package.json && npm run copy-static-files",
     "link-modules": "ln -sf ../node_modules lib/node_modules",
     "build": "npm run compile && npm run copy && npm run link-modules && npm run test",

@@ -13,6 +13,7 @@ import { ContextContainer } from '../../react';
 
 import ContentLoader from './ContentLoader';
 
+const MARKDOWN_LOADER = '/paramorph/loader/markdown';
 const TEMPLATE = 'paramorph/loader/markdown/NoDependencyPage.tsx.ejs';
 
 export class FullContentLoader implements ContentLoader {
@@ -38,7 +39,7 @@ export class FullContentLoader implements ContentLoader {
 
   async loadPage(page : Page, paramorph : Paramorph) : Promise<void> {
     const loadModule = promisify(this.context.loadModule.bind(this.context));
-    const query = `?template=${TEMPLATE}@website${page.source.substring(1)}`;
+    const query = `!${MARKDOWN_LOADER}?template=${TEMPLATE}!@website${page.source.substring(1)}`;
 
     loadModule(query)
       .then((pageSource : string) => {
