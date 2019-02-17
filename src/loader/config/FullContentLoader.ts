@@ -141,15 +141,20 @@ export class FullContentLoader implements ContentLoader {
   }
 
   private validateDescriptions(paramorph : Paramorph) {
-    const pages = Object.keys(paramorph.pages)
+    const urls = Object.keys(paramorph.pages)
       .map(key => paramorph.pages[key] as Page)
       .filter(p => p.description === '' && p.output)
       .map(p => p.url)
-      .forEach(url => {
-        this.context.emitError(new Error(`Description missing in page ${
-          url}. Write some text on the page or add 'description' field.`));
-      })
     ;
+    if (!urls.length) {
+      return;
+    }
+
+    urls.forEach(url => {
+      this.context.emitError(new Error(`Description missing in page ${
+        url}. Write some text on the page or add 'description' field.`));
+    });
+    throw new Error(`Descriptions of ${urls.length} pages are missing`);
   }
 }
 
