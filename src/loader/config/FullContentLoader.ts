@@ -66,7 +66,7 @@ export class FullContentLoader implements ContentLoader {
       }
     }
     if (!page.description) {
-      const description = this.generateDescription(html, page);
+      const description = await this.generateDescription(html, page);
 
       if (description) {
         Object.defineProperty(page, 'description', {
