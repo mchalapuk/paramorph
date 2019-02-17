@@ -17,6 +17,7 @@ import uneval from './uneval';
 export = loader;
 
 function loader(this : webpack.loader.LoaderContext, source : string, map : any) {
+  this.cacheable && this.cacheable();
   const callback = this.async() as webpack.loader.loaderCallback;
 
   const options = utils.getOptions(this) || {};

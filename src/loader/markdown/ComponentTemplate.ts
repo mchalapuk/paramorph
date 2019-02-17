@@ -10,10 +10,11 @@ const DEFAULT_TEMPLATE = loadTemplate();
 export class ComponentTemplate {
   constructor(
     private readonly templateSource : string = DEFAULT_TEMPLATE,
+    private readonly data : any,
   ) {
   }
-  compile(html : string, data : any) {
-    return ejs.render(this.templateSource, { ...data, html });
+  compile(html : string) {
+    return ejs.render(this.templateSource, { ...this.data, html });
   }
 }
 

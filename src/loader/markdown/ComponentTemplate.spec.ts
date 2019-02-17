@@ -8,11 +8,14 @@ describe('markdown/ComponentTemplate', () => {
   let testedTemplate : ComponentTemplate;
 
   beforeEach(() => {
-    testedTemplate = new ComponentTemplate('<h1><%= title %></h1><div><%- html %></div>');
+    testedTemplate = new ComponentTemplate(
+      '<h1><%= title %></h1><div><%- html %></div>',
+      { title: 'test' },
+    );
   });
 
   it('properly compiles', () => {
-    const result = testedTemplate.compile('<a>link</a>', { title: 'test' });
+    const result = testedTemplate.compile('<a>link</a>');
     result.should.equal('<h1>test</h1><div><a>link</a></div>');
   });
 });
