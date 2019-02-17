@@ -66,7 +66,10 @@ export class FullContentLoader implements ContentLoader {
       }
     }
     if (!page.description) {
-      const description = await this.generateDescription(html, page);
+      const description = removeEntities(await this.generateDescription(html, page))
+        .replace(/[!?,.][^!?., ]/g, '$& ')
+        .replace(/  /g, ' ')
+      ;
 
       if (description) {
         Object.defineProperty(page, 'description', {
@@ -120,7 +123,7 @@ export class FullContentLoader implements ContentLoader {
   }
 
   private async generateDescription(html : string, page : Page) {
-    const description = removeEntities(stripTags(html.replace(/\n/g, ' ')));
+    const description = stripTags(html.replace(/\n/g, ' '));
 
     if (description) {
       return description;
@@ -137,7 +140,7 @@ export class FullContentLoader implements ContentLoader {
       .map(page => page.title)
       .join(', ')
     ;
-    return removeEntities(`${title}: ${pagesList}`);
+    return `${title}: ${pagesList}`;
   }
 
   private validateDescriptions(paramorph : Paramorph) {
