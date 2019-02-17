@@ -3,7 +3,7 @@ import * as React from 'react';
 import { PureComponent, Content } from 'paramorph';
 
 <% includes.forEach(file => { %>
-import <%= file.name %> from '<%= file.path %>';
+import <%= file.name %> from '@website/<%= file.path.substring(2) %>';
 <% }) %>
 
 /**
