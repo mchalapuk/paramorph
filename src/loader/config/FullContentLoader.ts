@@ -62,6 +62,7 @@ export class FullContentLoader implements ContentLoader {
         get: () => image,
         set: () => { throw new Error('Page.image is readonly'); }
       });
+      console.log(`generated pages['${page.url}'].image = '${image}'`);
     }
     if (page.description) {
       return;
@@ -78,6 +79,7 @@ export class FullContentLoader implements ContentLoader {
         get: () => description,
         set: () => { throw new Error('Page.description is readonly'); },
       });
+      console.log(`generated pages['${page.url}'].description = '${description}'`);
 
     } else {
       const description = stripTags(html);
@@ -86,6 +88,7 @@ export class FullContentLoader implements ContentLoader {
         get: () => description,
         set: () => { throw new Error('Page.description is readonly'); },
       });
+      console.log(`generated pages['${page.url}'].description = '${description}'`);
     }
   }
 
@@ -137,7 +140,7 @@ export class FullContentLoader implements ContentLoader {
       .map(key => paramorph.pages[key] as Page);
     const missingDescription = pages
       .filter(p => p.description === '' && p.output)
-      .map(p => p.title)
+      .map(p => p.url)
     ;
     if (missingDescription.length !== 0) {
       throw new Error(`Description missing in pages ${
