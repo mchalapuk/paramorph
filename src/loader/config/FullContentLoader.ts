@@ -8,7 +8,7 @@ import Module = require('module');
 import { createMemoryHistory } from 'history';
 import * as stripTags from 'striptags';
 
-import { Paramorph, Page, Tag } from '../../model';
+import { Paramorph, Page, Tag, Category } from '../../model';
 import { ContextContainer } from '../../react';
 
 import ContentLoader from './ContentLoader';
@@ -62,31 +62,11 @@ export class FullContentLoader implements ContentLoader {
           get: () => image,
           set: () => { throw new Error('Page.image is readonly'); }
         });
-
         console.log(`generated pages['${page.url}'].image = '${image}'`);
       }
     }
-    if (page.description) {
-      return;
-    }
-
-    if (page instanceof Tag) {
-      const index = paramorph.pages['/'];
-      if (index === undefined) {
-        throw new Error('coundn\'t find page of url \'/\' (index page)');
-      }
-      const description = await this.descriptionFromPages(index, page);
-
-      if (description) {
-        Object.defineProperty(page, 'description', {
-          get: () => description,
-          set: () => { throw new Error('Page.description is readonly'); },
-        });
-        console.log(`generated pages['${page.url}'].description = '${description}'`);
-      }
-
-    } else {
-      const description = removeEntities(stripTags(html.replace(/\n/g, ' ')));
+    if (!page.description) {
+      const description = this.generateDescription(html, page);
 
       if (description) {
         Object.defineProperty(page, 'description', {
@@ -96,6 +76,15 @@ export class FullContentLoader implements ContentLoader {
         console.log(`generated pages['${page.url}'].description = '${description}'`);
       }
     }
+  }
+
+  private exec(source : string, url : string) {
+    const module = new Module(url, this.context as any);
+    module.paths = (Module as any)._nodeModulePaths(this.context.context);
+    module.filename = url;
+    (module as any)._compile(source, url);
+
+    return module.exports.default;
   }
 
   private render(
@@ -130,21 +119,25 @@ export class FullContentLoader implements ContentLoader {
     return found[1];
   }
 
-  private descriptionFromPages(index : Page, tag : Tag) {
-    const pagesList = tag.pages
+  private async generateDescription(html : string, page : Page) {
+    const description = removeEntities(stripTags(html.replace(/\n/g, ' ')));
+
+    if (description) {
+      return description;
+    } else if (page instanceof Tag || page instanceof Category) {
+      const tagOrCategory = page as Tag | Category;
+      return await this.descriptionFromPages(page.title, tagOrCategory.pages);
+    }
+
+    return '';
+  }
+
+  private descriptionFromPages(title : string, pages : Page[]) {
+    const pagesList = pages
       .map(page => page.title)
       .join(', ')
     ;
-    return removeEntities(`${index.title} ${tag.title}: ${pagesList}`);
-  }
-
-  private exec(source : string, url : string) {
-    const module = new Module(url, this.context as any);
-    module.paths = (Module as any)._nodeModulePaths(this.context.context);
-    module.filename = url;
-    (module as any)._compile(source, url);
-
-    return module.exports.default;
+    return removeEntities(`${title}: ${pagesList}`);
   }
 
   private validateDescriptions(paramorph : Paramorph) {
