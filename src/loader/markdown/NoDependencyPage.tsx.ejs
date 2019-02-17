@@ -1,5 +1,6 @@
 
 import * as React from 'react';
+import * as PropTypes from 'prop-types';
 
 <% includes.forEach(file => { %>
 const <%= file.name %> = Include;
@@ -8,10 +9,18 @@ const <%= file.name %> = Include;
 /**
  * @author Maciej Chałapuk (maciej@chalapuk.pl)
  */
-export function NoDependencyPage(props : {}) {
-  return (
-    <div><%- html %></div>
-  );
+export class NoDependencyPage extends React.PureComponent<{}, {}> {
+  static contextTypes = {
+    paramorph: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+    page: PropTypes.object.isRequired,
+  };
+
+  render() {
+    return (
+      <div><%- html %></div>
+    );
+  }
 }
 
 export default NoDependencyPage;
@@ -23,7 +32,7 @@ function Include(props : any) {
     <div>
       { propNames.map(name => {
           const value = props[name];
-          return typeof value === 'string' ? `${value}.` : null;
+          return typeof value === 'string' ? `${value}. ` : null;
         }) }
       { props.children }
     </div>

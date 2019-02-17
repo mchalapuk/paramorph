@@ -57,11 +57,14 @@ export class FullContentLoader implements ContentLoader {
     if (!page.image) {
       const image = await this.imageFromContent(html, page);
 
-      Object.defineProperty(page, 'image', {
-        get: () => image,
-        set: () => { throw new Error('Page.image is readonly'); }
-      });
-      console.log(`generated pages['${page.url}'].image = '${image}'`);
+      if (image) {
+        Object.defineProperty(page, 'image', {
+          get: () => image,
+          set: () => { throw new Error('Page.image is readonly'); }
+        });
+
+        console.log(`generated pages['${page.url}'].image = '${image}'`);
+      }
     }
     if (page.description) {
       return;
@@ -74,20 +77,24 @@ export class FullContentLoader implements ContentLoader {
       }
       const description = await this.descriptionFromPages(index, page);
 
-      Object.defineProperty(page, 'description', {
-        get: () => description,
-        set: () => { throw new Error('Page.description is readonly'); },
-      });
-      console.log(`generated pages['${page.url}'].description = '${description}'`);
+      if (description) {
+        Object.defineProperty(page, 'description', {
+          get: () => description,
+          set: () => { throw new Error('Page.description is readonly'); },
+        });
+        console.log(`generated pages['${page.url}'].description = '${description}'`);
+      }
 
     } else {
       const description = removeEntities(stripTags(html));
 
-      Object.defineProperty(page, 'description', {
-        get: () => description,
-        set: () => { throw new Error('Page.description is readonly'); },
-      });
-      console.log(`generated pages['${page.url}'].description = '${description}'`);
+      if (description) {
+        Object.defineProperty(page, 'description', {
+          get: () => description,
+          set: () => { throw new Error('Page.description is readonly'); },
+        });
+        console.log(`generated pages['${page.url}'].description = '${description}'`);
+      }
     }
   }
 
