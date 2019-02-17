@@ -86,7 +86,7 @@ export class FullContentLoader implements ContentLoader {
       }
 
     } else {
-      const description = removeEntities(stripTags(html));
+      const description = removeEntities(stripTags(html.replace(/\n/g, ' ')));
 
       if (description) {
         Object.defineProperty(page, 'description', {
@@ -130,8 +130,12 @@ export class FullContentLoader implements ContentLoader {
     return found[1];
   }
 
-  private descriptionFromPages(index : Page, page : Tag) {
-    return removeEntities(`${index.title} ${page.title}: ${page.pages.map(p => p.title).join(', ')}`);
+  private descriptionFromPages(index : Page, tag : Tag) {
+    const pagesList = tag.pages
+      .map(page => page.title)
+      .join(', ')
+    ;
+    return removeEntities(`${index.title} ${tag.title}: ${pagesList}`);
   }
 
   private exec(source : string, url : string) {

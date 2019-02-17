@@ -73,11 +73,10 @@ export class ConfigLoader {
       page.tags.forEach(title => {
         const tag = tagFactory.create(title);
 
-        if (paramorph.pages.hasOwnProperty(tag.url)) {
-          // In case there is a separately defined page for this tag.
-          return;
+        if (!paramorph.pages.hasOwnProperty(tag.url)) {
+          paramorph.addPage(tag);
         }
-        paramorph.addPage(tag);
+        tag.pages.push(page);
       });
     });
   }

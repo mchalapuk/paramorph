@@ -1,8 +1,9 @@
 
 import * as sinon from 'sinon';
-import { FakePromise } from 'fake-promise';
+import * as should from 'should';
+import FakePromise from 'fake-promise';
 
-import { Paramorph, Layout, Include, Page, Collection, Config } from '../../model';
+import { Paramorph, Layout, Include, Page, Tag, Collection, Config } from '../../model';
 
 import { ConfigLoader } from './ConfigLoader';
 
@@ -287,6 +288,7 @@ describe('ConfigLoader', () => {
       const matter1 = {
         title: 'Hello, World!',
         description: 'Just a first post.',
+        tags: ['tag'],
       };
       const page0 = new Page(
         '/tag',
@@ -313,7 +315,7 @@ describe('ConfigLoader', () => {
         true,
         true,
         [],
-        [],
+        ['Tag'],
         0,
       );
 
@@ -345,6 +347,24 @@ describe('ConfigLoader', () => {
 
       it('calls contentLoader.load(...)', () => {
         mocks.contentLoader.load.should.have.callCount(1);
+      });
+
+      it('returns paramorph containing proper tag', () => {
+        const tag = paramorph.tags['Tag'] as Tag;
+        should.exist(tag);
+        tag.title.should.equal('#Tag');
+      });
+
+      it('returns paramorph containing proper page', () => {
+        const page = paramorph.pages['/hello-world'] as Page;
+        should.exist(page);
+        page.should.equal(page1);
+      });
+
+      it('returned tag contains proper page', () => {
+        const tag = paramorph.tags['Tag'] as Tag;
+        tag.pages.should.have.length(1);
+        tag.pages[0].should.equal(page1);
       });
     });
   });
