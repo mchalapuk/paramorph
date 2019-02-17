@@ -149,16 +149,14 @@ export class FullContentLoader implements ContentLoader {
 
   private validateDescriptions(paramorph : Paramorph) {
     const pages = Object.keys(paramorph.pages)
-      .map(key => paramorph.pages[key] as Page);
-    const missingDescription = pages
+      .map(key => paramorph.pages[key] as Page)
       .filter(p => p.description === '' && p.output)
       .map(p => p.url)
+      .forEach(url => {
+        this.context.emitError(new Error(`Description missing in page ${
+          url}. Write some text on the page or add 'description' field.`));
+      })
     ;
-    if (missingDescription.length !== 0) {
-      throw new Error(`Description missing in pages ${
-        JSON.stringify(missingDescription)
-      }. Write some text in the article or add \'description\' field.`);
-    }
   }
 }
 
