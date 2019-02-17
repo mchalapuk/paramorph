@@ -41,11 +41,11 @@ export class FullContentLoader implements ContentLoader {
     const loadModule = promisify(this.context.loadModule.bind(this.context));
     const query = `!${MARKDOWN_LOADER}?template=${TEMPLATE}!@website${page.source.substring(1)}`;
 
-    loadModule(query)
+    await loadModule(query)
       .then((pageSource : string) => {
         return this.loadPage0(pageSource, page, paramorph);
       })
-    .catch((err : any) => {
+      .catch((err : any) => {
         this.context.emitError(err);
       })
     ;
