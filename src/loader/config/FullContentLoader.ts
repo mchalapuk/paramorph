@@ -67,7 +67,7 @@ export class FullContentLoader implements ContentLoader {
     }
     if (!page.description) {
       const description = removeEntities(await this.generateDescription(html, page))
-        .replace(/[!?,.][^!?., ]/g, '$& ')
+        .replace(/([!?,.])([^!?., ])/g, '$1 $2')
         .replace(/  /g, ' ')
       ;
 
