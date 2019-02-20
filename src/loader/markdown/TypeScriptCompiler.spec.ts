@@ -37,8 +37,20 @@ TSError: test.md.tsx (1,2):
   });
 
   it('transpiles jsx', () => {
-    const compiled = testedCompiler.compile('export const a = (<div></div>);', 'test.md');
-    compiled.should.equal(`${MODULE_HEADER}exports.a = (React.createElement("div", null));\n`);
+    const compiled = testedCompiler.compile(`
+      export const a = (
+        <p>
+          test <span>test</span>
+          <span>test</span> test
+        </p>
+      );
+    `, 'test.md');
+
+    compiled.should.equal(`${MODULE_HEADER}exports.a = (React.createElement("p", null,
+    "test ",
+    React.createElement("span", null, "test"),
+    React.createElement("span", null, "test"),
+    " test"));\n`);
   });
 });
 
