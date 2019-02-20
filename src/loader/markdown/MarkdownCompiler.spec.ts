@@ -23,17 +23,26 @@ front: matter
 
 # Title
 
-> quote
+> I'm quite into the French way - simple elegance
+> with just a suggestion of sexiness, nothing vulgar.
+>
+> Michelle Dockery
 
-paragraph
+Welcome to [Paramorph][address]
+the best static webpage generator out there.
+
+[address]: http://paramorph.org/
 
 * item`;
 
     const expectedHtml = `<h1>Title</h1>
 <blockquote>
-<p>quote</p>
+<p>I'm quite into the French way - simple elegance
+with just a suggestion of sexiness, nothing vulgar.</p>
+<p>Michelle Dockery</p>
 </blockquote>
-<p>paragraph</p>
+<p>Welcome to <a href="http://paramorph.org/">Paramorph</a>
+the best static webpage generator out there.</p>
 <ul>
 <li>item</li>
 </ul>
