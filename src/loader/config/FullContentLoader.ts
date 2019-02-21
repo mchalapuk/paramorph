@@ -6,12 +6,12 @@ import { promisify } from 'util';
 
 import Module = require('module');
 import { createMemoryHistory } from 'history';
-import * as stripTags from 'striptags';
 
-import { Paramorph, Page, Tag, Category } from '../../model';
+import { Paramorph, Page } from '../../model';
 import { ContextContainer } from '../../react';
 
 import ContentLoader from './ContentLoader';
+import DescriptionGenerator from './DescriptionGenerator';
 
 const TEMPLATE = 'paramorph/loader/markdown/NoDependencyPage.tsx.ejs';
 
@@ -66,10 +66,8 @@ export class FullContentLoader implements ContentLoader {
       }
     }
     if (!page.description) {
-      const description = removeEntities(await this.generateDescription(html, page))
-        .replace(/([!?,.])([^!?., ])/g, '$1 $2')
-        .replace(/  /g, ' ')
-      ;
+      const generator = new DescriptionGenerator();
+      const description = generator.generate(html, page);
 
       if (description) {
         Object.defineProperty(page, 'description', {
@@ -122,27 +120,6 @@ export class FullContentLoader implements ContentLoader {
     return found[1];
   }
 
-  private async generateDescription(html : string, page : Page) {
-    const description = stripTags(html.replace(/\n/g, ' '));
-
-    if (description) {
-      return description;
-    } else if (page instanceof Tag || page instanceof Category) {
-      const tagOrCategory = page as Tag | Category;
-      return await this.descriptionFromPages(page.title, tagOrCategory.pages);
-    }
-
-    return '';
-  }
-
-  private descriptionFromPages(title : string, pages : Page[]) {
-    const pagesList = pages
-      .map(page => page.title)
-      .join(', ')
-    ;
-    return `${title}: ${pagesList}`;
-  }
-
   private validateDescriptions(paramorph : Paramorph) {
     const urls = Object.keys(paramorph.pages)
       .map(key => paramorph.pages[key] as Page)
@@ -162,13 +139,4 @@ export class FullContentLoader implements ContentLoader {
 }
 
 export default FullContentLoader;
-
-function removeEntities(str : string) {
-  return str
-    .replace(/&#x22;/g, '\"')
-    .replace(/&#x27;/g, '\'')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&[^\s;]+;/g, '')
-  ;
-}
 
