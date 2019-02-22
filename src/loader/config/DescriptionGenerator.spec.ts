@@ -7,7 +7,7 @@ describe('config/DescriptionGenerator', () => {
   let testedGenerator : DescriptionGenerator;
 
   beforeEach(() => {
-    testedGenerator = new DescriptionGenerator();
+    testedGenerator = new DescriptionGenerator(5);
   });
 
   const contentTests = [
@@ -22,6 +22,13 @@ describe('config/DescriptionGenerator', () => {
       const actualDescription = testedGenerator.generate(arg, {} as any);
       actualDescription.should.equal(expectedDescription);
     });
+  });
+
+  it('respects sentence limit', () => {
+    const arg = 'One. Two! Three? Four... Five. Six,';
+    const expectedDescription = 'One. Two! Three? Four... Five.'
+    const actualDescription = testedGenerator.generate(arg, {} as any);
+    actualDescription.should.equal(expectedDescription);
   });
 });
 
