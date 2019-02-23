@@ -14,6 +14,7 @@ export class Category extends Page {
     source : string,
     output : boolean,
     feed : boolean,
+    limit : number,
     categories : string[],
     tags : string[],
     timestamp : number,
@@ -28,6 +29,7 @@ export class Category extends Page {
       source,
       output,
       feed,
+      limit,
       categories,
       tags,
       timestamp

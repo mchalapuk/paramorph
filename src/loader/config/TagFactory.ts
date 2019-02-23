@@ -9,15 +9,25 @@ export class TagFactory {
   }
 
   create(title : string) {
+    const {
+      description,
+      image,
+      layout,
+      source,
+      limit,
+      timestamp,
+    } = this.tagPage;
+
     return new Tag(
       `/tags${defaultUrl(title)}`,
       title,
-      this.tagPage.description,
-      this.tagPage.image,
-      this.tagPage.layout,
-      this.tagPage.source,
+      description,
+      image,
+      layout,
+      source,
       true,
-      this.tagPage.timestamp,
+      limit,
+      timestamp,
     );
   }
 }

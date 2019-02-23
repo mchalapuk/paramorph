@@ -13,6 +13,7 @@ export class Tag extends Page {
     layout : string,
     source : string,
     output : boolean,
+    limit : number,
     timestamp : number,
   ) {
     super(
@@ -25,6 +26,7 @@ export class Tag extends Page {
       source,
       output,
       false,
+      limit,
       [],
       [],
       timestamp

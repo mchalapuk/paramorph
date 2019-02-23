@@ -26,6 +26,7 @@ describe('uneval', () => {
       './index.markdown',
       true,
       false,
+      5,
       ['Do It Yourself!'],
       ['exciting'],
       0,
@@ -40,6 +41,7 @@ describe('uneval', () => {
       './diy.markdown',
       true,
       true,
+      5,
       [],
       [],
       1,
@@ -52,6 +54,7 @@ describe('uneval', () => {
       'default',
       './tag.markdown',
       true,
+      5,
       2,
     ));
 

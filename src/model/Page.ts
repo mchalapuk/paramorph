@@ -12,6 +12,7 @@ export class Page {
     readonly source : string,
     readonly output : boolean,
     readonly feed : boolean,
+    readonly limit : number,
     readonly categories : string[],
     readonly tags : string[],
     readonly timestamp : number,

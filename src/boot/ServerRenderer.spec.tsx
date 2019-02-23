@@ -59,7 +59,7 @@ class PageComponent extends React.Component<{}> {
 }
 
 function createPage(url : string, title : string, date : number) {
-  return new model.Page(url, title, '', null, 'Test', 'test', './test.md', true, true, [], [], date);
+  return new model.Page(url, title, '', null, 'Test', 'test', './test.md', true, true, 5, [], [], date);
 }
 
 describe('ServerRenderer', () => {

@@ -3,6 +3,7 @@ import { safeLoad } from 'js-yaml';
 
 import 'offensive/assertions/aString/register';
 import 'offensive/assertions/aBoolean/register';
+import 'offensive/assertions/aNumber/register';
 import 'offensive/assertions/anArray/register';
 import 'offensive/assertions/Undefined/register';
 import 'offensive/assertions/Empty/register';
@@ -34,6 +35,7 @@ export class ConfigParser {
           .has.fieldThat('title', title => title.is.Undefined.or.aString)
           .and.fieldThat('layout', layout => layout.is.Undefined.or.aString)
           .and.fieldThat('output', output => output.is.Undefined.or.aBoolean)
+          .and.fieldThat('limit', output => output.is.Undefined.or.aNumber)
         )
       )
       .and.fieldThat('image', image => image.is.Empty.or.aString)

@@ -66,10 +66,7 @@ export class FullContentLoader implements ContentLoader {
       }
     }
     if (!page.description) {
-      // TODO read limit from page
-      const limit = 5;
-
-      const generator = new DescriptionGenerator(limit);
+      const generator = new DescriptionGenerator(page.limit);
       const description = generator.generate(html, page);
 
       if (description) {

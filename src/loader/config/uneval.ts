@@ -147,6 +147,8 @@ export function unevalCollection(collection : Collection) {
     JSON.stringify(collection.layout)
   },\n    ${
     JSON.stringify(collection.output)
+  },\n    ${
+    JSON.stringify(collection.limit)
   },\n  )`;
 }
 
@@ -169,6 +171,8 @@ export function unevalPage(page : Page) {
     JSON.stringify(page.output)
   },\n    ${
     JSON.stringify(page.feed)
+  },\n    ${
+    JSON.stringify(page.limit)
   },\n    ${
     JSON.stringify(page.categories)
   },\n    ${
@@ -198,6 +202,8 @@ export function unevalCategory(page : Category) {
   },\n    ${
     JSON.stringify(page.feed)
   },\n    ${
+    JSON.stringify(page.limit)
+  },\n    ${
     JSON.stringify(page.categories)
   },\n    ${
     JSON.stringify(page.tags)
@@ -221,6 +227,8 @@ export function unevalTag(page : Tag) {
     JSON.stringify(page.source)
   },\n    ${
     JSON.stringify(page.output)
+  },\n    ${
+    JSON.stringify(page.limit)
   },\n    ${
     JSON.stringify(page.timestamp)
   },\n  )`;

@@ -3,6 +3,7 @@ import check from 'offensive';
 import 'offensive/assertions/anObject/register';
 import 'offensive/assertions/aString/register';
 import 'offensive/assertions/aBoolean/register';
+import 'offensive/assertions/aNumber/register';
 import 'offensive/assertions/aDate/register';
 import 'offensive/assertions/oneOf/register';
 import 'offensive/assertions/Undefined/register';
@@ -12,6 +13,8 @@ import 'offensive/assertions/allElementsThat/register';
 import { Page, Collection, Category } from '../../model';
 
 import SourceFile from './SourceFile';
+
+const DEFAULT_LIMIT = 5;
 
 export interface Matter {
   date : Date;
@@ -26,6 +29,7 @@ export interface Matter {
   category ?: string;
   tags ?: string[];
   feed ?: boolean;
+  limit ?: number;
 }
 
 export interface PageConstructor {
@@ -39,6 +43,7 @@ export interface PageConstructor {
     source : string,
     output : boolean,
     feed : boolean,
+    limit : number,
     categories : string[],
     tags : string[],
     timestamp : number,
@@ -87,6 +92,9 @@ export class PageFactory {
         ? matter.output
         : (collection.output !== undefined ? collection.output : true ),
       matter.feed !== undefined ? matter.feed : true,
+      matter.limit !== undefined
+        ? matter.limit
+        : (collection.limit !== undefined ? collection.limit : DEFAULT_LIMIT),
       categories,
       matter.tags || [],
       new Date(matter.date).getTime(),
@@ -128,6 +136,7 @@ function validateFrontMatter(fileName : string, matter : any) {
     .and.fieldThat('category', category => category.is.aString.or.Undefined)
     .and.fieldThat('tags', tags => tags.has.allElementsThat(elem => elem.is.aString).or.Undefined)
     .and.fieldThat('feed', feed => feed.is.aBoolean.or.Undefined)
+    .and.fieldThat('limit', limit => limit.is.aNumber.or.Undefined)
   () as Matter;
 }
 

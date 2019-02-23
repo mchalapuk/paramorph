@@ -10,6 +10,7 @@ export class Collection {
     readonly path : string,
     readonly layout ?: string,
     readonly output ?: boolean,
+    readonly limit ?: number,
   ) {
   }
 }
