@@ -3,10 +3,11 @@ import * as should from 'should';
 
 import { Page, Collection, Category } from '../../model';
 
-import { PageFactory } from './PageFactory';
+import PageFactory from './PageFactory';
+import Matter from './Matter';
 
 const date = new Date('Jun 05 2018 00:00 UTC');
-const matter = (arg : any = {}) => ({ date, ...arg });
+const matter = (arg : any = {}) => ({ date, ...arg } as Matter);
 
 describe('PageFactory', () => {
   const sourceFile = {
@@ -19,97 +20,6 @@ describe('PageFactory', () => {
 
   beforeEach(() => {
     testedFactory = new PageFactory();
-  });
-
-  const preconditionTests : [string, any, string][] = [
-    [
-      '{}',
-      {},
-      'pages[\'test-page\'].date must be a date (got undefined)',
-    ],
-    [
-      '{ date: \'jibberish\' }',
-      { date: 'jibberish' },
-      'pages[\'test-page\'].date must be a date (got \'jibberish\')',
-    ],
-    [
-      '{ role: 0 }',
-      matter({ role: 0 }),
-      'pages[\'test-page\'].role must be \'page\' or \'category\' or undefined (got 0)',
-    ],
-    [
-      '{ role: \'superhero\' }',
-      matter({ role: 'superhero' }),
-      'pages[\'test-page\'].role must be \'page\' or \'category\' or undefined (got \'superhero\')',
-    ],
-    [
-      '{ title: true }',
-      matter({ title: true }),
-      'pages[\'test-page\'].title must be a string or undefined (got true)',
-    ],
-    [
-      '{ description: null }',
-      matter({ description: null }),
-      'pages[\'test-page\'].description must be a string or undefined (got null)',
-    ],
-    [
-      '{ permalink: 3.1415 }',
-      matter({ permalink: 3.1415 }),
-      'pages[\'test-page\'].permalink must be a string or undefined (got 3.1415)',
-    ],
-    [
-      '{ layout: Infinity }',
-      matter({ layout: Infinity }),
-      'pages[\'test-page\'].layout must be a string or undefined (got Infinity)',
-    ],
-    [
-      '{ image: true }',
-      matter({ image: true }),
-      'pages[\'test-page\'].image must be a string or undefined (got true)',
-    ],
-    [
-      '{ output: 12345 }',
-      matter({ output: 12345 }),
-      'pages[\'test-page\'].output must be a boolean or undefined (got 12345)',
-    ],
-    [
-      '{ categories: {} }',
-      matter({ categories: {} }),
-      'pages[\'test-page\'].categories[0] must be a string (got no array operator ({})) or pages[\'test-page\'].categories be undefined (got {})',
-    ],
-    [
-      '{ categories: [ 0 ] }',
-      matter({ categories: [ 0 ] }),
-      'pages[\'test-page\'].categories[0] must be a string (got 0) or pages[\'test-page\'].categories be undefined (got [0])',
-    ],
-    [
-      '{ category: function() {} }',
-      matter({ category: () => {} }),
-      'pages[\'test-page\'].category must be a string or undefined (got function category)',
-    ],
-    [
-      '{ tags: 0 }',
-      matter({ tags: 0 }),
-      'pages[\'test-page\'].tags[0] must be a string (got no array operator (0)) or pages[\'test-page\'].tags be undefined (got 0)',
-    ],
-    [
-      '{ tags: [ 0 ] }',
-      matter({ tags: [ 0 ] }),
-      'pages[\'test-page\'].tags[0] must be a string (got 0) or pages[\'test-page\'].tags be undefined (got [0])',
-    ],
-    [
-      '{ feed: 12345 }',
-      matter({ feed: 12345 }),
-      'pages[\'test-page\'].feed must be a boolean or undefined (got 12345)',
-    ],
-  ];
-
-  preconditionTests.forEach(params => {
-    const [ argDesc, arg, expectedMessage ] = params;
-
-    it('throws when calling .create(#{argDesc})', () => {
-      (() => testedFactory.create(sourceFile, collection, arg)).should.throw(expectedMessage);
-    });
   });
 
   const roleTests : [any, any][] = [
@@ -179,9 +89,11 @@ describe('PageFactory', () => {
     permalink: '/link',
     title: 'Title',
     description: 'Full defined page',
+    image: 'image.jpg',
     layout: 'Custom',
     output: false,
     feed: false,
+    limit: 10,
   };
 
   describe(`when calling .create(${JSON.stringify(fullMatter)})`, () => {
@@ -200,6 +112,9 @@ describe('PageFactory', () => {
     it('contains given description', () => {
       result.description.should.equal(fullMatter.description);
     });
+    it('contains given image', () => {
+      (result.image as string).should.equal(fullMatter.image);
+    });
     it('contains given layout', () => {
       result.layout.should.equal(fullMatter.layout);
     });
@@ -208,6 +123,9 @@ describe('PageFactory', () => {
     });
     it('contains given feed', () => {
       result.feed.should.equal(fullMatter.feed);
+    });
+    it('contains given limit', () => {
+      result.limit.should.equal(fullMatter.limit);
     });
   });
 

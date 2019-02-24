@@ -1,36 +1,10 @@
 
-import check from 'offensive';
-import 'offensive/assertions/anObject/register';
-import 'offensive/assertions/aString/register';
-import 'offensive/assertions/aBoolean/register';
-import 'offensive/assertions/aNumber/register';
-import 'offensive/assertions/aDate/register';
-import 'offensive/assertions/oneOf/register';
-import 'offensive/assertions/Undefined/register';
-import 'offensive/assertions/fieldThat/register';
-import 'offensive/assertions/allElementsThat/register';
-
 import { Page, Collection, Category } from '../../model';
 
+import Matter from './Matter';
 import SourceFile from './SourceFile';
 
 const DEFAULT_LIMIT = 5;
-
-export interface Matter {
-  date : Date;
-  role ?: string;
-  title ?: string;
-  description ?: string;
-  permalink ?: string;
-  layout ?: string;
-  image ?: string;
-  output ?: boolean;
-  categories ?: string[];
-  category ?: string;
-  tags ?: string[];
-  feed ?: boolean;
-  limit ?: number;
-}
 
 export interface PageConstructor {
   new(
@@ -53,10 +27,9 @@ export interface PageConstructor {
 const DEFAULT_LAYOUT_NAME = "default";
 
 export class PageFactory {
-  create(file : SourceFile, collection : Collection, maybeMatter : any) : Page {
-    const frontMatter = validateFrontMatter(file.name, maybeMatter);
-
+  create(file : SourceFile, collection : Collection, frontMatter : Matter) : Page {
     const role = (frontMatter.role || 'page').toLowerCase();
+
     switch (role) {
       case 'page':
         return this.create0(Page as PageConstructor, file, collection, frontMatter);
@@ -112,32 +85,6 @@ export function defaultUrl(title : string) {
     .replace(/-+$/, '')
   ;
   return `/${converted}`;
-}
-
-const VALID_ROLES = ['', null, 'page', 'Page', 'PAGE', 'category', 'Category', 'CATEGORY'];
-
-function validateFrontMatter(fileName : string, matter : any) {
-  return check(matter, `pages['${fileName}']`)
-    .has.fieldThat('date', date => date.is.aDate)
-    .and.fieldThat('role', role => role
-      .is.oneOf(VALID_ROLES, `be 'page' or 'category'`)
-      .or.Undefined
-    )
-    .and.fieldThat('title', title => title.is.aString.or.Undefined)
-    .and.fieldThat('description', desc => desc.is.aString.or.Undefined)
-    .and.fieldThat('permalink', permalink => permalink.is.aString.or.Undefined)
-    .and.fieldThat('layout', layout => layout.is.aString.or.Undefined)
-    .and.fieldThat('image', image => image.is.aString.or.Undefined)
-    .and.fieldThat('output', output => output.is.aBoolean.or.Undefined)
-    .and.fieldThat('categories', categories => categories
-      .has.allElementsThat(elem => elem.is.aString)
-      .or.is.Undefined
-    )
-    .and.fieldThat('category', category => category.is.aString.or.Undefined)
-    .and.fieldThat('tags', tags => tags.has.allElementsThat(elem => elem.is.aString).or.Undefined)
-    .and.fieldThat('feed', feed => feed.is.aBoolean.or.Undefined)
-    .and.fieldThat('limit', limit => limit.is.aNumber.or.Undefined)
-  () as Matter;
 }
 
 function defaultTitle(file : SourceFile) {
