@@ -111,7 +111,7 @@ export class Paramorph {
     }
     return (this.pageLoaders[url] as Loader)();
   }
-/*
+
   getCrumbs(page : Page) : Page[][] {
     if (page.url == '/') {
       return  [ [ page ] ];
@@ -120,10 +120,16 @@ export class Paramorph {
       return [ [ this.getPageOfUrl('/'), page ] ];
     }
 
-    return page.categories.map((categoryTitle : string) => {
-      return this.getCrumbs(this.getCategoryOfTitle(categoryTitle))
-        .map((crumb : Page[]) => crumb.concat([ this ]));
-    }).reduce((a : Page[][], b : Page[][]) => a.concat(b), []);
+    return page.categories
+      .map((categoryTitle : string) => {
+        return this.getCrumbs(this.getCategoryOfTitle(categoryTitle))
+          .map(crumb => crumb.concat([ page ]))
+        ;
+      })
+      .reduce(
+        (a : Page[][], b : Page[][]) => a.concat(b),
+        [],
+      );
   }
 
   private getPageOfUrl(url : string) : Page {
@@ -141,7 +147,6 @@ export class Paramorph {
     }
     return category;
   }
-*/
 }
 
 export default Paramorph;
