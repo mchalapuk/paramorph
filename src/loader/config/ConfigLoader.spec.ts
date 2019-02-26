@@ -419,6 +419,31 @@ describe('ConfigLoader', () => {
         category.pages.should.have.length(1);
         category.pages[0].should.equal(page1);
       });
+
+      it('returns paramorph containing Pages collection', () => {
+        const collection = paramorph.collections['Pages'] as Collection;
+        should.exist(collection);
+        collection.title.should.equal('Pages');
+      });
+
+      it('returned Pages collection contains proper pages', () => {
+        const collection = paramorph.collections['Pages'] as Collection;
+        collection.pages.should.have.length(1);
+        collection.pages[0].should.eql(page0);
+      });
+
+      it('returns paramorph containing Posts collection', () => {
+        const collection = paramorph.collections['Posts'] as Collection;
+        should.exist(collection);
+        collection.title.should.equal('Posts');
+      });
+
+      it('returned Posts collection contains proper pages', () => {
+        const collection = paramorph.collections['Posts'] as Collection;
+        collection.pages.should.have.length(2);
+        collection.pages[0].should.eql(page1);
+        collection.pages[1].should.eql(page2);
+      });
     });
   });
 });
