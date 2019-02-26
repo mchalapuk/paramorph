@@ -4,8 +4,17 @@ import * as ReactDomServer from 'react-dom/server';
 import { History, createMemoryHistory } from 'history';
 import Module = require('module');
 
-import { Config, CollectionConfig, Paramorph, Layout, Include, Page, Collection, Tag } from '../../model';
-import { ContextContainer } from '../../react';
+import {
+  Config,
+  CollectionConfig,
+  Paramorph,
+  Layout,
+  Include,
+  Page,
+  Collection,
+  Tag,
+  Category,
+} from '../../model';
 
 import SourceFile from './SourceFile';
 import ProjectStructure, { SpecialDirs } from './ProjectStructure';
@@ -53,47 +62,52 @@ export class ConfigLoader {
     );
 
     this.addTags(paramorph);
-    this.validateCategories(paramorph);
-    await this.contentLoader.load(paramorph);
+    this.addPagesToCategories(paramorph);
 
+    await this.contentLoader.load(paramorph);
     return paramorph;
   }
 
   private addTags(paramorph : Paramorph) {
-    const pages = Object.keys(paramorph.pages)
-      .map(key => paramorph.pages[key] as Page);
-
     const tagPage = paramorph.pages[TAG_PAGE_URL] as Tag;
     if (!tagPage) {
       throw new Error(`Couldn't find page of url '${TAG_PAGE_URL}' (used to render tag pages)`);
     }
     const tagFactory = new TagFactory(tagPage);
 
-    pages.forEach(page => {
-      page.tags.forEach(title => {
-        const tag = tagFactory.create(title);
+    Object.keys(paramorph.pages)
+      .forEach(key => {
+        const page = paramorph.pages[key] as Page;
 
-        if (!paramorph.pages.hasOwnProperty(tag.url)) {
-          paramorph.addPage(tag);
-        }
-        tag.pages.push(page);
-      });
-    });
+        page.tags.forEach(title => {
+          const tag = tagFactory.create(title);
+
+          if (!paramorph.pages.hasOwnProperty(tag.url)) {
+            paramorph.addPage(tag);
+          }
+          tag.pages.push(page);
+        });
+      })
+    ;
   }
 
-  private validateCategories(paramorph : Paramorph) {
-    const pages = Object.keys(paramorph.pages)
-      .map(key => paramorph.pages[key] as Page);
-
+  private addPagesToCategories(paramorph : Paramorph) {
     const missing = [] as { page : string, category : string }[];
 
-    pages.forEach(page => {
-      page.categories.forEach(category => {
-        if (!paramorph.categories.hasOwnProperty(category)) {
-          missing.push({ page: page.url, category });
-        }
-      });
-    });
+    Object.keys(paramorph.pages)
+      .forEach(key => {
+        const page = paramorph.pages[key] as Page;
+
+        page.categories.forEach(title => {
+          if (!paramorph.categories.hasOwnProperty(title)) {
+            missing.push({ page: page.url, category: title });
+            return;
+          }
+          const category = paramorph.categories[title] as Category;
+          category.pages.push(page);
+        });
+      })
+    ;
 
     if (missing.length !== 0) {
       throw new Error(`Couldn't find category page(s): ${JSON.stringify(missing)}`);
@@ -105,12 +119,5 @@ export default ConfigLoader;
 
 function toTitle(name : string) {
   return name.substring(0, 1).toUpperCase() + name.substring(1);
-}
-
-function removeEntities(str : string) {
-  return str
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&[^\s;]+;/g, '')
-  ;
 }
 
