@@ -26,6 +26,10 @@ export class FullContentLoader implements ContentLoader {
       missingDescription : ErrorPolicy,
       missingImage : ErrorPolicy,
     },
+    private readonly debug : {
+      generatedDescriptions: boolean,
+      generatedImages: boolean,
+    },
   ) {
   }
 
@@ -79,7 +83,9 @@ export class FullContentLoader implements ContentLoader {
           get: () => image,
           set: () => { throw new Error('Page.image is readonly'); }
         });
-        console.log(`generated pages['${page.url}'].image = '${image}'`);
+        if (this.debug.generatedImages) {
+          console.log(`generated pages['${page.url}'].image = '${image}'`);
+        }
       }
     }
     if (!page.description) {
@@ -91,7 +97,9 @@ export class FullContentLoader implements ContentLoader {
           get: () => description,
           set: () => { throw new Error('Page.description is readonly'); },
         });
-        console.log(`generated pages['${page.url}'].description = '${description}'`);
+        if (this.debug.generatedDescriptions) {
+          console.log(`generated pages['${page.url}'].description = '${description}'`);
+        }
       }
     }
   }

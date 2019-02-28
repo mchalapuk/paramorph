@@ -17,20 +17,41 @@ import uneval from './uneval';
 
 export = loader;
 
+const NO_DEBUG = {
+  generatedDescriptions: false,
+  generatedImages: false,
+};
+const FULL_DEBUG = {
+  generatedDescriptions: true,
+  generatedImages: true,
+};
+
 function loader(this : webpack.loader.LoaderContext, source : string, map : any) {
   this.cacheable && this.cacheable();
   const callback = this.async() as webpack.loader.loaderCallback;
 
   const options = {
+    debug: false,
     shallow: false,
     policy: {},
-    ...utils.getOptions(this) || {},
+    ...(utils.getOptions(this) || {}),
   };
   const policy = {
     missingDescription: 'error' as ErrorPolicy,
     missingImage: 'ignore' as ErrorPolicy,
     ...options.policy,
   };
+  const debug = options.debug === false
+    ? NO_DEBUG
+    : (
+      options.debug === true
+      ? FULL_DEBUG
+      : {
+        ...NO_DEBUG,
+        ...(options.debug || {})
+      }
+    )
+  ;
 
   const fs = new FileSystem();
   const parser = new ConfigParser();
@@ -41,7 +62,7 @@ function loader(this : webpack.loader.LoaderContext, source : string, map : any)
     new PageFactory(),
     options.shallow
       ? new EmptyContentLoader()
-      : new FullContentLoader(this, policy)
+      : new FullContentLoader(this, policy, debug)
     ,
   );
 
