@@ -4,6 +4,7 @@ import * as utils from 'loader-utils';
 import * as path from 'path'
 
 import FileSystem from '../../platform/node/FileSystem';
+import ErrorPolicy from '../../ErrorPolicy';
 
 import ConfigParser from './ConfigParser';
 import ConfigLoader from './ConfigLoader';
@@ -20,7 +21,16 @@ function loader(this : webpack.loader.LoaderContext, source : string, map : any)
   this.cacheable && this.cacheable();
   const callback = this.async() as webpack.loader.loaderCallback;
 
-  const options = utils.getOptions(this) || {};
+  const options = {
+    shallow: false,
+    policy: {},
+    ...utils.getOptions(this) || {},
+  };
+  const policy = {
+    missingDescription: 'error' as ErrorPolicy,
+    missingImage: 'ignore' as ErrorPolicy,
+    ...options.policy,
+  };
 
   const fs = new FileSystem();
   const parser = new ConfigParser();
@@ -31,7 +41,7 @@ function loader(this : webpack.loader.LoaderContext, source : string, map : any)
     new PageFactory(),
     options.shallow
       ? new EmptyContentLoader()
-      : new FullContentLoader(this)
+      : new FullContentLoader(this, policy)
     ,
   );
 

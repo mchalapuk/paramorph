@@ -9,6 +9,7 @@ import { createMemoryHistory } from 'history';
 
 import { Paramorph, Page } from '../../model';
 import { ContextContainer } from '../../react';
+import ErrorPolicy from '../../ErrorPolicy';
 
 import ContentLoader from './ContentLoader';
 import DescriptionGenerator from './DescriptionGenerator';
@@ -16,10 +17,15 @@ import DescriptionGenerator from './DescriptionGenerator';
 const TEMPLATE = 'paramorph/loader/markdown/NoDependencyPage.tsx.ejs';
 
 export class FullContentLoader implements ContentLoader {
-  private history = createMemoryHistory();
+  private readonly history = createMemoryHistory();
+  private errored = false;
 
   constructor(
-    private context : webpack.loader.LoaderContext,
+    private readonly context : webpack.loader.LoaderContext,
+    private readonly policy : {
+      missingDescription : ErrorPolicy,
+      missingImage : ErrorPolicy,
+    },
   ) {
   }
 
@@ -33,7 +39,18 @@ export class FullContentLoader implements ContentLoader {
     ;
     await Promise.all(promises);
 
-    this.validateDescriptions(paramorph);
+    const descriptionErrors = this.validateDescriptions(paramorph);
+
+    switch (this.policy.missingDescription) {
+      case 'ignore':
+        break;
+      case 'warning':
+        descriptionErrors.forEach(err => this.context.emitWarning(err));
+        break;
+      case 'error':
+        descriptionErrors.forEach(err => this.context.emitError(err));
+        break;
+    }
   }
 
   async loadPage(page : Page, paramorph : Paramorph) : Promise<void> {
@@ -111,30 +128,41 @@ export class FullContentLoader implements ContentLoader {
 
   private async imageFromContent(html : string, page : Page) {
     const found = /<img[^>]* src="([^"]*)"[^>]*>/.exec(html);
-    if (!found) {
-      this.context.emitWarning(
-        new Error(`Couldn't find image on page ${page.url}; page.image is null`),
-      );
-      return null;
+    if (found) {
+      return found[1];
     }
-    return found[1];
+
+    switch (this.policy.missingImage) {
+      case 'error':
+        this.errored = true;
+        this.context.emitError(
+          new Error(`Couldn't find image on page ${page.url}; page.image is null`),
+        );
+        return null;
+      case 'warning':
+        this.context.emitWarning(
+          new Error(`Couldn't find image on page ${page.url}; page.image is null`),
+        );
+        return null;
+      case 'ignore':
+        return null;
+    }
   }
 
-  private validateDescriptions(paramorph : Paramorph) {
+  private validateDescriptions(paramorph : Paramorph) : Error[] {
     const urls = Object.keys(paramorph.pages)
       .map(key => paramorph.pages[key] as Page)
       .filter(p => p.description === '' && p.output)
       .map(p => p.url)
     ;
     if (!urls.length) {
-      return;
+      return [];
     }
 
-    urls.forEach(url => {
-      this.context.emitError(new Error(`Description missing in page ${
-        url}. Write some text on the page or add 'description' field.`));
-    });
-    throw new Error(`Descriptions of ${urls.length} pages are missing`);
+    return urls.map(url => Error(
+      `Description missing in page ${url}. `
+      + `Write some text on the page or add 'description' field.`
+    ));
   }
 }
 
