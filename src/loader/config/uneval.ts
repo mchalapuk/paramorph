@@ -235,6 +235,6 @@ export function unevalTag(page : Tag) {
 }
 
 export function loaderOf(path : string) {
-  return `() => import("@website${path.substring(1)}")`;
+  return `() => import("@website${path.substring(1)}").default`;
 }
 

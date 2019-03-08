@@ -106,13 +106,13 @@ paramorph.addPage(
 paramorph.tags["exciting"].pages.push(paramorph.pages["/"]);
 
 // LAYOUT LOADERS //
-paramorph.addLayoutLoader("default", () => import("@website/_layouts/default.ts"));
+paramorph.addLayoutLoader("default", () => import("@website/_layouts/default.ts").default);
 
 // INCLUDE LOADERS //
-paramorph.addIncludeLoader("BreadCrumbs", () => import("@website/_includes/BreadCrumbs/index.ts"));
+paramorph.addIncludeLoader("BreadCrumbs", () => import("@website/_includes/BreadCrumbs/index.ts").default);
 
 // PAGE LOADERS //
-paramorph.addPageLoader("/", () => import("@website/index.markdown"));
-paramorph.addPageLoader("/diy", () => import("@website/diy.markdown"));
-paramorph.addPageLoader("/tags/exciting", () => import("@website/tag.markdown"));
+paramorph.addPageLoader("/", () => import("@website/index.markdown").default);
+paramorph.addPageLoader("/diy", () => import("@website/diy.markdown").default);
+paramorph.addPageLoader("/tags/exciting", () => import("@website/tag.markdown").default);
 
