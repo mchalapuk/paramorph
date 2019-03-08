@@ -2,6 +2,7 @@
 import { Config, Layout, Include, Page, Category, Collection, Tag, ComponentType } from '.';
 
 export type Loader = () => Promise<ComponentType>;
+export type DataLoader<T> = () => Promise<T>;
 
 export class Paramorph {
   readonly layouts : HashMap<Layout> = {};
@@ -15,7 +16,11 @@ export class Paramorph {
   readonly includeLoaders : HashMap<Loader> = {};
   readonly pageLoaders : HashMap<Loader> = {};
 
-  constructor(readonly config : Config) {
+  readonly data : HashMap<any> = {};
+
+  constructor(
+    readonly config : Config,
+  ) {
   }
 
   addLayout(layout : Layout) {
@@ -110,6 +115,12 @@ export class Paramorph {
       }`);
     }
     return (this.pageLoaders[url] as Loader)();
+  }
+
+  loadData<T>(key : string, loader : DataLoader<T>) : Promise<T> {
+    return loader()
+      .then(value => this.data[key] = value)
+    ;
   }
 
   getCrumbs(page : Page) : Page[][] {
