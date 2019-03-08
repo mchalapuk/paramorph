@@ -1,15 +1,9 @@
 language: node_js
 node_js:
-  - '8'
+  - '10'
 install:
-  - 'npm i -g npm@6.0.0'
+  - 'npm i -g npm@6.6.0'
   - 'npm install'
 script:
   - 'npm run clean-build'
-deploy:
-  provider: 'script'
-  skip_cleanup: true
-  script: cd test-project && git clone https://github.com/paramorph/deploy.git && ./deploy/deploy.sh master https://github.com/paramorph/paramorph.github.io.git
-  on:
-    branch: 'master'
 
