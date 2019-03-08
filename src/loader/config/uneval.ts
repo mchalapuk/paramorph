@@ -115,6 +115,20 @@ ${
     .map(page => `${varName}.addPageLoader("${page.url}", ${loaderOf(page.source)});\n`)
     .join('')
 }
+// UTIL FUNCTIONS
+function asReactComponent(exports, url) {
+  if (exports.default === undefined) {
+    throw new Error(url +' must have a default export');
+  }
+  const candidate = exports.default;
+
+  if (React.isValidElement(candidate) && typeof candidate.type === 'function') {
+    const got = JSON.stringify(candidate);
+    throw new Error(url +' must have react component as default export; got '+ got);
+  }
+  return exports.default;
+}
+
 `;
 }
 
@@ -235,6 +249,6 @@ export function unevalTag(page : Tag) {
 }
 
 export function loaderOf(path : string) {
-  return `() => import("@website${path.substring(1)}").default`;
+  return `() => asReactComponent(import("@website${path.substring(1)}"), "${path}")`;
 }
 

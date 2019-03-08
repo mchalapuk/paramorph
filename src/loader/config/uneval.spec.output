@@ -106,13 +106,27 @@ paramorph.addPage(
 paramorph.tags["exciting"].pages.push(paramorph.pages["/"]);
 
 // LAYOUT LOADERS //
-paramorph.addLayoutLoader("default", () => import("@website/_layouts/default.ts").default);
+paramorph.addLayoutLoader("default", () => asReactComponent(import("@website/_layouts/default.ts"), "./_layouts/default.ts"));
 
 // INCLUDE LOADERS //
-paramorph.addIncludeLoader("BreadCrumbs", () => import("@website/_includes/BreadCrumbs/index.ts").default);
+paramorph.addIncludeLoader("BreadCrumbs", () => asReactComponent(import("@website/_includes/BreadCrumbs/index.ts"), "./_includes/BreadCrumbs/index.ts"));
 
 // PAGE LOADERS //
-paramorph.addPageLoader("/", () => import("@website/index.markdown").default);
-paramorph.addPageLoader("/diy", () => import("@website/diy.markdown").default);
-paramorph.addPageLoader("/tags/exciting", () => import("@website/tag.markdown").default);
+paramorph.addPageLoader("/", () => asReactComponent(import("@website/index.markdown"), "./index.markdown"));
+paramorph.addPageLoader("/diy", () => asReactComponent(import("@website/diy.markdown"), "./diy.markdown"));
+paramorph.addPageLoader("/tags/exciting", () => asReactComponent(import("@website/tag.markdown"), "./tag.markdown"));
+
+// UTIL FUNCTIONS
+function asReactComponent(exports, url) {
+  if (exports.default === undefined) {
+    throw new Error(url +' must have a default export');
+  }
+  const candidate = exports.default;
+
+  if (React.isValidElement(candidate) && typeof candidate.type === 'function') {
+    const got = JSON.stringify(candidate);
+    throw new Error(url +' must have react component as default export; got '+ got);
+  }
+  return exports.default;
+}
 
