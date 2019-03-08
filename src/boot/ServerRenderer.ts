@@ -32,7 +32,8 @@ export class ServerRenderer {
     ;
     const result = {} as HashMap<string>;
 
-    await Promise.all(pages.map(async (page : Page) => {
+    for (let i = 0; i < pages.length; ++i) {
+      const page = pages[i];
       // react root contents rendered with react ids
       const { LayoutComponent, PageComponent } = await router.resolve(page.url);
 
@@ -41,6 +42,19 @@ export class ServerRenderer {
 
       const props = { history, paramorph, page };
       const app = React.createElement(ContextContainer, props, layoutElement);
+
+      (paramorph.data as any) = {};
+      const promises : Promise<any>[] = [];
+
+      paramorph.loadData = <T>(key : string, loader : () => Promise<T>) => {
+        promises.push(loader().then(value => paramorph.data[key] = value));
+        return Promise.resolve(null as any as T);
+      };
+
+      // first render - just to load initial data
+      ReactDomServer.renderToString(app);
+      await Promise.all(promises);
+      // second render - actual
       const body = ReactDomServer.renderToString(app);
 
       // site skeleton rendered without react ids
@@ -48,7 +62,7 @@ export class ServerRenderer {
       const html = ReactDomServer.renderToStaticMarkup(root);
 
       result[page.url] = '<!DOCTYPE html>\n' + html.replace("%%%BODY%%%", body);
-    }));
+    }
 
     return result;
   }
