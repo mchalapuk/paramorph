@@ -106,15 +106,15 @@ paramorph.addPage(
 paramorph.tags["exciting"].pages.push(paramorph.pages["/"]);
 
 // LAYOUT LOADERS //
-paramorph.addLayoutLoader("default", () => import("@website/_layouts/default.ts").then(exports => asReactComponent(exports, "./_layouts/default.ts"));
+paramorph.addLayoutLoader("default", () => import("@website/_layouts/default.ts").then(exports => asReactComponent(exports, "./_layouts/default.ts")));
 
 // INCLUDE LOADERS //
-paramorph.addIncludeLoader("BreadCrumbs", () => import("@website/_includes/BreadCrumbs/index.ts").then(exports => asReactComponent(exports, "./_includes/BreadCrumbs/index.ts"));
+paramorph.addIncludeLoader("BreadCrumbs", () => import("@website/_includes/BreadCrumbs/index.ts").then(exports => asReactComponent(exports, "./_includes/BreadCrumbs/index.ts")));
 
 // PAGE LOADERS //
-paramorph.addPageLoader("/", () => import("@website/index.markdown").then(exports => asReactComponent(exports, "./index.markdown"));
-paramorph.addPageLoader("/diy", () => import("@website/diy.markdown").then(exports => asReactComponent(exports, "./diy.markdown"));
-paramorph.addPageLoader("/tags/exciting", () => import("@website/tag.markdown").then(exports => asReactComponent(exports, "./tag.markdown"));
+paramorph.addPageLoader("/", () => import("@website/index.markdown").then(exports => asReactComponent(exports, "./index.markdown")));
+paramorph.addPageLoader("/diy", () => import("@website/diy.markdown").then(exports => asReactComponent(exports, "./diy.markdown")));
+paramorph.addPageLoader("/tags/exciting", () => import("@website/tag.markdown").then(exports => asReactComponent(exports, "./tag.markdown")));
 
 // UTIL FUNCTIONS
 function asReactComponent(exports, url) {

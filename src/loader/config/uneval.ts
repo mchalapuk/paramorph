@@ -249,6 +249,6 @@ export function unevalTag(page : Tag) {
 }
 
 export function loaderOf(path : string) {
-  return `() => import("@website${path.substring(1)}").then(exports => asReactComponent(exports, "${path}")`;
+  return `() => import("@website${path.substring(1)}").then(exports => asReactComponent(exports, "${path}"))`;
 }
 
