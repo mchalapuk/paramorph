@@ -46,15 +46,19 @@ export class ServerRenderer {
       (paramorph.data as any) = {};
       const promises : Promise<any>[] = [];
 
+      // first render - just to load initial data
       paramorph.loadData = <T>(key : string, loader : () => Promise<T>) => {
         promises.push(loader().then(value => paramorph.data[key] = value));
         return Promise.resolve(null as any as T);
       };
 
-      // first render - just to load initial data
       ReactDomServer.renderToString(app);
       await Promise.all(promises);
+
       // second render - actual
+      paramorph.loadData = <T>(key : string, loader : () => Promise<T>) => {
+        return Promise.resolve(null as any as T);
+      };
       const body = ReactDomServer.renderToString(app);
 
       // site skeleton rendered without react ids
