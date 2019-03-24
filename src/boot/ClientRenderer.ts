@@ -53,7 +53,9 @@ export class ClientRenderer {
     const oldLoadData = paramorph.loadData;
     paramorph.loadData = <T>(key : string, loader : () => Promise<T>) => {
       promises.push(loader().then(value => paramorph.data[key] = value));
-      return Promise.resolve(null as any as T);
+      // Returning never-resolving promise as components
+      // would already be unmounted when resolved.
+      return new Promise(() => {});
     };
 
     const { PageComponent } = await this.router.resolve(page.url);

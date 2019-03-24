@@ -49,7 +49,9 @@ export class ServerRenderer {
       // first render - just to load initial data
       paramorph.loadData = <T>(key : string, loader : () => Promise<T>) => {
         promises.push(loader().then(value => paramorph.data[key] = value));
-        return Promise.resolve(null as any as T);
+        // Returning never-resolving promise as components
+        // would already be unmounted when resolved.
+        return new Promise(() => {});
       };
 
       ReactDomServer.renderToString(app);
