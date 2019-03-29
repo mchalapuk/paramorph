@@ -144,7 +144,7 @@ export class Paramorph {
   }
 
   private getPageOfUrl(url : string) : Page {
-    const page = this.categories[url];
+    const page = this.pages[url];
     if (!page) {
       throw new Error(`couldn't find page of url ${url}`);
     }
