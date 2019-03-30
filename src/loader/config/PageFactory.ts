@@ -79,7 +79,7 @@ export default PageFactory;
 
 export function defaultUrl(title : string) {
   const converted = title.toLowerCase()
-    .replace(/[ ,_.`~+*()\[\]#?]/g, '-')
+    .replace(/[ ,_.`~+*'":;()\[\]#?]/g, '-')
     .replace(/--/g, '-')
     .replace(/^-+/, '')
     .replace(/-+$/, '')
