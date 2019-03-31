@@ -59,7 +59,7 @@ export class ServerRenderer {
 
       // second render - actual
       paramorph.loadData = <T>(key : string, loader : () => Promise<T>) => {
-        return Promise.resolve(null as any as T);
+        return new Promise(() => {});
       };
       const body = ReactDomServer.renderToString(app);
 
