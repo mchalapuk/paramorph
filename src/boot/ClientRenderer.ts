@@ -73,7 +73,7 @@ export class ClientRenderer {
     const { pathname } = this.history.location;
 
     if (pathname.endsWith('/') && pathname !== '/') {
-      return pathname.substring(1);
+      return pathname.substring(0, pathname.length - 1);
     } else {
       return pathname;
     }
