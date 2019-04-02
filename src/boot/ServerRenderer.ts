@@ -22,7 +22,7 @@ export class ServerRenderer {
   }
 
   async render(locals : Locals, assets : HashMap<any>) : Promise<HashMap<string>> {
-    const { paramorph, history, router } = this;
+    const { paramorph, router } = this;
 
     const Root = locals.Root || DefaultRoot;
     const rootProps = this.getRootProps(locals, assets);
@@ -37,12 +37,6 @@ export class ServerRenderer {
       // react root contents rendered with react ids
       const { LayoutComponent, PageComponent } = await router.resolve(page.url);
 
-      const pageElement = React.createElement(PageComponent);
-      const layoutElement = React.createElement(LayoutComponent, {}, pageElement);
-
-      const props = { history, paramorph, page };
-      const app = React.createElement(ContextContainer, props, layoutElement);
-
       (paramorph.data as any) = {};
       const promises : Promise<any>[] = [];
 
@@ -54,14 +48,16 @@ export class ServerRenderer {
         return new Promise(() => {});
       };
 
-      ReactDomServer.renderToString(app);
+      const app0 = this.createElement(page, LayoutComponent, PageComponent);
+      ReactDomServer.renderToString(app0);
       await Promise.all(promises);
 
       // second render - actual
       paramorph.loadData = <T>(key : string, loader : () => Promise<T>) => {
         return new Promise(() => {});
       };
-      const body = ReactDomServer.renderToString(app);
+      const app1 = this.createElement(page, LayoutComponent, PageComponent);
+      const body = ReactDomServer.renderToString(app1);
 
       // site skeleton rendered without react ids
       const root = React.createElement(Root, { ...rootProps, page });
@@ -93,6 +89,22 @@ export class ServerRenderer {
       },
       paramorph,
     };
+  }
+
+  private createElement(
+    page : Page,
+    LayoutComponent : React.ComponentType<any>,
+    PageComponent : React.ComponentType<any>,
+  ) {
+    const { paramorph, history } = this;
+
+    const pageElement = React.createElement(PageComponent);
+    const layoutElement = React.createElement(LayoutComponent, {}, pageElement);
+
+    const props = { history, paramorph, page };
+    const app = React.createElement(ContextContainer, props, layoutElement);
+
+    return app;
   }
 }
 
