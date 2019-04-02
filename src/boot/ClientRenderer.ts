@@ -37,7 +37,7 @@ export class ClientRenderer {
     const unlisten = this.history.listen(location => resolve(pages[location.pathname] || notFound));
     window.addEventListener('unload', unlisten);
 
-    const initialPage = pages[this.history.location.pathname] || notFound;
+    const initialPage = pages[this.getCurrentPathname()] || notFound;
 
     // Need to wait for loaders added in .componentWillMount methods
     // (same as server-side) in order to hydrate initial page without a warning.
@@ -67,6 +67,16 @@ export class ClientRenderer {
     paramorph.loadData = oldLoadData;
 
     await Promise.all(promises);
+  }
+
+  private getCurrentPathname() {
+    const { pathname } = this.history.location;
+
+    if (pathname.endsWith('/') && pathname !== '/') {
+      return pathname.substring(1);
+    } else {
+      return pathname;
+    }
   }
 }
 
