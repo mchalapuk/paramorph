@@ -25,7 +25,7 @@ export class Content extends Component<Props, {} > {
   }
 
   private renderChildren(children : ReactNode) {
-    return Children.map(children, this.renderNode.bind(this));
+    return Children.map(children, this.renderNode.bind(this)) || [];
   }
 
   private renderNode(node : ReactNode, key : number | string) {
@@ -57,16 +57,13 @@ export class Content extends Component<Props, {} > {
   }
 
   private renderComponent(elem : ReactElement<any>, key : number | string) {
-    const { respectLimit, mapper = (node : ReactNode) => node, ...props } = this.props;
-    if (respectLimit && elem.type === 'img') {
+    const { mapper = (node : ReactNode) => node, ...limiterProps } = this.props;
+    if (limiterProps.respectLimit && elem.type === 'img') {
       return null;
     }
-
-    return mapper(cloneElement(
-      elem,
-      cloneProps(elem, props, key),
-      this.renderChildren(elem.props.children),
-    ));
+    const children = this.renderChildren(elem.props.children);
+    const props = cloneProps(elem, children, limiterProps, key);
+    return mapper(cloneElement(elem, props, ...children));
   }
 
   private isLimitReached() {
@@ -93,10 +90,15 @@ function sentencize(child : string) {
   return matches;
 }
 
-function cloneProps(elem : ReactElement<any>, limiterProps : any, key : number | string) {
+function cloneProps(
+  elem : ReactElement<any>,
+  children: ReactNode,
+  limiterProps : any,
+  key : number | string,
+) {
   if (typeof elem.type === 'string') {
-    return { key, ...elem.props };
+    return { key, ...elem.props, children };
   }
-  return { key, ...elem.props, ...limiterProps };
+  return { key, ...elem.props, ...limiterProps, children };
 }
 
