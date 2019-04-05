@@ -62,7 +62,7 @@ export class Content extends Component<Props, {} > {
       return null;
     }
     const children = this.renderChildren(elem.props.children);
-    const props = cloneProps(elem, limiterProps, key);
+    const props = cloneProps(elem, children, limiterProps, key);
 
     if (children) {
       return mapper(cloneElement(elem, props, ...children));
@@ -97,10 +97,10 @@ function sentencize(child : string) {
 
 function cloneProps(
   elem : ReactElement<any>,
+  children : ReactNode,
   limiterProps : any,
   key : number | string,
 ) {
-  const children = undefined;
   if (typeof elem.type === 'string') {
     return { key, ...elem.props, children };
   }
