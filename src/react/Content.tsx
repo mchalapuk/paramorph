@@ -25,7 +25,7 @@ export class Content extends Component<Props, {} > {
   }
 
   private renderChildren(children : ReactNode) {
-    return Children.map(children, this.renderNode.bind(this)) || [];
+    return Children.map(children, this.renderNode.bind(this));
   }
 
   private renderNode(node : ReactNode, key : number | string) {
@@ -63,7 +63,12 @@ export class Content extends Component<Props, {} > {
     }
     const children = this.renderChildren(elem.props.children);
     const props = cloneProps(elem, children, limiterProps, key);
-    return mapper(cloneElement(elem, props, ...children));
+
+    if (children) {
+      return mapper(cloneElement(elem, props, ...children));
+    } else {
+      return mapper(cloneElement(elem, props));
+    }
   }
 
   private isLimitReached() {
