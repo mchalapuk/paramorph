@@ -4,7 +4,6 @@ import { Component, Children, ReactNode, ReactElement, cloneElement } from 'reac
 import NodeMapper from './NodeMapper';
 
 export interface Props {
-  children : ReactNode;
   mapper ?: NodeMapper;
   limit ?: number;
   respectLimit ?: boolean;
@@ -45,7 +44,7 @@ export class Content extends Component<Props, {} > {
   }
 
   private renderString(child : string) {
-    if (child.indexOf('.') === -1) {
+    if (child.indexOf('.') === -1 || !this.props.respectLimit) {
       return child;
     }
     const sentences = sentencize(child);

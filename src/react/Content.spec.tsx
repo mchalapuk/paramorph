@@ -15,6 +15,13 @@ function elem(name : string | React.ComponentType<any>, ...children : React.Reac
     children.length === 0 ? undefined : (children.length === 1 ? children[0] : children),
   );
 }
+function a(href : string, ...children : React.ReactNode[]) {
+  return React.createElement(
+    'a',
+    { key: key++, href },
+    children.length === 0 ? undefined : (children.length === 1 ? children[0] : children),
+  );
+}
 
 class TestComponent extends React.Component<{}> {
   render() {
@@ -29,16 +36,7 @@ class TestComponent extends React.Component<{}> {
 }
 
 describe('Content', () => {
-  let props : any;
   let testedContent : React.ReactElement<any>;
-
-  beforeEach(() => {
-    props = {
-      limit: 1,
-      respectLimit: true,
-      test: true,
-    };
-  });
 
   const renderingTests : [string, React.ReactNode, string][] = [
     [
@@ -61,13 +59,26 @@ describe('Content', () => {
       elem(TestComponent, elem('p', 'Luke, I\'m your father.')),
       '<div class="test"><p>Luke, I&#x27;m your father.</p></div>',
     ],
+    [
+      'complicated structure',
+      elem('div',
+        elem('p', 'Hello, welcome to ', a('https://paramorph.github.io/', 'paramorph'), '.'),
+        elem('p', 'Hello, welcome to ', a('https://paramorph.github.io/', 'paramorph'), '.'),
+        elem('p', 'Hello, welcome to ', a('https://paramorph.github.io/', 'paramorph'), '.'),
+      ),
+      '<div>'
+      + '<p>Hello, welcome to <a href="https://paramorph.github.io/">paramorph</a>.</p>'
+      + '<p>Hello, welcome to <a href="https://paramorph.github.io/">paramorph</a>.</p>'
+      + '<p>Hello, welcome to <a href="https://paramorph.github.io/">paramorph</a>.</p>'
+      + '</div>',
+    ],
   ];
 
   renderingTests.forEach(params => {
     const [ testName, children, expectedResult ] = params;
 
     it(`renders ${testName}`, () => {
-      testedContent = React.createElement(ContentLimiter, props, children);
+      testedContent = React.createElement(ContentLimiter, { limit: 1 }, children);
 
       const expected = `<div class=\"content\">${expectedResult}</div>`;
       const actual = ReactDOMServer.renderToStaticMarkup(testedContent);
@@ -97,6 +108,12 @@ describe('Content', () => {
   limitTests.forEach(params => {
     const [ testName, children, expectedResult ] = params;
 
+    const props = {
+      limit: 1,
+      respectLimit: true,
+      test: true,
+    };
+
     describe(`when limiting ${testName}`, () => {
       beforeEach(() => {
         testedContent = React.createElement(ContentLimiter, props, children);
@@ -114,10 +131,11 @@ describe('Content', () => {
   describe('with mapper configured', () => {
     let mapper : sinon.SinonSpy;
     let testedContent : React.ReactNode;
+    let props : any;
 
     beforeEach(() => {
       mapper = sinon.spy((node : React.ReactNode) => elem('strong', 'mapped'));
-      props = { mapper, ...props };
+      props = { mapper, limit: 1, respectLimit: true };
     });
 
     it('maps root component', () => {
