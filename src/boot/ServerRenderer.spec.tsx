@@ -78,6 +78,7 @@ describe('ServerRenderer', () => {
     paramorph.addLayout(layout);
     paramorph.addCollection(collection);
     paramorph.addPage(page);
+    paramorph.addContentLoader(page.url, () => Promise.resolve(PageComponent))
 
     testedRenderer = new ServerRenderer({} as History, router, paramorph);
   });
@@ -99,7 +100,7 @@ describe('ServerRenderer', () => {
         },
       };
 
-      routerPromise = new FakePromise<PageComponents>()
+      routerPromise = new FakePromise<PageComponents>();
       router.resolve.returns(routerPromise);
 
       resultPromise = testedRenderer.render(locals, webpackStats);

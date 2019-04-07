@@ -15,9 +15,10 @@ export interface RootProps {
   page : Page;
   localBundles : BundleUrls;
   externalBundles : BundleUrls;
+  preload : string[];
 }
 
-export function Root({ paramorph, page, localBundles, externalBundles } : RootProps) {
+export function Root({ paramorph, page, localBundles, externalBundles, preload } : RootProps) {
   return (
     <html>
       <head>
@@ -26,6 +27,9 @@ export function Root({ paramorph, page, localBundles, externalBundles } : RootPr
         <meta name='keywords' content={ page.tags.join(', ') } />
         <meta name='description' content={ page.description } />
         <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+        { preload.map(url => (
+          <meta name='paramorph-preload' content={ url } />
+        )) }
         { localBundles.css.map(url => (
           <link type='text/css' rel='stylesheet' href={ url } key={ url } />
         )) }

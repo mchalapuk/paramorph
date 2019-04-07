@@ -20,7 +20,7 @@ export class RoutesFactory {
           const layout = paramorph.layouts[page.layout] as Layout;
 
           const LayoutComponent = await paramorph.loadLayout(page.layout);
-          const PageComponent = await paramorph.loadPage(page.url);
+          const PageComponent = await paramorph.loadContent(page.url);
 
           return {
             LayoutComponent,

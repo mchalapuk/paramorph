@@ -1,8 +1,10 @@
 
+import * as React from 'react';
+
 import { Config, Layout, Include, Page, Category, Collection, Tag, ComponentType } from '.';
 
 export type Loader = () => Promise<ComponentType>;
-export type DataLoader<T> = () => Promise<T>;
+export type ContentListener = (url : string, content : ComponentType) => void;
 
 export class Paramorph {
   readonly layouts : HashMap<Layout> = {};
@@ -14,9 +16,10 @@ export class Paramorph {
 
   readonly layoutLoaders : HashMap<Loader> = {};
   readonly includeLoaders : HashMap<Loader> = {};
-  readonly pageLoaders : HashMap<Loader> = {};
+  readonly contentLoaders : HashMap<Loader> = {};
 
-  readonly data : HashMap<any> = {};
+  readonly content : HashMap<React.ComponentType<{}>> = {};
+  readonly contentListeners : ContentListener[] = [];
 
   constructor(
     readonly config : Config,
@@ -100,27 +103,45 @@ export class Paramorph {
     return (this.includeLoaders[name] as Loader)();
   }
 
-  addPageLoader(url : string, loader : Loader) {
-    if (this.pageLoaders.hasOwnProperty(url)) {
-      throw new Error(`page loader for url ${url} is already set`);
+  addContentLoader(url : string, loader : Loader) {
+    if (this.contentLoaders.hasOwnProperty(url)) {
+      throw new Error(`content loader for url ${url} is already set`);
     }
-    this.pageLoaders[url] = loader;
+    this.contentLoaders[url] = loader;
   }
-  loadPage(url : string) : Promise<ComponentType> {
-    if (!this.pageLoaders.hasOwnProperty(url)) {
-      throw new Error(`couldn't find page loader for path: ${
+  loadContent(url : string) : Promise<ComponentType> {
+    if (!this.contentLoaders.hasOwnProperty(url)) {
+      throw new Error(`couldn't find content loader for path: ${
         url
       }; available loaders: ${
-        JSON.stringify(Object.keys(this.pageLoaders))
+        JSON.stringify(Object.keys(this.contentLoaders))
       }`);
     }
-    return (this.pageLoaders[url] as Loader)();
-  }
+    const content = this.content[url];
+    if (content) {
+      // already loaded
+      return Promise.resolve(content);
+    }
+    const loader = this.contentLoaders[url] as Loader;
 
-  loadData<T>(key : string, loader : DataLoader<T>) : Promise<T> {
     return loader()
-      .then(value => this.data[key] = value)
+      .then(content => {
+        this.content[url] = content;
+
+        this.contentListeners.forEach(listener => listener(url, content));
+        return content;
+      })
     ;
+  }
+  addContentListener(listener : ContentListener) {
+    this.contentListeners.push(listener);
+  }
+  removeContentListener(listener : ContentListener) {
+    const index = this.contentListeners.indexOf(listener);
+    if (index === -1) {
+      throw new Error(`unknown content listener: ${listener}`);
+    }
+    this.contentListeners.splice(index, 1);
   }
 
   getCrumbs(page : Page) : Page[][] {

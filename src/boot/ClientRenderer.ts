@@ -39,34 +39,11 @@ export class ClientRenderer {
 
     const initialPage = pages[this.getCurrentPathname()] || notFound;
 
-    // Need to wait for loaders added in .componentWillMount methods
+    // We need to wait for content from paramorph-preload meta tags to be loaded
     // (same as server-side) in order to hydrate initial page without a warning.
-    this.preloadData(initialPage)
+    this.preloadContent()
       .then(() => resolve(initialPage))
     ;
-  }
-
-  private async preloadData(page : Page) {
-    const { history, paramorph } = this;
-    const promises : Promise<any>[] = [];
-
-    const oldLoadData = paramorph.loadData;
-    paramorph.loadData = <T>(key : string, loader : () => Promise<T>) => {
-      promises.push(loader().then(value => paramorph.data[key] = value));
-      // Returning never-resolving promise as components
-      // would already be unmounted when resolved.
-      return new Promise(() => {});
-    };
-
-    const { PageComponent } = await this.router.resolve(page.url);
-    const pageElement = React.createElement(PageComponent);
-    const props = { history, paramorph, page };
-    const app = React.createElement(ContextContainer, props, pageElement);
-
-    ReactDomServer.renderToString(app);
-    paramorph.loadData = oldLoadData;
-
-    await Promise.all(promises);
   }
 
   private getCurrentPathname() {
@@ -77,6 +54,31 @@ export class ClientRenderer {
     } else {
       return pathname;
     }
+  }
+
+  private async preloadContent() {
+    const { paramorph } = this;
+
+    const preload = this.getPreloadUrls();
+    return Promise.all(preload.map(url => paramorph.loadContent(url)));
+  }
+
+  private getPreloadUrls() {
+    const { paramorph } = this;
+
+    const meta = document.getElementsByTagName('meta');
+
+    return Array.from(meta)
+      .filter(meta => meta.getAttribute('name') === 'paramorph-preload')
+      .map(meta => meta.content)
+      .filter(url => {
+        if (url in paramorph.pages) {
+          return true;
+        }
+        console.error(`unknown url found in paramorph-preload meta tag: ${url}`);
+        return false;
+      })
+    ;
   }
 }
 

@@ -22,45 +22,39 @@ export class ServerRenderer {
   }
 
   async render(locals : Locals, assets : HashMap<any>) : Promise<HashMap<string>> {
-    const { paramorph, router } = this;
+    const { paramorph, history, router } = this;
 
     const Root = locals.Root || DefaultRoot;
     const rootProps = this.getRootProps(locals, assets);
-
     const pages = Object.keys(paramorph.pages)
       .map(key => paramorph.pages[key] as Page)
     ;
+
+    // Preloading all content to be able to render pages containing content of other pages.
+    await Promise.all(pages.map(page => paramorph.loadContent(page.url)));
+
+    const content = paramorph.content;
     const result = {} as HashMap<string>;
 
-    for (let i = 0; i < pages.length; ++i) {
-      const page = pages[i];
+    for (const page of pages) {
+      // Contains urls of pages which must be preloaded (client-side) in order to hydrate
+      // initial state of current page. Each url must be rendered as paramorph-preload
+      // meta tag in Root component from where it will be read in ClientRenderer.
+      const preload : string[] = [];
+      const proxy = createContentProxy(content, preload);
+      Object.defineProperty(paramorph, 'content', {
+        get: () => proxy,
+      });
+
       // react root contents rendered with react ids
       const { LayoutComponent, PageComponent } = await router.resolve(page.url);
-
-      (paramorph.data as any) = {};
-      const promises : Promise<any>[] = [];
-
-      // first render - just to load initial data
-      paramorph.loadData = <T>(key : string, loader : () => Promise<T>) => {
-        promises.push(loader().then(value => paramorph.data[key] = value));
-        // Returning never-resolving promise as components
-        // would already be unmounted when resolved.
-        return new Promise(() => {});
-      };
-
-      const app0 = this.createElement(page, LayoutComponent, PageComponent);
-      ReactDomServer.renderToString(app0);
-      await Promise.all(promises);
-
-      // second render - actual
-      paramorph.loadData = <T>(key : string, loader : () => Promise<T>) => {
-        return new Promise(() => {});
-      };
-      const app1 = this.createElement(page, LayoutComponent, PageComponent);
-      const body = ReactDomServer.renderToString(app1);
+      const pageElem = React.createElement(PageComponent);
+      const layoutElem = React.createElement(LayoutComponent, {}, pageElem);
+      const appElem = React.createElement(ContextContainer, { history, paramorph, page }, layoutElem);
+      const body = ReactDomServer.renderToString(appElem);
 
       // site skeleton rendered without react ids
-      const root = React.createElement(Root, { ...rootProps, page });
+      const root = React.createElement(Root, { ...rootProps, page, preload });
       const html = ReactDomServer.renderToStaticMarkup(root);
 
       result[page.url] = '<!DOCTYPE html>\n' + html.replace("%%%BODY%%%", body);
@@ -90,27 +84,30 @@ export class ServerRenderer {
       paramorph,
     };
   }
-
-  private createElement(
-    page : Page,
-    LayoutComponent : React.ComponentType<any>,
-    PageComponent : React.ComponentType<any>,
-  ) {
-    const { paramorph, history } = this;
-
-    const pageElement = React.createElement(PageComponent);
-    const layoutElement = React.createElement(LayoutComponent, {}, pageElement);
-
-    const props = { history, paramorph, page };
-    const app = React.createElement(ContextContainer, props, layoutElement);
-
-    return app;
-  }
 }
 
 export default ServerRenderer;
 
 export interface HashMap<T> {
   [name : string] : T | undefined;
+}
+
+function createContentProxy(
+  content : HashMap<React.ComponentType<{}>>,
+  preload : string[],
+) : (
+  HashMap<React.ComponentType<{}>>
+) {
+  return new Proxy(content, {
+    has: (target : any, url : string) => {
+      return url in target;
+    },
+    get: (target : any, url : string) => {
+      if (preload.indexOf(url) === -1) {
+        preload.push(url);
+      }
+      return target[url];
+    },
+  });
 }
 

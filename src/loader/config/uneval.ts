@@ -110,10 +110,10 @@ ${
     .map(include => `${varName}.addIncludeLoader("${include.name}", ${loaderOf(include.path)});\n`)
     .join('')
 }
-// PAGE LOADERS //
+// CONTENT LOADERS //
 ${
   all
-    .map(page => `${varName}.addPageLoader("${page.url}", ${loaderOf(page.source)});\n`)
+    .map(page => `${varName}.addContentLoader("${page.url}", ${loaderOf(page.source)});\n`)
     .join('')
 }
 // UTIL FUNCTIONS
