@@ -54,7 +54,7 @@ export class PageFactory {
     }
 
     return new PageType(
-      matter.permalink || defaultUrl(title),
+      matter.permalink || defaultUrl(file.name),
       title,
       matter.description || '',
       matter.image || null,
