@@ -81,8 +81,9 @@ export function defaultUrl(title : string) {
   const converted = title.toLowerCase()
     .replace(/[ \n\r,_\/\\—–.`~+*'"‘’“”:;()\[\]#?]/g, '-')
     .replace(/-+/g, '-')
-    .replace(/(^-|-$)/g, '')
-    .substring(0, 36)
+    .concat('-')
+    .substring(0, 64)
+    .replace(/(^-|-[^-]*$)/g, '')
   ;
   return `/${converted}`;
 }
