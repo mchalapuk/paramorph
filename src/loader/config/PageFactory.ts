@@ -82,10 +82,19 @@ export function defaultUrl(title : string) {
     .replace(/[ \n\r,_\/\\—–.`~+*'"‘’“”:;()\[\]#?]/g, '-')
     .replace(/-+/g, '-')
     .concat('-')
-    .substring(0, 64)
-    .replace(/(^-|-[^-]*$)/g, '')
+    .replace(/(^-|-$)/g, '')
   ;
-  return `/${converted}`;
+
+  let index = -1;
+  do {
+    index = converted.indexOf('-', index + 1);
+  } while (index < 64 && index !== -1);
+
+  if (index === -1) {
+    return `/${converted}`;
+  } else {
+    return `/${converted.substring(0, index)}`;
+  }
 }
 
 function defaultTitle(file : SourceFile) {
