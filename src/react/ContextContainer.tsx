@@ -1,15 +1,10 @@
 
 import * as React from 'react';
-import { AppContainer } from 'react-hot-loader';
 
 import { Context } from './Context';
 import { ContextTypes } from './ContextTypes';
 
-export interface Props extends Context {
-  children ?: React.ReactNode;
-}
-
-export class ContextContainer extends React.Component<Props, {}> {
+export class ContextContainer extends React.Component<Context, {}> {
   static readonly childContextTypes = ContextTypes;
 
   getChildContext() : Context {
@@ -18,11 +13,9 @@ export class ContextContainer extends React.Component<Props, {}> {
   }
 
   render() {
-    return (
-      <AppContainer>
-        { React.Children.only(this.props.children) }
-      </AppContainer>
-    );
+    const { children } = this.props;
+
+    return React.Children.only(children);
   }
 }
 
