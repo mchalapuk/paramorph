@@ -62,8 +62,8 @@ describe('PageFactory', () => {
     it('contains title generated from file name', () => {
       result.title.should.equal('Test page');
     });
-    it('contains url generated from title', () => {
-      result.url.should.equal('/test-page');
+    it('contains url generated from file name', () => {
+      result.url.should.equal('/test-page/');
     });
     it('contains empty description', () => {
       result.description.should.equal('');
@@ -107,7 +107,7 @@ describe('PageFactory', () => {
       result.title.should.equal(fullMatter.title);
     });
     it('contains given url', () => {
-      result.url.should.equal(fullMatter.permalink);
+      result.url.should.equal('/link/');
     });
     it('contains given description', () => {
       result.description.should.equal(fullMatter.description);

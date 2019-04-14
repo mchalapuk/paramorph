@@ -77,8 +77,11 @@ export class PageFactory {
 
 export default PageFactory;
 
-export function createUrl(title : string) {
-  const converted = title.toLowerCase()
+export function createUrl(maybeUrl : string) {
+  if (maybeUrl === '/') {
+    return maybeUrl;
+  }
+  const converted = maybeUrl.toLowerCase()
     .replace(/[ \n\r,_\/\\—–.`~+*'"‘’“”:;()\[\]#?]/g, '-')
     .replace(/-+/g, '-')
     .concat('-')
@@ -91,7 +94,7 @@ export function createUrl(title : string) {
   } while (index < 64 && index !== -1);
 
   if (index === -1) {
-    return `/${converted}`;
+    return `/${converted}/`;
   } else {
     return `/${converted.substring(0, index)}/`;
   }
