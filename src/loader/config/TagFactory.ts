@@ -1,6 +1,6 @@
 
 import { Page, Tag } from '../../model';
-import { defaultUrl } from './PageFactory';
+import { createUrl } from './PageFactory';
 
 export class TagFactory {
   constructor(
@@ -19,7 +19,7 @@ export class TagFactory {
     } = this.tagPage;
 
     return new Tag(
-      `/tags${defaultUrl(title)}`,
+      `/tags${createUrl(title)}`,
       title,
       description,
       image,

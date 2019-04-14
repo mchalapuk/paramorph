@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Route } from './boot';
 import { Paramorph, Page, Layout, ComponentType } from './model';
 
-const NOT_FOUND_URL = '/404';
+const NOT_FOUND_URL = '/404/';
 
 export class RoutesFactory {
   getRoutes(paramorph : Paramorph) : Route[] {

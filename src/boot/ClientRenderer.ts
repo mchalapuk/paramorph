@@ -37,23 +37,13 @@ export class ClientRenderer {
     const unlisten = this.history.listen(location => resolve(pages[location.pathname] || notFound));
     window.addEventListener('unload', unlisten);
 
-    const initialPage = pages[this.getCurrentPathname()] || notFound;
+    const initialPage = pages[location.pathname] || notFound;
 
     // We need to wait for content from paramorph-preload meta tags to be loaded
     // (same as server-side) in order to hydrate initial page without a warning.
     this.preloadContent()
       .then(() => resolve(initialPage))
     ;
-  }
-
-  private getCurrentPathname() {
-    const { pathname } = this.history.location;
-
-    if (pathname.endsWith('/') && pathname !== '/') {
-      return pathname.substring(0, pathname.length - 1);
-    } else {
-      return pathname;
-    }
   }
 
   private async preloadContent() {

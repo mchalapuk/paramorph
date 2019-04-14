@@ -54,7 +54,7 @@ export class PageFactory {
     }
 
     return new PageType(
-      matter.permalink || defaultUrl(file.name),
+      createUrl(matter.permalink || file.name),
       title,
       matter.description || '',
       matter.image || null,
@@ -77,7 +77,7 @@ export class PageFactory {
 
 export default PageFactory;
 
-export function defaultUrl(title : string) {
+export function createUrl(title : string) {
   const converted = title.toLowerCase()
     .replace(/[ \n\r,_\/\\—–.`~+*'"‘’“”:;()\[\]#?]/g, '-')
     .replace(/-+/g, '-')
@@ -93,7 +93,7 @@ export function defaultUrl(title : string) {
   if (index === -1) {
     return `/${converted}`;
   } else {
-    return `/${converted.substring(0, index)}`;
+    return `/${converted.substring(0, index)}/`;
   }
 }
 
