@@ -35,7 +35,7 @@ function loadScripts(srcs : string[]) {
       load(src, onLoad);
     }
 
-    loadNext();
+    setTimeout(loadNext, 1);
   });
 }
 

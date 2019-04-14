@@ -20,14 +20,19 @@ function loadStyles(hrefs : string[]) {
   window.addEventListener('load', () => {
     const head = document.getElementsByTagName('head')[0];
 
-    hrefs.forEach(href => {
-      const link = document.createElement('link');
-      link.setAttribute('href', href);
-      link.setAttribute('type', 'text/css');
-      link.setAttribute('rel', 'stylesheet');
+    setTimeout(
+      () => {
+        hrefs.forEach(href => {
+          const link = document.createElement('link');
+          link.setAttribute('href', href);
+          link.setAttribute('type', 'text/css');
+          link.setAttribute('rel', 'stylesheet');
 
-      head.appendChild(link);
-    });
+          head.appendChild(link);
+        });
+      },
+      1,
+    );
   });
 }
 
