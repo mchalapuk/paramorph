@@ -23,7 +23,7 @@ import PageFactory from './PageFactory';
 import TagFactory from './TagFactory';
 import ContentLoader from './ContentLoader';
 
-const TAG_PAGE_URL = '/tag';
+const TAG_PAGE_URL = '/tag/';
 
 export class ConfigLoader {
   constructor(

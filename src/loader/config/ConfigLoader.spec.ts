@@ -57,7 +57,7 @@ describe('ConfigLoader', () => {
   });
 
   const tagPage = {
-    url: '/tag',
+    url: '/tag/',
     tags: [],
     categories: [],
     output: false,
@@ -79,7 +79,7 @@ describe('ConfigLoader', () => {
       testedLoader.load(config)
         .then(
           result => { throw new Error(`expected rejection; got ${JSON.stringify(result)}`); },
-          error => error.message.should.eql('Couldn\'t find page of url \'/tag\' (used to render tag pages)'),
+          error => error.message.should.eql('Couldn\'t find page of url \'/tag/\' (used to render tag pages)'),
         )
       ;
     });
@@ -114,7 +114,7 @@ describe('ConfigLoader', () => {
       paramorph.layouts.should.eql({});
       paramorph.includes.should.eql({});
       paramorph.pages.should.eql({
-        '/tag': tagPage,
+        '/tag/': tagPage,
       });
       paramorph.categories.should.eql({});
       paramorph.tags.should.eql({});
@@ -151,7 +151,7 @@ describe('ConfigLoader', () => {
         .then(
           result => { throw new Error(`expected rejection; got result=${JSON.stringify(result)}`); },
           error => error.message.should.equal(
-            'Couldn\'t find category page(s): [{"page":"/tag","category":"missing"}]'
+            'Couldn\'t find category page(s): [{"page":"/tag/","category":"missing"}]'
           ),
         )
       ;
@@ -307,7 +307,7 @@ describe('ConfigLoader', () => {
 
       beforeEach(async () => {
         page0 = new Page(
-          '/tag',
+          '/tag/',
           'Tag',
           '',
           null,
@@ -322,7 +322,7 @@ describe('ConfigLoader', () => {
           0,
         );
         page1 = new Page(
-          '/hello-world',
+          '/hello-world/',
           'Hello, World!',
           'Just a first post.',
           null,
@@ -337,7 +337,7 @@ describe('ConfigLoader', () => {
           0,
         );
         page2 = new Category(
-          '/blog',
+          '/blog/',
           'Blog',
           '',
           null,
@@ -397,7 +397,7 @@ describe('ConfigLoader', () => {
       });
 
       it('returns paramorph containing proper page', () => {
-        const page = paramorph.pages['/hello-world'] as Page;
+        const page = paramorph.pages['/hello-world/'] as Page;
         should.exist(page);
         page.should.equal(page1);
       });
