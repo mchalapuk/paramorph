@@ -32,7 +32,7 @@ export class ClientRenderer {
     };
 
     const { pages } = this.paramorph;
-    const notFound = pages['/404'] as Page;
+    const notFound = pages['/404/'] as Page;
 
     const unlisten = this.history.listen(location => resolve(pages[location.pathname] || notFound));
     window.addEventListener('unload', unlisten);
