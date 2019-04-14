@@ -32,7 +32,7 @@ describe('uneval', () => {
       0,
     ));
     original.addPage(new Category(
-      '/diy',
+      '/diy/',
       'Do It Yourself!',
       'Yes, you can!',
       'http://some.address/diy.jpg',
@@ -47,7 +47,7 @@ describe('uneval', () => {
       1,
     ));
     original.addPage(new Tag(
-      '/tags/exciting',
+      '/tags/exciting/',
       'exciting',
       'This is an exciting tag.',
       'http://some.address/exciting.jpg',

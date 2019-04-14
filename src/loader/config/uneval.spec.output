@@ -69,7 +69,7 @@ paramorph.addPage(
 // CATEGORIES //
 paramorph.addPage(
   new Category(
-    "/diy",
+    "/diy/",
     "Do It Yourself!",
     "Yes, you can!",
     "http://some.address/diy.jpg",
@@ -91,7 +91,7 @@ paramorph.categories["Do It Yourself!"].pages.push(paramorph.pages["/"]);
 // TAGS //
 paramorph.addPage(
   new Tag(
-    "/tags/exciting",
+    "/tags/exciting/",
     "exciting",
     "This is an exciting tag.",
     "http://some.address/exciting.jpg",
@@ -114,8 +114,8 @@ paramorph.addIncludeLoader("BreadCrumbs", () => import("@website/_includes/Bread
 
 // CONTENT LOADERS //
 paramorph.addContentLoader("/", () => import("@website/index.markdown").then(exports => asReactComponent(exports, "./index.markdown")));
-paramorph.addContentLoader("/diy", () => import("@website/diy.markdown").then(exports => asReactComponent(exports, "./diy.markdown")));
-paramorph.addContentLoader("/tags/exciting", () => import("@website/tag.markdown").then(exports => asReactComponent(exports, "./tag.markdown")));
+paramorph.addContentLoader("/diy/", () => import("@website/diy.markdown").then(exports => asReactComponent(exports, "./diy.markdown")));
+paramorph.addContentLoader("/tags/exciting/", () => import("@website/tag.markdown").then(exports => asReactComponent(exports, "./tag.markdown")));
 
 // UTIL FUNCTIONS
 function asReactComponent(exports, url) {
