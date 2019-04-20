@@ -120,6 +120,7 @@ export class Paramorph {
     const content = this.content[url];
     if (content) {
       // already loaded
+      this.notifyContentListeners(url);
       return Promise.resolve(content);
     }
     const loader = this.contentLoaders[url] as Loader;
@@ -128,7 +129,7 @@ export class Paramorph {
       .then(content => {
         this.content[url] = content;
 
-        this.contentListeners.forEach(listener => listener(url, content));
+        this.notifyContentListeners(url);
         return content;
       })
     ;
@@ -178,6 +179,13 @@ export class Paramorph {
       throw new Error(`couldn't find category of title ${title}`);
     }
     return category;
+  }
+
+  private notifyContentListeners(url : string) {
+    global.setImmediate(() => {
+      const content = this.content[url] as React.ComponentType<{}>;
+      this.contentListeners.forEach(listener => listener(url, content));
+    });
   }
 }
 
