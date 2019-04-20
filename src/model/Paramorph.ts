@@ -182,7 +182,7 @@ export class Paramorph {
   }
 
   private notifyContentListeners(url : string) {
-    global.setImmediate(() => {
+    setImmediate(() => {
       const content = this.content[url] as React.ComponentType<{}>;
       this.contentListeners.forEach(listener => listener(url, content));
     });
