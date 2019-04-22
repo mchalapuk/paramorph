@@ -6,6 +6,10 @@ import { Paramorph } from '../model';
 import { ClientRenderer, Router } from '../boot';
 import RouteFactory from '../RouteFactory';
 
+// webpack doesn't do this for some reason
+global.setImmediate = setImmediate;
+global.clearImmediate = clearImmediate;
+
 const paramorph : Paramorph = require('@website/_config.yml').default;
 
 const routeFactory = new RouteFactory();
@@ -23,6 +27,7 @@ export default render;
 if (document.readyState === 'complete') {
   render();
 } else {
+
   window.addEventListener('load', render);
 }
 
