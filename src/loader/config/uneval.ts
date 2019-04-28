@@ -169,7 +169,7 @@ export function unevalCollection(collection : Collection) {
 
 export function unevalPage(page : Page) {
   return `  new Page(\n    ${
-    JSON.stringify(page.url)
+    JSON.stringify(page.permalink)
   },\n    ${
     JSON.stringify(page.title)
   },\n    ${
@@ -199,7 +199,7 @@ export function unevalPage(page : Page) {
 
 export function unevalCategory(page : Category) {
   return `  new Category(\n    ${
-    JSON.stringify(page.url)
+    JSON.stringify(page.permalink)
   },\n    ${
     JSON.stringify(page.title)
   },\n    ${
@@ -229,7 +229,7 @@ export function unevalCategory(page : Category) {
 
 export function unevalTag(page : Tag) {
   return `  new Tag(\n    ${
-    JSON.stringify(page.url)
+    JSON.stringify(page.permalink)
   },\n    ${
     JSON.stringify((page as Tag).originalTitle)
   },\n    ${

@@ -5,7 +5,7 @@ export class Category extends Page {
   readonly pages : Page[] = [];
 
   constructor(
-    url : string,
+    permalink : string,
     title : string,
     description : string,
     image : string | null,
@@ -20,7 +20,7 @@ export class Category extends Page {
     timestamp : number,
   ) {
     super(
-      url,
+      permalink,
       title,
       description,
       image,

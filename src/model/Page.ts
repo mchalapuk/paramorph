@@ -2,8 +2,10 @@
 import { Paramorph } from '.';
 
 export class Page {
+  readonly url : string;
+
   constructor(
-    readonly url : string,
+    readonly permalink : string,
     readonly title : string,
     readonly description : string,
     readonly image : string | null,
@@ -17,6 +19,7 @@ export class Page {
     readonly tags : string[],
     readonly timestamp : number,
   ) {
+    this.url = removePathParams(permalink);
   }
 
   compareTo(another : Page) : -1 | 1 {
@@ -31,4 +34,11 @@ export class Page {
 }
 
 export default Page;
+
+function removePathParams(permalink : string) {
+  return permalink
+    .replace(/:[^\/$]+/g, '')
+    .replace(/\/+/g, '/')
+  ;
+}
 

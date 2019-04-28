@@ -32,7 +32,7 @@ describe('uneval', () => {
       0,
     ));
     original.addPage(new Category(
-      '/diy/',
+      '/diy/:param/',
       'Do It Yourself!',
       'Yes, you can!',
       'http://some.address/diy.jpg',

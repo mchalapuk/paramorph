@@ -69,7 +69,7 @@ paramorph.addPage(
 // CATEGORIES //
 paramorph.addPage(
   new Category(
-    "/diy/",
+    "/diy/:param/",
     "Do It Yourself!",
     "Yes, you can!",
     "http://some.address/diy.jpg",
