@@ -8,4 +8,5 @@ export { Collection } from './Collection';
 export { Tag } from './Tag';
 export { Paramorph } from './Paramorph';
 export { ComponentType } from './ComponentType';
+export { PathParams } from './PathParams';
 

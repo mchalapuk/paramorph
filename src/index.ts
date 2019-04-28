@@ -11,6 +11,7 @@ export {
   Tag,
   Paramorph,
   ComponentType,
+  PathParams,
 } from './model';
 
 export {
