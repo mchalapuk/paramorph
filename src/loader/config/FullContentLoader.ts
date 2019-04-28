@@ -7,7 +7,7 @@ import { promisify } from 'util';
 import Module = require('module');
 import { createMemoryHistory } from 'history';
 
-import { Paramorph, Page } from '../../model';
+import { Paramorph, Page, PathParams } from '../../model';
 import { ContextContainer } from '../../react';
 import ErrorPolicy from '../../ErrorPolicy';
 
@@ -119,6 +119,7 @@ export class FullContentLoader implements ContentLoader {
     paramorph : Paramorph,
   ) {
     const { history } = this;
+    const pathParams = new PathParams();
 
     const pageElement = React.createElement(
       PageComponent,
@@ -126,7 +127,7 @@ export class FullContentLoader implements ContentLoader {
     );
     const container = React.createElement(
       ContextContainer,
-      { history, paramorph, page },
+      { history, pathParams, paramorph, page },
       pageElement,
     );
 

@@ -10,6 +10,14 @@ export const ContextTypes = {
     categories: PropTypes.object.isRequired,
     tags: PropTypes.object.isRequired,
   }).isRequired,
+  pathParams : PropTypes.shape({
+    set: PropTypes.func.isRequired,
+    get: PropTypes.func.isRequired,
+    on: PropTypes.func.isRequired,
+    once: PropTypes.func.isRequired,
+    removeListener: PropTypes.func.isRequired,
+    removeAllListeners: PropTypes.func.isRequired,
+  }),
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
     replace: PropTypes.func.isRequired,

@@ -6,18 +6,19 @@ import { History, createBrowserHistory } from 'history';
 
 import { Router } from '../boot';
 import { ContextContainer } from '../react';
-import { Paramorph, Page } from '../model';
+import { Paramorph, Page, PathParams } from '../model';
 
 export class ClientRenderer {
   constructor(
-    private history : History,
-    private router : Router,
-    private paramorph : Paramorph
+    private readonly history : History,
+    private readonly pathParams : PathParams,
+    private readonly router : Router,
+    private readonly paramorph : Paramorph
   ) {
   }
   render(containerId : string) {
     const container = document.getElementById(containerId);
-    const { history, paramorph } = this;
+    const { history, pathParams, paramorph } = this;
 
     const resolve = (page : Page) => {
       this.router.resolve(page.url)
@@ -25,7 +26,7 @@ export class ClientRenderer {
           const pageElement = React.createElement(PageComponent);
           const layoutElement = React.createElement(LayoutComponent, {}, pageElement);
 
-          const props = { history, paramorph, page };
+          const props = { history, pathParams, paramorph, page };
           const app = React.createElement(ContextContainer, props, layoutElement);
           ReactDom.hydrate(app, container);
         });

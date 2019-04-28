@@ -80,7 +80,7 @@ describe('ServerRenderer', () => {
     paramorph.addPage(page);
     paramorph.addContentLoader(page.url, () => Promise.resolve(PageComponent))
 
-    testedRenderer = new ServerRenderer({} as History, router, paramorph);
+    testedRenderer = new ServerRenderer({} as History, new model.PathParams, router, paramorph);
   });
 
   describe('after calling render', () => {

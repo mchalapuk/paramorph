@@ -4,7 +4,7 @@ import * as ReactDomServer from 'react-dom/server';
 import { History } from 'history';
 
 import { Router } from '../boot';
-import { Paramorph, Page } from '../model';
+import { Paramorph, Page, PathParams } from '../model';
 import { ContextContainer, Root as DefaultRoot, RootProps } from '../react';
 
 export interface Locals {
@@ -15,14 +15,15 @@ export interface Locals {
 
 export class ServerRenderer {
   constructor(
-    private history : History,
-    private router : Router,
-    private paramorph : Paramorph
+    private readonly history : History,
+    private readonly pathParams : PathParams,
+    private readonly router : Router,
+    private readonly paramorph : Paramorph
   ) {
   }
 
   async render(locals : Locals, assets : HashMap<any>) : Promise<HashMap<string>> {
-    const { paramorph, history, router } = this;
+    const { paramorph, pathParams, history, router } = this;
 
     const Root = locals.Root || DefaultRoot;
     const rootProps = this.getRootProps(locals, assets);
@@ -50,7 +51,8 @@ export class ServerRenderer {
       const { LayoutComponent, PageComponent } = await router.resolve(page.url);
       const pageElem = React.createElement(PageComponent);
       const layoutElem = React.createElement(LayoutComponent, {}, pageElem);
-      const appElem = React.createElement(ContextContainer, { history, paramorph, page }, layoutElem);
+      const appParams = { history, pathParams, paramorph, page };
+      const appElem = React.createElement(ContextContainer, appParams, layoutElem);
       const body = ReactDomServer.renderToString(appElem);
 
       // site skeleton rendered without react ids

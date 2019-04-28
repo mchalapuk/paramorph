@@ -1,9 +1,10 @@
 
 import { History } from 'history';
-import { Paramorph, Page } from '../model';
+import { Paramorph, PathParams, Page } from '../model';
 
 export interface Context {
   paramorph : Paramorph;
+  pathParams : PathParams;
   history : History;
   page : Page;
 }
