@@ -1,12 +1,12 @@
 
-import { Page, Collection, Category } from '../../model';
+import { Post, Collection, Category } from '../../model';
 
 import Matter from './Matter';
 import SourceFile from './SourceFile';
 
 const DEFAULT_LIMIT = 5;
 
-export interface PageConstructor {
+export interface PostConstructor {
   new(
     url : string,
     title : string,
@@ -21,27 +21,27 @@ export interface PageConstructor {
     categories : string[],
     tags : string[],
     timestamp : number,
-  ) : Page;
+  ) : Post;
 }
 
 const DEFAULT_LAYOUT_NAME = "default";
 
-export class PageFactory {
-  create(file : SourceFile, collection : Collection, frontMatter : Matter) : Page {
-    const role = (frontMatter.role || 'page').toLowerCase();
+export class PostFactory {
+  create(file : SourceFile, collection : Collection, frontMatter : Matter) : Post {
+    const role = (frontMatter.role || 'post').toLowerCase();
 
     switch (role) {
-      case 'page':
-        return this.create0(Page as PageConstructor, file, collection, frontMatter);
+      case 'post':
+        return this.create0(Post as PostConstructor, file, collection, frontMatter);
       case 'category':
-        return this.create0(Category as PageConstructor, file, collection, frontMatter);
+        return this.create0(Category as PostConstructor, file, collection, frontMatter);
       default:
         throw new Error(`Unknown role: '${role}'`);
     }
   }
 
   private create0(
-    PageType : PageConstructor,
+    PostType : PostConstructor,
     file : SourceFile,
     collection : Collection,
     matter : Matter,
@@ -53,7 +53,7 @@ export class PageFactory {
       categories.push(matter.category);
     }
 
-    return new PageType(
+    return new PostType(
       createUrl(matter.permalink || file.name),
       title,
       matter.description || '',
@@ -75,7 +75,7 @@ export class PageFactory {
   }
 }
 
-export default PageFactory;
+export default PostFactory;
 
 export function createUrl(maybeUrl : string) {
   if (maybeUrl === '/') {

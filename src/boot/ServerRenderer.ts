@@ -4,7 +4,7 @@ import * as ReactDomServer from 'react-dom/server';
 import { History } from 'history';
 
 import { Router } from '../boot';
-import { Paramorph, Page, PathParams } from '../model';
+import { Paramorph, Post, PathParams } from '../model';
 import { ContextContainer, Root as DefaultRoot, RootProps } from '../react';
 
 export interface Locals {
@@ -27,19 +27,19 @@ export class ServerRenderer {
 
     const Root = locals.Root || DefaultRoot;
     const rootProps = this.getRootProps(locals, assets);
-    const pages = Object.keys(paramorph.pages)
-      .map(key => paramorph.pages[key] as Page)
+    const posts = Object.keys(paramorph.posts)
+      .map(key => paramorph.posts[key] as Post)
     ;
 
-    // Preloading all content to be able to render pages containing content of other pages.
-    await Promise.all(pages.map(page => paramorph.loadContent(page.url)));
+    // Preloading all content to be able to render posts containing content of other posts.
+    await Promise.all(posts.map(post => paramorph.loadContent(post.url)));
 
     const content = paramorph.content;
     const result = {} as HashMap<string>;
 
-    for (const page of pages) {
-      // Contains urls of pages which must be preloaded (client-side) in order to hydrate
-      // initial state of current page. Each url must be rendered as paramorph-preload
+    for (const post of posts) {
+      // Contains urls of posts which must be preloaded (client-side) in order to hydrate
+      // initial state of current post. Each url must be rendered as paramorph-preload
       // meta tag in Root component from where it will be read in ClientRenderer.
       const preload : string[] = [];
       const proxy = createContentProxy(content, preload);
@@ -48,18 +48,18 @@ export class ServerRenderer {
       });
 
       // react root contents rendered with react ids
-      const { LayoutComponent, PageComponent } = await router.resolve(page.url);
-      const pageElem = React.createElement(PageComponent);
-      const layoutElem = React.createElement(LayoutComponent, {}, pageElem);
-      const appParams = { history, pathParams, paramorph, page };
+      const { LayoutComponent, PostComponent } = await router.resolve(post.url);
+      const postElem = React.createElement(PostComponent);
+      const layoutElem = React.createElement(LayoutComponent, {}, postElem);
+      const appParams = { history, pathParams, paramorph, post };
       const appElem = React.createElement(ContextContainer, appParams, layoutElem);
       const body = ReactDomServer.renderToString(appElem);
 
       // site skeleton rendered without react ids
-      const root = React.createElement(Root, { ...rootProps, page, preload });
+      const root = React.createElement(Root, { ...rootProps, post, preload });
       const html = ReactDomServer.renderToStaticMarkup(root);
 
-      result[page.url] = '<!DOCTYPE html>\n' + html.replace("%%%BODY%%%", body);
+      result[post.url] = '<!DOCTYPE html>\n' + html.replace("%%%BODY%%%", body);
     }
 
     return result;

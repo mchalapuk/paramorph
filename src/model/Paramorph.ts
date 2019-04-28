@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 
-import { Config, Layout, Include, Page, Category, Collection, Tag, ComponentType } from '.';
+import { Config, Layout, Include, Post, Category, Collection, Tag, ComponentType } from '.';
 
 export type Loader = () => Promise<ComponentType>;
 export type ContentListener = (url : string, content : ComponentType) => void;
@@ -9,7 +9,7 @@ export type ContentListener = (url : string, content : ComponentType) => void;
 export class Paramorph {
   readonly layouts : HashMap<Layout> = {};
   readonly includes : HashMap<Include> = {};
-  readonly pages : HashMap<Page> = {};
+  readonly posts : HashMap<Post> = {};
   readonly categories : HashMap<Category> = {};
   readonly tags : HashMap<Category> = {};
   readonly collections : HashMap<Collection> = {};
@@ -44,28 +44,28 @@ export class Paramorph {
     }
     this.collections[collection.title] = collection;
   }
-  addPage(page : Page) {
-    if (this.pages.hasOwnProperty(page.url)) {
-      throw new Error(`page of url ${page.url} is already set`);
+  addPost(post : Post) {
+    if (this.posts.hasOwnProperty(post.url)) {
+      throw new Error(`post of url ${post.url} is already set`);
     }
-    this.pages[page.url] = page;
+    this.posts[post.url] = post;
 
-    if (page instanceof Tag) {
-      this.tags[(page as Tag).originalTitle] = page;
-      // not adding to collection if the page is a tag
+    if (post instanceof Tag) {
+      this.tags[(post as Tag).originalTitle] = post;
+      // not adding to collection if the post is a tag
       return;
     }
 
-    const collection = this.collections[page.collection];
+    const collection = this.collections[post.collection];
     if (!collection) {
       throw new Error(
-        `coulnd't find collection of title '${page.collection}' when adding page of url '${page.url}'`
+        `coulnd't find collection of title '${post.collection}' when adding post of url '${post.url}'`
       );
     }
-    collection.pages.push(page);
+    collection.posts.push(post);
 
-    if (page instanceof Category) {
-      this.categories[page.title] = page;
+    if (post instanceof Category) {
+      this.categories[post.title] = post;
     }
   }
 
@@ -145,32 +145,32 @@ export class Paramorph {
     this.contentListeners.splice(index, 1);
   }
 
-  getCrumbs(page : Page) : Page[][] {
-    if (page.url == '/') {
-      return  [ [ page ] ];
+  getCrumbs(post : Post) : Post[][] {
+    if (post.url == '/') {
+      return  [ [ post ] ];
     }
-    if (page.categories.length == 0) {
-      return [ [ this.getPageOfUrl('/'), page ] ];
+    if (post.categories.length == 0) {
+      return [ [ this.getPostOfUrl('/'), post ] ];
     }
 
-    return page.categories
+    return post.categories
       .map((categoryTitle : string) => {
         return this.getCrumbs(this.getCategoryOfTitle(categoryTitle))
-          .map(crumb => crumb.concat([ page ]))
+          .map(crumb => crumb.concat([ post ]))
         ;
       })
       .reduce(
-        (a : Page[][], b : Page[][]) => a.concat(b),
+        (a : Post[][], b : Post[][]) => a.concat(b),
         [],
       );
   }
 
-  private getPageOfUrl(url : string) : Page {
-    const page = this.pages[url];
-    if (!page) {
-      throw new Error(`couldn't find page of url ${url}`);
+  private getPostOfUrl(url : string) : Post {
+    const post = this.posts[url];
+    if (!post) {
+      throw new Error(`couldn't find post of url ${url}`);
     }
-    return page;
+    return post;
   }
 
   private getCategoryOfTitle(title : string) : Category {

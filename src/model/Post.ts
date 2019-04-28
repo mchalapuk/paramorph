@@ -1,7 +1,7 @@
 
 import { Paramorph } from '.';
 
-export class Page {
+export class Post {
   readonly url : string;
 
   constructor(
@@ -22,7 +22,7 @@ export class Page {
     this.url = removePathParams(permalink);
   }
 
-  compareTo(another : Page) : -1 | 1 {
+  compareTo(another : Post) : -1 | 1 {
     if (this.timestamp === another.timestamp) {
       if (this.title === another.title) {
         return this.url > another.url ? 1 : -1;
@@ -33,7 +33,7 @@ export class Page {
   }
 }
 
-export default Page;
+export default Post;
 
 function removePathParams(permalink : string) {
   return permalink

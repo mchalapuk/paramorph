@@ -6,7 +6,7 @@ import { History, createBrowserHistory } from 'history';
 
 import { Router } from '../boot';
 import { ContextContainer } from '../react';
-import { Paramorph, Page, PathParams } from '../model';
+import { Paramorph, Post, PathParams } from '../model';
 
 export class ClientRenderer {
   constructor(
@@ -20,30 +20,30 @@ export class ClientRenderer {
     const container = document.getElementById(containerId);
     const { history, pathParams, paramorph } = this;
 
-    const resolve = (page : Page) => {
-      this.router.resolve(page.url)
-        .then(({ PageComponent, LayoutComponent}) => {
-          const pageElement = React.createElement(PageComponent);
-          const layoutElement = React.createElement(LayoutComponent, {}, pageElement);
+    const resolve = (post : Post) => {
+      this.router.resolve(post.url)
+        .then(({ PostComponent, LayoutComponent}) => {
+          const postElement = React.createElement(PostComponent);
+          const layoutElement = React.createElement(LayoutComponent, {}, postElement);
 
-          const props = { history, pathParams, paramorph, page };
+          const props = { history, pathParams, paramorph, post };
           const app = React.createElement(ContextContainer, props, layoutElement);
           ReactDom.hydrate(app, container);
         });
     };
 
-    const { pages } = this.paramorph;
-    const notFound = pages['/404/'] as Page;
+    const { posts } = this.paramorph;
+    const notFound = posts['/404/'] as Post;
 
-    const unlisten = this.history.listen(location => resolve(pages[location.pathname] || notFound));
+    const unlisten = this.history.listen(location => resolve(posts[location.pathname] || notFound));
     window.addEventListener('unload', unlisten);
 
-    const initialPage = pages[location.pathname] || notFound;
+    const initialPost = posts[location.pathname] || notFound;
 
     // We need to wait for content from paramorph-preload meta tags to be loaded
-    // (same as server-side) in order to hydrate initial page without a warning.
+    // (same as server-side) in order to hydrate initial post without a warning.
     this.preloadContent()
-      .then(() => resolve(initialPage))
+      .then(() => resolve(initialPost))
     ;
   }
 
@@ -63,7 +63,7 @@ export class ClientRenderer {
       .filter(meta => meta.getAttribute('name') === 'paramorph-preload')
       .map(meta => meta.content)
       .filter(url => {
-        if (url in paramorph.pages) {
+        if (url in paramorph.posts) {
           return true;
         }
         console.error(`unknown url found in paramorph-preload meta tag: ${url}`);

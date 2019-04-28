@@ -1,5 +1,5 @@
 
-import { Page } from '../../model';
+import { Post } from '../../model';
 
 import  DescriptionGenerator from './DescriptionGenerator';
 

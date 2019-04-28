@@ -8,7 +8,7 @@ import FakePromise from 'fake-promise';
 
 import * as model from '../model';
 import { RootProps } from '../react';
-import { ServerRenderer, Locals, HashMap, PageComponents } from '../boot';
+import { ServerRenderer, Locals, HashMap, PostComponents } from '../boot';
 
 function elem(tag : string, ...children : React.ReactNode[]) {
   return React.createElement(tag, children);
@@ -16,12 +16,12 @@ function elem(tag : string, ...children : React.ReactNode[]) {
 
 class Root extends React.Component<RootProps> {
   render() {
-    const { paramorph, page } = this.props;
+    const { paramorph, post } = this.props;
 
     return (
       <html>
         <head>
-         <title>{ page.title } | { paramorph.config.title }</title>
+         <title>{ post.title } | { paramorph.config.title }</title>
         </head>
         <body>
           %%%BODY%%%
@@ -43,23 +43,23 @@ class LayoutComponent extends React.Component<{}> {
   }
 }
 
-class PageComponent extends React.Component<{}> {
+class PostComponent extends React.Component<{}> {
   static readonly contextTypes = {
-    page: PropTypes.object,
+    post: PropTypes.object,
   };
   render() {
-    const { page } = this.context;
+    const { post } = this.context;
 
     return (
       <p>
-        { page.title }
+        { post.title }
       </p>
     );
   }
 }
 
-function createPage(url : string, title : string, date : number) {
-  return new model.Page(url, title, '', null, 'Test', 'test', './test.md', true, true, 5, [], [], date);
+function createPost(url : string, title : string, date : number) {
+  return new model.Post(url, title, '', null, 'Test', 'test', './test.md', true, true, 5, [], [], date);
 }
 
 describe('ServerRenderer', () => {
@@ -71,14 +71,14 @@ describe('ServerRenderer', () => {
 
   beforeEach(() => {
     const collection = new model.Collection('test', 'Test', './_test');
-    const page = createPage('/', 'Meeting', 0);
+    const post = createPost('/', 'Meeting', 0);
     const layout = new model.Layout('test', './layouts/test.md');
 
     const paramorph = new model.Paramorph({ title: 'website.test' } as model.Config);
     paramorph.addLayout(layout);
     paramorph.addCollection(collection);
-    paramorph.addPage(page);
-    paramorph.addContentLoader(page.url, () => Promise.resolve(PageComponent))
+    paramorph.addPost(post);
+    paramorph.addContentLoader(post.url, () => Promise.resolve(PostComponent))
 
     testedRenderer = new ServerRenderer({} as History, new model.PathParams, router, paramorph);
   });
@@ -100,7 +100,7 @@ describe('ServerRenderer', () => {
         },
       };
 
-      routerPromise = new FakePromise<PageComponents>();
+      routerPromise = new FakePromise<PostComponents>();
       router.resolve.returns(routerPromise);
 
       resultPromise = testedRenderer.render(locals, webpackStats);
@@ -110,11 +110,11 @@ describe('ServerRenderer', () => {
       beforeEach(() => {
         routerPromise.resolve({
           LayoutComponent,
-          PageComponent,
+          PostComponent,
         });
       });
 
-      it('renders single page', () => {
+      it('renders single post', () => {
         return resultPromise.then(result => {
           Object.keys(result)
             .should.eql([ '/' ])

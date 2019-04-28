@@ -1,18 +1,18 @@
 
 import * as stripTags from 'striptags';
 
-import { Page, Tag, Category } from '../../model';
+import { Post, Tag, Category } from '../../model';
 
 export class DescriptionGenerator {
   constructor(
     private readonly sentenceLimit : number,
   ) {
   }
-  generate(html : string, page : Page) : string {
-    return this.limit(removeEntities(this.fromContent(html, page) || this.fromPages(page)));
+  generate(html : string, post : Post) : string {
+    return this.limit(removeEntities(this.fromContent(html, post) || this.fromPosts(post)));
   }
 
-  private fromContent(html : string, page: Page) {
+  private fromContent(html : string, post: Post) {
     const spaced = html.replace(/\n/g, '')
       .replace(/(>)(<)/g, '$1 $2')
     ;
@@ -21,17 +21,17 @@ export class DescriptionGenerator {
       .replace(/(^ +| +$)/g, '')
     ;
   }
-  private fromPages(page : Page) {
-    if (!(page instanceof Tag || page instanceof Category)) {
+  private fromPosts(post : Post) {
+    if (!(post instanceof Tag || post instanceof Category)) {
       return '';
     }
-    const { title, pages } = page as Tag | Category;
+    const { title, posts } = post as Tag | Category;
 
-    const pagesList = pages
-      .map(page => page.title)
+    const postsList = posts
+      .map(post => post.title)
       .join(', ')
     ;
-    return `${title}: ${pagesList}`;
+    return `${title}: ${postsList}`;
   }
 
   private limit(description : string) {

@@ -3,7 +3,7 @@ import * as sinon from 'sinon';
 import * as should from 'should';
 import FakePromise from 'fake-promise';
 
-import { Paramorph, Layout, Include, Page, Category, Tag, Collection, Config } from '../../model';
+import { Paramorph, Layout, Include, Post, Category, Tag, Collection, Config } from '../../model';
 
 import { ConfigLoader } from './ConfigLoader';
 
@@ -27,7 +27,7 @@ describe('ConfigLoader', () => {
     frontMatter: {
       read: sinon.stub(),
     },
-    pageFactory: {
+    postFactory: {
       create: sinon.stub(),
     },
     contentLoader: {
@@ -42,7 +42,7 @@ describe('ConfigLoader', () => {
     testedLoader = new ConfigLoader(
       mocks.projectStructure as any,
       mocks.frontMatter as any,
-      mocks.pageFactory as any,
+      mocks.postFactory as any,
       mocks.contentLoader as any,
     );
   });
@@ -51,8 +51,8 @@ describe('ConfigLoader', () => {
     mocks.projectStructure.scan.resetHistory();
     mocks.frontMatter.read.resetBehavior();
     mocks.frontMatter.read.resetHistory();
-    mocks.pageFactory.create.resetBehavior();
-    mocks.pageFactory.create.resetHistory();
+    mocks.postFactory.create.resetBehavior();
+    mocks.postFactory.create.resetHistory();
     mocks.contentLoader.load.resetHistory();
   });
 
@@ -75,17 +75,21 @@ describe('ConfigLoader', () => {
       mocks.projectStructure.scan.returns(FakePromise.resolve(struct));
     });
 
-    it('.load() throws Error with complain about missing tag page', () => {
+    it('.load() throws Error with complain about missing tag post', () => {
       testedLoader.load(config)
         .then(
-          result => { throw new Error(`expected rejection; got ${JSON.stringify(result)}`); },
-          error => error.message.should.eql('Couldn\'t find page of url \'/tag/\' (used to render tag pages)'),
+          result => {
+            throw new Error(`expected rejection; got ${JSON.stringify(result)}`);
+          },
+          error => error.message.should.eql(
+            `Couldn't find post of url '/tag/' (required for rendering of tag pages)`
+          ),
         )
       ;
     });
   });
 
-  describe('when loading a project structure containing only tag page', () => {
+  describe('when loading a project structure containing only a tag page', () => {
     const struct = {
       layouts: [],
       includes: [],
@@ -106,14 +110,14 @@ describe('ConfigLoader', () => {
     beforeEach(async () => {
       mocks.projectStructure.scan.returns(FakePromise.resolve(struct));
       mocks.frontMatter.read.returns(FakePromise.resolve({}));
-      mocks.pageFactory.create.returns(tagPage);
+      mocks.postFactory.create.returns(tagPage);
       paramorph = await testedLoader.load(config);
     });
 
     it('.load() returns empty Paramorph instance', () => {
       paramorph.layouts.should.eql({});
       paramorph.includes.should.eql({});
-      paramorph.pages.should.eql({
+      paramorph.posts.should.eql({
         '/tag/': tagPage,
       });
       paramorph.categories.should.eql({});
@@ -122,7 +126,7 @@ describe('ConfigLoader', () => {
     });
   });
 
-  describe('when loading a project structure containing only a page with missing category', () => {
+  describe('when loading a project structure containing only a post with missing category', () => {
     const struct = {
       layouts: [],
       includes: [],
@@ -143,7 +147,7 @@ describe('ConfigLoader', () => {
     beforeEach(() => {
       mocks.projectStructure.scan.returns(FakePromise.resolve(struct));
       mocks.frontMatter.read.returns(FakePromise.resolve({}));
-      mocks.pageFactory.create.returns({ ...tagPage, categories: ['missing'] });
+      mocks.postFactory.create.returns({ ...tagPage, categories: ['missing'] });
     });
 
     it('.load() throws Error', () => {
@@ -151,7 +155,7 @@ describe('ConfigLoader', () => {
         .then(
           result => { throw new Error(`expected rejection; got result=${JSON.stringify(result)}`); },
           error => error.message.should.equal(
-            'Couldn\'t find category page(s): [{"page":"/tag/","category":"missing"}]'
+            'Couldn\'t find category post(s): [{"post":"/tag/","category":"missing"}]'
           ),
         )
       ;
@@ -184,7 +188,7 @@ describe('ConfigLoader', () => {
     beforeEach(async () => {
       mocks.projectStructure.scan.returns(FakePromise.resolve(struct));
       mocks.frontMatter.read.returns(FakePromise.resolve({}));
-      mocks.pageFactory.create.returns(tagPage);
+      mocks.postFactory.create.returns(tagPage);
       paramorph = await testedLoader.load(config);
     });
 
@@ -221,7 +225,7 @@ describe('ConfigLoader', () => {
     beforeEach(async () => {
       mocks.projectStructure.scan.returns(FakePromise.resolve(struct));
       mocks.frontMatter.read.returns(FakePromise.resolve({}));
-      mocks.pageFactory.create.returns(tagPage);
+      mocks.postFactory.create.returns(tagPage);
       paramorph = await testedLoader.load(config);
     });
 
@@ -231,18 +235,18 @@ describe('ConfigLoader', () => {
     });
   });
 
-  describe('when loading a project structure containing page', () => {
+  describe('when loading a project structure containing post', () => {
     const tagSource = {
       name: 'tag',
       path: './_pages/tag.markdown',
     };
     const postSource = {
       name: 'hello-world',
-      path: './_post/hello-world.md',
+      path: './_posts/hello-world.md',
     };
     const categorySource = {
       name: 'blog',
-      path: './_post/blog.md',
+      path: './_posts/blog.md',
     };
     const struct = {
       layouts: [
@@ -301,12 +305,12 @@ describe('ConfigLoader', () => {
       };
       const matter2 = {
       };
-      let page0 : Page;
-      let page1 : Page;
-      let page2 : Page;
+      let post0 : Post;
+      let post1 : Post;
+      let post2 : Post;
 
       beforeEach(async () => {
-        page0 = new Page(
+        post0 = new Post(
           '/tag/',
           'Tag',
           '',
@@ -321,7 +325,7 @@ describe('ConfigLoader', () => {
           [],
           0,
         );
-        page1 = new Page(
+        post1 = new Post(
           '/hello-world/',
           'Hello, World!',
           'Just a first post.',
@@ -336,7 +340,7 @@ describe('ConfigLoader', () => {
           ['Tag'],
           0,
         );
-        page2 = new Category(
+        post2 = new Category(
           '/blog/',
           'Blog',
           '',
@@ -352,37 +356,37 @@ describe('ConfigLoader', () => {
           0,
         );
 
-        mocks.pageFactory.create.onCall(0).returns(page0);
-        mocks.pageFactory.create.onCall(1).returns(page1);
-        mocks.pageFactory.create.onCall(2).returns(page2);
+        mocks.postFactory.create.onCall(0).returns(post0);
+        mocks.postFactory.create.onCall(1).returns(post1);
+        mocks.postFactory.create.onCall(2).returns(post2);
         matterPromise0.resolve(matter0);
         matterPromise1.resolve(matter1);
         matterPromise2.resolve(matter2);
         paramorph = await paramorphPromise;
       });
 
-      it('calls pageFactory.create(...)', () => {
-        mocks.pageFactory.create.should.have.callCount(3);
+      it('calls postFactory.create(...)', () => {
+        mocks.postFactory.create.should.have.callCount(3);
 
-        const source0 = mocks.pageFactory.create.getCall(0).args[0];
+        const source0 = mocks.postFactory.create.getCall(0).args[0];
         source0.should.eql(tagSource);
-        const collection0 = mocks.pageFactory.create.getCall(0).args[1];
+        const collection0 = mocks.postFactory.create.getCall(0).args[1];
         collection0.title.should.equal('Pages');
-        const actualMatter0 = mocks.pageFactory.create.getCall(0).args[2];
+        const actualMatter0 = mocks.postFactory.create.getCall(0).args[2];
         actualMatter0.should.eql(matter0);
 
-        const source1 = mocks.pageFactory.create.getCall(1).args[0];
+        const source1 = mocks.postFactory.create.getCall(1).args[0];
         source1.should.eql(postSource);
-        const collection1 = mocks.pageFactory.create.getCall(1).args[1];
+        const collection1 = mocks.postFactory.create.getCall(1).args[1];
         collection1.title.should.equal('Posts');
-        const actualMatter1 = mocks.pageFactory.create.getCall(1).args[2];
+        const actualMatter1 = mocks.postFactory.create.getCall(1).args[2];
         actualMatter1.should.eql(matter1);
 
-        const source2 = mocks.pageFactory.create.getCall(2).args[0];
+        const source2 = mocks.postFactory.create.getCall(2).args[0];
         source2.should.eql(categorySource);
-        const collection2 = mocks.pageFactory.create.getCall(2).args[1];
+        const collection2 = mocks.postFactory.create.getCall(2).args[1];
         collection2.title.should.equal('Posts');
-        const actualMatter2 = mocks.pageFactory.create.getCall(2).args[2];
+        const actualMatter2 = mocks.postFactory.create.getCall(2).args[2];
         actualMatter2.should.eql(matter2);
       });
 
@@ -396,16 +400,16 @@ describe('ConfigLoader', () => {
         tag.title.should.equal('#Tag');
       });
 
-      it('returns paramorph containing proper page', () => {
-        const page = paramorph.pages['/hello-world/'] as Page;
-        should.exist(page);
-        page.should.equal(page1);
+      it('returns paramorph containing proper post', () => {
+        const post = paramorph.posts['/hello-world/'] as Post;
+        should.exist(post);
+        post.should.equal(post1);
       });
 
-      it('returned tag contains proper page', () => {
+      it('returned tag contains proper post', () => {
         const tag = paramorph.tags['Tag'] as Tag;
-        tag.pages.should.have.length(1);
-        tag.pages[0].should.equal(page1);
+        tag.posts.should.have.length(1);
+        tag.posts[0].should.equal(post1);
       });
 
       it('returns paramorph containing proper category', () => {
@@ -414,10 +418,10 @@ describe('ConfigLoader', () => {
         category.should.equal(category);
       });
 
-      it('returned category contains proper page', () => {
+      it('returned category contains proper post', () => {
         const category = paramorph.categories['Blog'] as Category;
-        category.pages.should.have.length(1);
-        category.pages[0].should.equal(page1);
+        category.posts.should.have.length(1);
+        category.posts[0].should.equal(post1);
       });
 
       it('returns paramorph containing Pages collection', () => {
@@ -426,10 +430,10 @@ describe('ConfigLoader', () => {
         collection.title.should.equal('Pages');
       });
 
-      it('returned Pages collection contains proper pages', () => {
+      it('returned Pages collection contains proper posts', () => {
         const collection = paramorph.collections['Pages'] as Collection;
-        collection.pages.should.have.length(1);
-        collection.pages[0].should.eql(page0);
+        collection.posts.should.have.length(1);
+        collection.posts[0].should.eql(post0);
       });
 
       it('returns paramorph containing Posts collection', () => {
@@ -438,11 +442,11 @@ describe('ConfigLoader', () => {
         collection.title.should.equal('Posts');
       });
 
-      it('returned Posts collection contains proper pages', () => {
+      it('returned Posts collection contains proper posts', () => {
         const collection = paramorph.collections['Posts'] as Collection;
-        collection.pages.should.have.length(2);
-        collection.pages[0].should.eql(page1);
-        collection.pages[1].should.eql(page2);
+        collection.posts.should.have.length(2);
+        collection.posts[0].should.eql(post1);
+        collection.posts[1].should.eql(post2);
       });
     });
   });

@@ -2,7 +2,7 @@
 export { Config, CollectionConfig, MenuEntryConfig } from './Config';
 export { Layout } from './Layout';
 export { Include } from './Include';
-export { Page } from './Page';
+export { Post } from './Post';
 export { Category } from './Category';
 export { Collection } from './Collection';
 export { Tag } from './Tag';

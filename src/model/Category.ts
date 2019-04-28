@@ -1,8 +1,8 @@
 
-import { Page } from '.';
+import { Post } from '.';
 
-export class Category extends Page {
-  readonly pages : Page[] = [];
+export class Category extends Post {
+  readonly posts : Post[] = [];
 
   constructor(
     permalink : string,

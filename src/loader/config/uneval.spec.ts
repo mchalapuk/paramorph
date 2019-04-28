@@ -1,7 +1,7 @@
 
 import { readFileSync } from 'fs';
 
-import { Paramorph, Layout, Include, Page, Collection, Category, Tag } from '../../model';
+import { Paramorph, Layout, Include, Post, Collection, Category, Tag } from '../../model';
 
 import { uneval } from './uneval';
 
@@ -16,10 +16,10 @@ describe('uneval', () => {
     original.addInclude(new Include('BreadCrumbs', './_includes/BreadCrumbs/index.ts'));
     original.addCollection(new Collection('pages', 'Pages', './_pages'));
     original.addCollection(new Collection('posts', 'Posts', './_posts'));
-    original.addPage(new Page(
+    original.addPost(new Post(
       '/',
       'Home',
-      'This is a test page',
+      'This is a test post',
       'http://some.address/image.jpg',
       'Pages',
       'default',
@@ -31,7 +31,7 @@ describe('uneval', () => {
       ['exciting'],
       0,
     ));
-    original.addPage(new Category(
+    original.addPost(new Category(
       '/diy/:param/',
       'Do It Yourself!',
       'Yes, you can!',
@@ -46,7 +46,7 @@ describe('uneval', () => {
       [],
       1,
     ));
-    original.addPage(new Tag(
+    original.addPost(new Tag(
       '/tags/exciting/',
       'exciting',
       'This is an exciting tag.',

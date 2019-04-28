@@ -48,11 +48,11 @@ paramorph.addCollection(
 );
 
 // PAGES //
-paramorph.addPage(
-  new Page(
+paramorph.addPost(
+  new Post(
     "/",
     "Home",
-    "This is a test page",
+    "This is a test post",
     "http://some.address/image.jpg",
     "Pages",
     "default",
@@ -67,7 +67,7 @@ paramorph.addPage(
 );
 
 // CATEGORIES //
-paramorph.addPage(
+paramorph.addPost(
   new Category(
     "/diy/:param/",
     "Do It Yourself!",
@@ -86,10 +86,10 @@ paramorph.addPage(
 );
 
 // PAGES IN CATEGORIES //
-paramorph.categories["Do It Yourself!"].pages.push(paramorph.pages["/"]);
+paramorph.categories["Do It Yourself!"].posts.push(paramorph.posts["/"]);
 
 // TAGS //
-paramorph.addPage(
+paramorph.addPost(
   new Tag(
     "/tags/exciting/",
     "exciting",
@@ -104,7 +104,7 @@ paramorph.addPage(
 );
 
 // PAGES IN TAGS //
-paramorph.tags["exciting"].pages.push(paramorph.pages["/"]);
+paramorph.tags["exciting"].posts.push(paramorph.posts["/"]);
 
 // LAYOUT LOADERS //
 paramorph.addLayoutLoader("default", () => import("@website/_layouts/default.ts").then(exports => asReactComponent(exports, "./_layouts/default.ts")));

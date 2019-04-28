@@ -10,7 +10,7 @@ import {
   Paramorph,
   Layout,
   Include,
-  Page,
+  Post,
   Collection,
   Tag,
   Category,
@@ -19,7 +19,7 @@ import {
 import SourceFile from './SourceFile';
 import ProjectStructure, { SpecialDirs } from './ProjectStructure';
 import FrontMatter from './FrontMatter';
-import PageFactory from './PageFactory';
+import PostFactory from './PostFactory';
 import TagFactory from './TagFactory';
 import ContentLoader from './ContentLoader';
 
@@ -29,7 +29,7 @@ export class ConfigLoader {
   constructor(
     private structure : ProjectStructure,
     private frontMatter : FrontMatter,
-    private pageFactory : PageFactory,
+    private postFactory : PostFactory,
     private contentLoader : ContentLoader,
   ) {
   }
@@ -56,61 +56,61 @@ export class ConfigLoader {
     await Promise.all(
       collectionFileTuples.map(async ({ collection, file }) => {
         const matter = await this.frontMatter.read(file);
-        const page = this.pageFactory.create(file, collection, matter);
-        paramorph.addPage(page);
+        const post = this.postFactory.create(file, collection, matter);
+        paramorph.addPost(post);
       }),
     );
 
     this.addTags(paramorph);
-    this.addPagesToCategories(paramorph);
+    this.addPostsToCategories(paramorph);
 
     await this.contentLoader.load(paramorph);
     return paramorph;
   }
 
   private addTags(paramorph : Paramorph) {
-    const tagPage = paramorph.pages[TAG_PAGE_URL] as Tag;
-    if (!tagPage) {
-      throw new Error(`Couldn't find page of url '${TAG_PAGE_URL}' (used to render tag pages)`);
+    const tagPost = paramorph.posts[TAG_PAGE_URL] as Tag;
+    if (!tagPost) {
+      throw new Error(`Couldn't find post of url '${TAG_PAGE_URL}' (required for rendering of tag pages)`);
     }
-    const tagFactory = new TagFactory(tagPage);
+    const tagFactory = new TagFactory(tagPost);
 
-    Object.keys(paramorph.pages)
+    Object.keys(paramorph.posts)
       .forEach(key => {
-        const page = paramorph.pages[key] as Page;
+        const post = paramorph.posts[key] as Post;
 
-        page.tags.forEach(title => {
+        post.tags.forEach(title => {
           const tag = tagFactory.create(title);
 
-          if (!paramorph.pages.hasOwnProperty(tag.url)) {
-            paramorph.addPage(tag);
+          if (!paramorph.posts.hasOwnProperty(tag.url)) {
+            paramorph.addPost(tag);
           }
-          tag.pages.push(page);
+          tag.posts.push(post);
         });
       })
     ;
   }
 
-  private addPagesToCategories(paramorph : Paramorph) {
-    const missing = [] as { page : string, category : string }[];
+  private addPostsToCategories(paramorph : Paramorph) {
+    const missing = [] as { post : string, category : string }[];
 
-    Object.keys(paramorph.pages)
+    Object.keys(paramorph.posts)
       .forEach(key => {
-        const page = paramorph.pages[key] as Page;
+        const post = paramorph.posts[key] as Post;
 
-        page.categories.forEach(title => {
+        post.categories.forEach(title => {
           if (!paramorph.categories.hasOwnProperty(title)) {
-            missing.push({ page: page.url, category: title });
+            missing.push({ post: post.url, category: title });
             return;
           }
           const category = paramorph.categories[title] as Category;
-          category.pages.push(page);
+          category.posts.push(post);
         });
       })
     ;
 
     if (missing.length !== 0) {
-      throw new Error(`Couldn't find category page(s): ${JSON.stringify(missing)}`);
+      throw new Error(`Couldn't find category post(s): ${JSON.stringify(missing)}`);
     }
   }
 }

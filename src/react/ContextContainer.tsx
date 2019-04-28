@@ -8,8 +8,8 @@ export class ContextContainer extends React.Component<Context, {}> {
   static readonly childContextTypes = ContextTypes;
 
   getChildContext() : Context {
-    const { paramorph, page, history, pathParams } = this.props;
-    return { paramorph, page, history, pathParams };
+    const { paramorph, post, history, pathParams } = this.props;
+    return { paramorph, post, history, pathParams };
   }
 
   render() {

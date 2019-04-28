@@ -10,7 +10,7 @@ import ConfigParser from './ConfigParser';
 import ConfigLoader from './ConfigLoader';
 import ProjectStructure from './ProjectStructure';
 import FrontMatter from './FrontMatter';
-import PageFactory from './PageFactory';
+import PostFactory from './PostFactory';
 import EmptyContentLoader from './EmptyContentLoader';
 import FullContentLoader from './FullContentLoader';
 import uneval from './uneval';
@@ -59,7 +59,7 @@ function loader(this : webpack.loader.LoaderContext, source : string, map : any)
   const loader = new ConfigLoader(
     new ProjectStructure(fs),
     new FrontMatter(fs),
-    new PageFactory(),
+    new PostFactory(),
     options.shallow
       ? new EmptyContentLoader()
       : new FullContentLoader(this, policy, debug)
@@ -68,12 +68,12 @@ function loader(this : webpack.loader.LoaderContext, source : string, map : any)
 
   loader.load(parser.parse(source))
     .then(paramorph => {
-      Object.keys(paramorph.pages)
+      Object.keys(paramorph.posts)
         .map(url => path.join(process.cwd(), url))
         .forEach(url => this.addDependency(url))
       ;
 
-      const source = 'const { Paramorph, Layout, Include, Page, Collection, Category, Tag } '
+      const source = 'const { Paramorph, Layout, Include, Post, Collection, Category, Tag } '
         +'= require(\'paramorph/model\');\n'
         + uneval(paramorph, 'paramorph')
         +';\nmodule.exports.default = paramorph;\n'

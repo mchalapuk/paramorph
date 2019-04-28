@@ -1,9 +1,9 @@
 
-import { Page } from '.';
+import { Post } from '.';
 
-export class Tag extends Page {
+export class Tag extends Post {
   readonly originalTitle : string;
-  readonly pages : Page[] = [];
+  readonly posts : Post[] = [];
 
   constructor(
     permalink : string,

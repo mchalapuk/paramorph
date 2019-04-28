@@ -12,7 +12,7 @@ export {
 export {
   Router,
   Route,
-  PageComponents,
+  PostComponents,
   ActionContext,
 } from './Router';
 

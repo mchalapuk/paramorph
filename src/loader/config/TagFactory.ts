@@ -1,10 +1,10 @@
 
-import { Page, Tag } from '../../model';
-import { createUrl } from './PageFactory';
+import { Post, Tag } from '../../model';
+import { createUrl } from './PostFactory';
 
 export class TagFactory {
   constructor(
-    private tagPage : Page,
+    private tagPost : Post,
   ) {
   }
 
@@ -16,7 +16,7 @@ export class TagFactory {
       source,
       limit,
       timestamp,
-    } = this.tagPage;
+    } = this.tagPost;
 
     return new Tag(
       `/tags${createUrl(title)}`,

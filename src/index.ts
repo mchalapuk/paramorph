@@ -5,7 +5,7 @@ export {
   MenuEntryConfig,
   Layout,
   Include,
-  Page,
+  Post,
   Category,
   Collection,
   Tag,

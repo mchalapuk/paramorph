@@ -6,7 +6,7 @@ export const ContextTypes = {
   paramorph: PropTypes.shape({
     layouts: PropTypes.object.isRequired,
     includes: PropTypes.object.isRequired,
-    pages: PropTypes.object.isRequired,
+    posts: PropTypes.object.isRequired,
     categories: PropTypes.object.isRequired,
     tags: PropTypes.object.isRequired,
   }).isRequired,
@@ -26,7 +26,7 @@ export const ContextTypes = {
       pathname: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
-  page: PropTypes.shape({
+  post: PropTypes.shape({
     url: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,

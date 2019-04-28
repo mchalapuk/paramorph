@@ -29,7 +29,7 @@ front: matter
 > Michelle Dockery
 
 Welcome to [Paramorph][address]
-the best static webpage generator out there.
+the best static webpost generator out there.
 
 [address]: http://paramorph.org/
 
@@ -42,7 +42,7 @@ with just a suggestion of sexiness, nothing vulgar.</p>
 <p>Michelle Dockery</p>
 </blockquote>
 <p>Welcome to <a href="http://paramorph.org/">Paramorph</a>
-the best static webpage generator out there.</p>
+the best static webpost generator out there.</p>
 <ul>
 <li>item</li>
 </ul>
@@ -57,12 +57,12 @@ the best static webpage generator out there.</p>
 front: matter
 ---
 <div>
-  <Feed page={ page } />
+  <Feed post={ post } />
 </div>
 `;
 
     const expectedHtml = `<div>
-  <Feed page={ page } />
+  <Feed post={ post } />
 </div>
 `;
 

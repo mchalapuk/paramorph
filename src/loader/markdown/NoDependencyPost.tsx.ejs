@@ -9,15 +9,15 @@ const <%= file.name %> = Include;
 /**
  * @author Maciej Chałapuk (maciej@chalapuk.pl)
  */
-export class NoDependencyPage extends React.PureComponent<{}, {}> {
+export class NoDependencyPost extends React.PureComponent<{}, {}> {
   static contextTypes = {
     paramorph: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    page: PropTypes.object.isRequired,
+    post: PropTypes.object.isRequired,
   };
 
   render() {
-    const { paramorph, page, history } = this.context;
+    const { paramorph, post, history } = this.context;
 
     return (
       <div><%- html %></div>
@@ -25,7 +25,7 @@ export class NoDependencyPage extends React.PureComponent<{}, {}> {
   }
 }
 
-export default NoDependencyPage;
+export default NoDependencyPost;
 
 function Include(props : any) {
   const propNames = [ 'title', 'name', 'description', 'details' ];

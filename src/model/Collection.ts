@@ -1,8 +1,8 @@
 
-import Page from './Page';
+import Post from './Post';
 
 export class Collection {
-  readonly pages : Page[] = [];
+  readonly posts : Post[] = [];
 
   constructor(
     readonly name : string,

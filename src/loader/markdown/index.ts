@@ -22,7 +22,7 @@ function markdownLoader(this : webpack.loader.LoaderContext, source : string) {
   const callback = this.async() as webpack.loader.loaderCallback;
 
   const options = {
-    template: 'paramorph/loader/markdown/MarkdownPage.tsx.ejs',
+    template: 'paramorph/loader/markdown/MarkdownPost.tsx.ejs',
     ...(utils.getOptions(this) || {}),
   };
   const resolve = promisify(this.resolve.bind(this));

@@ -46,13 +46,13 @@ export class FrontMatter {
 
 export default FrontMatter;
 
-const VALID_ROLES = ['', null, 'page', 'Page', 'PAGE', 'category', 'Category', 'CATEGORY'];
+const VALID_ROLES = ['', null, 'post', 'Post', 'PAGE', 'category', 'Category', 'CATEGORY'];
 
 function validate(fileName : string, matter : any) {
-  return check(matter, `pages['${fileName}']`)
+  return check(matter, `posts['${fileName}']`)
     .has.fieldThat('date', date => date.is.aDateString)
     .and.fieldThat('role', role => role
-      .is.oneOf(VALID_ROLES, `be 'page' or 'category'`)
+      .is.oneOf(VALID_ROLES, `be 'post' or 'category'`)
       .or.Undefined
     )
     .and.fieldThat('title', title => title.is.aString.or.Undefined)

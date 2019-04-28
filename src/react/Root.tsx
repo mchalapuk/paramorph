@@ -3,7 +3,7 @@ import * as React from 'react';
 import DeferredScripts from './DeferredScripts';
 import DeferredStyles from './DeferredStyles';
 
-import { Paramorph, Page } from '../model';
+import { Paramorph, Post } from '../model';
 
 export interface BundleUrls {
   css : string[];
@@ -12,20 +12,20 @@ export interface BundleUrls {
 
 export interface RootProps {
   paramorph : Paramorph;
-  page : Page;
+  post : Post;
   localBundles : BundleUrls;
   externalBundles : BundleUrls;
   preload : string[];
 }
 
-export function Root({ paramorph, page, localBundles, externalBundles, preload } : RootProps) {
+export function Root({ paramorph, post, localBundles, externalBundles, preload } : RootProps) {
   return (
     <html>
       <head>
-        <title>{ page.title } | { paramorph.config.title }</title>
-        <meta name='path' content={ page.url }/>
-        <meta name='keywords' content={ page.tags.join(', ') } />
-        <meta name='description' content={ page.description } />
+        <title>{ post.title } | { paramorph.config.title }</title>
+        <meta name='path' content={ post.url }/>
+        <meta name='keywords' content={ post.tags.join(', ') } />
+        <meta name='description' content={ post.description } />
         <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
         { preload.map(url => (
           <meta name='paramorph-preload' content={ url } />

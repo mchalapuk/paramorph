@@ -21,6 +21,6 @@ export class ComponentTemplate {
 export default ComponentTemplate;
 
 function loadTemplate() {
-  return fs.readFileSync(path.join(__dirname, './MarkdownPage.tsx.ejs')).toString('utf8');
+  return fs.readFileSync(path.join(__dirname, './MarkdownPost.tsx.ejs')).toString('utf8');
 }
 

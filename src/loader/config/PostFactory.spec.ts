@@ -1,33 +1,33 @@
 
 import * as should from 'should';
 
-import { Page, Collection, Category } from '../../model';
+import { Post, Collection, Category } from '../../model';
 
-import PageFactory from './PageFactory';
+import PostFactory from './PostFactory';
 import Matter from './Matter';
 
 const date = new Date('Jun 05 2018 00:00 UTC');
 const matter = (arg : any = {}) => ({ date, ...arg } as Matter);
 
-describe('PageFactory', () => {
+describe('PostFactory', () => {
   const sourceFile = {
-    name: 'test-page',
+    name: 'test-post',
     path: './_posts/test.md',
   };
   const collection = new Collection('posts', 'Posts', './_posts');
 
-  let testedFactory : PageFactory;
+  let testedFactory : PostFactory;
 
   beforeEach(() => {
-    testedFactory = new PageFactory();
+    testedFactory = new PostFactory();
   });
 
   const roleTests : [any, any][] = [
-    [ undefined, Page ],
-    [ null, Page ],
-    [ 'page', Page ],
-    [ 'Page', Page ],
-    [ 'PAGE', Page ],
+    [ undefined, Post ],
+    [ null, Post ],
+    [ 'post', Post ],
+    [ 'Post', Post ],
+    [ 'POST', Post ],
     [ 'category', Category ],
     [ 'Category', Category ],
     [ 'CATEGORY', Category ],
@@ -37,7 +37,7 @@ describe('PageFactory', () => {
     const [ role, ExpectedPrototype ] = params;
 
     describe(`when calling .create(${JSON.stringify(role)}`, () => {
-      let result : Page;
+      let result : Post;
 
       beforeEach(() => {
         result = testedFactory.create(sourceFile, collection, matter({ role }));
@@ -60,10 +60,10 @@ describe('PageFactory', () => {
       result.timestamp.should.equal(1528156800000);
     });
     it('contains title generated from file name', () => {
-      result.title.should.equal('Test page');
+      result.title.should.equal('Test post');
     });
     it('contains url generated from file name', () => {
-      result.url.should.equal('/test-page/');
+      result.url.should.equal('/test-post/');
     });
     it('contains empty description', () => {
       result.description.should.equal('');
@@ -88,7 +88,7 @@ describe('PageFactory', () => {
   const fullMatter = {
     permalink: '/link',
     title: 'Title',
-    description: 'Full defined page',
+    description: 'Full defined post',
     image: 'image.jpg',
     layout: 'Custom',
     output: false,
@@ -97,7 +97,7 @@ describe('PageFactory', () => {
   };
 
   describe(`when calling .create(${JSON.stringify(fullMatter)})`, () => {
-    let result : Page;
+    let result : Post;
 
     beforeEach(() => {
       result = testedFactory.create(sourceFile, collection, matter(fullMatter));
@@ -134,7 +134,7 @@ describe('PageFactory', () => {
   };
 
   describe(`when calling .create(${JSON.stringify(tagsMatter)})`, () => {
-    let result : Page;
+    let result : Post;
 
     beforeEach(() => {
       result = testedFactory.create(sourceFile, collection, matter(tagsMatter));
@@ -150,7 +150,7 @@ describe('PageFactory', () => {
   };
 
   describe(`when calling .create(${JSON.stringify(categoriesMatter)})`, () => {
-    let result : Page;
+    let result : Post;
 
     beforeEach(() => {
       result = testedFactory.create(sourceFile, collection, matter(categoriesMatter));
@@ -166,7 +166,7 @@ describe('PageFactory', () => {
   };
 
   describe(`when calling .crate(${JSON.stringify(categoryMatter)})`, () => {
-    let result : Page;
+    let result : Post;
 
     beforeEach(() => {
       result = testedFactory.create(sourceFile, collection, matter(categoryMatter));
@@ -183,7 +183,7 @@ describe('PageFactory', () => {
   };
 
   describe(`when calling .create(${JSON.stringify(categoriesCategoryMatter)})`, () => {
-    let result : Page;
+    let result : Post;
 
     beforeEach(() => {
       result = testedFactory.create(sourceFile, collection, matter(categoriesCategoryMatter));
