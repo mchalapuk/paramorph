@@ -26,7 +26,7 @@ export class ClientRenderer {
           const postElement = React.createElement(PostComponent);
           const layoutElement = React.createElement(LayoutComponent, {}, postElement);
 
-          const props = { history, pathParams, paramorph, post };
+          const props = { history, pathParams, paramorph, post, requestParameterizedRender };
           const app = React.createElement(ContextContainer, props, layoutElement);
           ReactDom.hydrate(app, container);
         });
@@ -74,4 +74,8 @@ export class ClientRenderer {
 }
 
 export default ClientRenderer;
+
+function requestParameterizedRender() {
+  // no op on client side
+}
 

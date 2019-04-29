@@ -30,14 +30,21 @@ export class ServerRenderer {
     const posts = Object.keys(paramorph.posts)
       .map(key => paramorph.posts[key] as Post)
     ;
-
     // Preloading all content to be able to render posts containing content of other posts.
     await Promise.all(posts.map(post => paramorph.loadContent(post.url)));
 
     const content = paramorph.content;
-    const result = {} as HashMap<string>;
 
-    for (const post of posts) {
+    // Helper function for rendering posts
+    function renderPost(
+      post : Post,
+      params : any,
+      requestParameterizedRender: (params : any) => void,
+      LayoutComponent : React.ComponentType<{}>,
+      PostComponent : React.ComponentType<{}>,
+    ) {
+      pathParams.set(params);
+
       // Contains urls of posts which must be preloaded (client-side) in order to hydrate
       // initial state of current post. Each url must be rendered as paramorph-preload
       // meta tag in Root component from where it will be read in ClientRenderer.
@@ -48,10 +55,9 @@ export class ServerRenderer {
       });
 
       // react root contents rendered with react ids
-      const { LayoutComponent, PostComponent } = await router.resolve(post.url);
       const postElem = React.createElement(PostComponent);
       const layoutElem = React.createElement(LayoutComponent, {}, postElem);
-      const appParams = { history, pathParams, paramorph, post };
+      const appParams = { history, pathParams, paramorph, post, requestParameterizedRender };
       const appElem = React.createElement(ContextContainer, appParams, layoutElem);
       const body = ReactDomServer.renderToString(appElem);
 
@@ -59,9 +65,35 @@ export class ServerRenderer {
       const root = React.createElement(Root, { ...rootProps, post, preload });
       const html = ReactDomServer.renderToStaticMarkup(root);
 
-      result[post.url] = '<!DOCTYPE html>\n' + html.replace("%%%BODY%%%", body);
+      return '<!DOCTYPE html>\n' + html.replace("%%%BODY%%%", body);
     }
 
+    const result = {} as HashMap<string>;
+
+    // actual rendering
+    for (const post of posts) {
+      const { LayoutComponent, PostComponent } = await router.resolve(post.url);
+
+      // Each page may request multiple renders of itself with specified path parameters.
+      const renderRequests : any[] = [];
+      const requestRender = (params : any[]) => renderRequests.push(params);
+
+      // First render
+      result[post.url] = renderPost(post, {}, requestRender, LayoutComponent, PostComponent);
+
+      // Parameterized renders
+      renderRequests.forEach(params => {
+        const url = Object.keys(params)
+          .reduce(
+            (result, key) => result.replace(`:${key}`, params[key]),
+            post.permalink,
+          )
+          .replace(/\/:[^/:]+(\/|$)/, '\/')
+          .replace(/\/+/, '\/')
+        ;
+        result[url] = renderPost(post, params, noop, LayoutComponent, PostComponent);
+      });
+    }
     return result;
   }
 
@@ -111,5 +143,9 @@ function createContentProxy(
       return target[url];
     },
   });
+}
+
+function noop() {
+  // no op
 }
 

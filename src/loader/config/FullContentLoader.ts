@@ -127,7 +127,7 @@ export class FullContentLoader implements ContentLoader {
     );
     const container = React.createElement(
       ContextContainer,
-      { history, pathParams, paramorph, post },
+      { history, pathParams, paramorph, post, requestParameterizedRender },
       postElement,
     );
 
@@ -176,4 +176,8 @@ export class FullContentLoader implements ContentLoader {
 }
 
 export default FullContentLoader;
+
+function requestParameterizedRender() {
+  // no op
+}
 
