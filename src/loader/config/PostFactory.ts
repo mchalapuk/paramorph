@@ -54,7 +54,9 @@ export class PostFactory {
     }
 
     return new PostType(
-      createUrl(matter.permalink || file.name),
+      matter.permalink
+        ? addTrailingSlash(matter.permalink)
+        : createUrl(file.name),
       title,
       matter.description || '',
       matter.image || null,
@@ -98,6 +100,10 @@ export function createUrl(maybeUrl : string) {
   } else {
     return `/${converted.substring(0, index)}/`;
   }
+}
+
+function addTrailingSlash(permalink : string) {
+  return `${permalink}${permalink.match(/\/$/) ? '' : '/'}`;
 }
 
 function defaultTitle(file : SourceFile) {
