@@ -85,10 +85,13 @@ export class ServerRenderer {
       renderRequests.forEach(params => {
         const url = Object.keys(params)
           .reduce(
-            (result, key) => result.replace(`:${key}`, params[key]),
+            (result, key) => result
+              .replace(`:${key}?`, params[key])
+              .replace(`:${key}`, params[key])
+            ,
             post.permalink,
           )
-          .replace(/\/:[^/:]+(\/|$)/, '\/')
+          .replace(/\/:[^/:?]+\??(\/|$)/, '\/')
           .replace(/\/+/, '\/')
         ;
         result[url] = renderPost(post, params, noop, LayoutComponent, PostComponent);
