@@ -84,7 +84,7 @@ export function createUrl(maybeUrl : string) {
     return maybeUrl;
   }
   const converted = maybeUrl.toLowerCase()
-    .replace(/[ \n\r,_\/\\—–.`~+*'"‘’“”:;()\[\]#?]/g, '-')
+    .replace(/[ \n\r,_\/\\—–.`+*'"‘’“”:;()\[\]#?]/g, '-')
     .replace(/-+/g, '-')
     .concat('-')
     .replace(/(^-|-$)/g, '')
