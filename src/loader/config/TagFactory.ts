@@ -19,7 +19,7 @@ export class TagFactory {
     } = this.tagPost;
 
     return new Tag(
-      `/tags${createUrl(title)}:pageNumber(page-\\d+)?/`,
+      `/tags${createUrl(title)}:pageNumber(-\\d+-)?/`,
       title,
       description,
       image,
