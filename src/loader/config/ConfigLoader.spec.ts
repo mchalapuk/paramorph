@@ -2,6 +2,7 @@
 import * as sinon from 'sinon';
 import * as should from 'should';
 import FakePromise from 'fake-promise';
+import { JSDOM } from 'jsdom';
 
 import { Paramorph, Layout, Include, Post, Category, Tag, Collection, Config } from '../../model';
 
@@ -37,6 +38,14 @@ describe('ConfigLoader', () => {
 
   let testedLoader : ConfigLoader;
   let paramorph : Paramorph;
+
+  before(() => {
+    global.window = new JSDOM().window;
+    Object.defineProperty(global.window, 'location', { value: {} });
+  });
+  after(() => {
+    global.window.close();
+  });
 
   beforeEach(() => {
     testedLoader = new ConfigLoader(
