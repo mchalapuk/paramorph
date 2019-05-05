@@ -28,6 +28,7 @@ export class ServerRenderer {
     const rootProps = this.getRootProps(locals, assets);
     const posts = Object.keys(paramorph.posts)
       .map(key => paramorph.posts[key] as Post)
+      .filter(post => post.output)
     ;
     // Preloading all content to be able to render posts containing content of other posts.
     await Promise.all(posts.map(post => paramorph.loadContent(post.url)));
