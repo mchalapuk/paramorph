@@ -17,16 +17,9 @@ export class RoutesFactory {
       return {
         path,
         action: async (context : ActionContext<{}>) => {
-          const layout = paramorph.layouts[post.layout] as Layout;
-
-          const LayoutComponent = await paramorph.loadLayout(post.layout);
-          const PostComponent = await paramorph.loadContent(post.url);
           pathParams.set(context.params);
 
-          return {
-            LayoutComponent,
-            PostComponent,
-          };
+          return post;
         },
       };
     }

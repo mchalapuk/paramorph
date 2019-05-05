@@ -12,7 +12,6 @@ export {
 export {
   Router,
   Route,
-  PostComponents,
   ActionContext,
 } from './Router';
 

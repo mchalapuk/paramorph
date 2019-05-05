@@ -1,10 +1,12 @@
 
 import pathToRegexp = require('path-to-regexp');
 
+import { Post } from '../model';
+
 export class Router<C = {}> {
   constructor(routes: Route<C>[] | Route<C>, options?: Options<C>);
 
-  resolve(pathnameOrContext: string | PathnameContext): Promise<PostComponents>;
+  resolve(pathnameOrContext: string | PathnameContext): Promise<Post>;
 
   static pathToRegexp: typeof pathToRegexp;
 }
@@ -25,7 +27,7 @@ export interface PathnameContext extends Context {
 export interface ActionContext<C> extends PathnameContext {
   router: Router<C>;
   route: Route<C>;
-  next: (resume?: boolean, parent?: Route, prevResult?: any) => Promise<PostComponents>;
+  next: (resume?: boolean, parent?: Route, prevResult?: any) => Promise<Post>;
   baseUrl: string;
   path: string;
   params: Params;
@@ -37,12 +39,7 @@ export interface Route<C = {}> {
   name?: string;
   parent?: Route<C> | null;
   children?: Route[] | null;
-  action?: (context: ActionContext<C> & C) => Promise<PostComponents>;
-}
-
-export interface PostComponents {
-  LayoutComponent : React.ComponentType<{}>;
-  PostComponent : React.ComponentType<{}>;
+  action?: (context: ActionContext<C> & C) => Promise<Post>;
 }
 
 export interface Options<C = {}> {

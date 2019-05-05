@@ -17,13 +17,12 @@ export class ServerRenderer {
   constructor(
     private readonly history : History,
     private readonly pathParams : PathParams,
-    private readonly router : Router,
     private readonly paramorph : Paramorph
   ) {
   }
 
   async render(locals : Locals, assets : HashMap<any>) : Promise<HashMap<string>> {
-    const { paramorph, pathParams, history, router } = this;
+    const { paramorph, pathParams, history } = this;
 
     const Root = locals.Root || DefaultRoot;
     const rootProps = this.getRootProps(locals, assets);
@@ -72,7 +71,8 @@ export class ServerRenderer {
 
     // actual rendering
     for (const post of posts) {
-      const { LayoutComponent, PostComponent } = await router.resolve(post.url);
+      const LayoutComponent = await paramorph.loadLayout(post.layout);
+      const PostComponent = await paramorph.loadContent(post.url);
 
       // Each page may request multiple renders of itself with specified path parameters.
       const renderRequests : any[] = [];

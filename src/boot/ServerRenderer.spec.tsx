@@ -8,7 +8,7 @@ import FakePromise from 'fake-promise';
 
 import * as model from '../model';
 import { RootProps } from '../react';
-import { ServerRenderer, Locals, HashMap, PostComponents } from '../boot';
+import { ServerRenderer, Locals, HashMap } from '../boot';
 
 function elem(tag : string, ...children : React.ReactNode[]) {
   return React.createElement(tag, children);
@@ -63,10 +63,6 @@ function createPost(url : string, title : string, date : number) {
 }
 
 describe('ServerRenderer', () => {
-  const router = {
-    resolve: sinon.stub(),
-  };
-
   let testedRenderer : ServerRenderer;
 
   beforeEach(() => {
@@ -78,13 +74,14 @@ describe('ServerRenderer', () => {
     paramorph.addLayout(layout);
     paramorph.addCollection(collection);
     paramorph.addPost(post);
-    paramorph.addContentLoader(post.url, () => Promise.resolve(PostComponent))
+    paramorph.addContentLoader(post.url, () => Promise.resolve(PostComponent));
+    paramorph.addLayoutLoader(layout.name, () => Promise.resolve(LayoutComponent));
 
-    testedRenderer = new ServerRenderer({} as History, new model.PathParams, router, paramorph);
+    testedRenderer = new ServerRenderer({} as History, new model.PathParams, paramorph);
   });
 
   describe('after calling render', () => {
-    let routerPromise : FakePromise<any>;
+    let routerPromise : FakePromise<model.Post>;
     let resultPromise : Promise<HashMap<string>>;
 
     beforeEach(() => {
@@ -99,33 +96,21 @@ describe('ServerRenderer', () => {
         },
       };
 
-      routerPromise = new FakePromise<PostComponents>();
-      router.resolve.returns(routerPromise);
-
       resultPromise = testedRenderer.render(locals, webpackStats);
     });
 
-    describe('and after resoling router promise', () => {
-      beforeEach(() => {
-        routerPromise.resolve({
-          LayoutComponent,
-          PostComponent,
-        });
-      });
-
-      it('renders single post', () => {
-        return resultPromise.then(result => {
-          Object.keys(result)
-            .should.eql([ '/' ])
-          ;
-          (result['/'] as any).should.equal('' +
-            '<!DOCTYPE html>\n' +
-            '<html>' +
-              '<head><title>Meeting | website.test</title></head>' +
-              '<body><div class="layout" data-reactroot=""><p>Meeting</p></div></body>' +
-            '</html>'
-          );
-        });
+    it('renders single post', () => {
+      return resultPromise.then(result => {
+        Object.keys(result)
+          .should.eql([ '/' ])
+        ;
+        (result['/'] as any).should.equal('' +
+          '<!DOCTYPE html>\n' +
+          '<html>' +
+          '<head><title>Meeting | website.test</title></head>' +
+          '<body><div class="layout" data-reactroot=""><p>Meeting</p></div></body>' +
+          '</html>'
+        );
       });
     });
   });

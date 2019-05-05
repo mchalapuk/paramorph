@@ -6,14 +6,14 @@ import { History, createBrowserHistory } from 'history';
 
 import { Router } from '../boot';
 import { ContextContainer } from '../react';
-import { Paramorph, Post, PathParams } from '../model';
+import { Paramorph, Post, Layout, PathParams } from '../model';
 
 export class ClientRenderer {
   constructor(
     private readonly history : History,
     private readonly pathParams : PathParams,
     private readonly router : Router,
-    private readonly paramorph : Paramorph
+    private readonly paramorph : Paramorph,
   ) {
   }
 
@@ -23,41 +23,39 @@ export class ClientRenderer {
     const notFound = posts['/404/'] as Post;
 
     const unlisten = history.listen(location => {
-      this.resolve(posts[location.pathname] || notFound, container);
+      this.resolve(location.pathname, container);
     });
     // window.addEventListener('unload', unlisten);
 
-    const initialPost = posts[history.location.pathname] || notFound;
+    const { pathname } = history.location;
 
     // We need to wait for content from paramorph-preload meta tags to be loaded
     // (same as server-side) in order to hydrate initial post without a warning.
-    return this.preloadContent(preloadUrls)
-      .then(() => this.resolve(initialPost, container))
+    return Promise.all(preloadUrls.map(url => paramorph.loadContent(url)))
+      .then(() => this.resolve(pathname, container))
     ;
   }
 
-  private resolve(post : Post, container : HTMLElement) : Promise<void> {
+  private resolve(pathname : string, container : HTMLElement) : Promise<void> {
     const { router, history, pathParams, paramorph } = this;
 
-    return router.resolve(post.url)
-      .then(({ PostComponent, LayoutComponent }) => {
-        const postElement = React.createElement(PostComponent);
-        const layoutElement = React.createElement(LayoutComponent, {}, postElement);
-
+    return router.resolve(pathname)
+      .then(async post => {
         const props = { history, pathParams, paramorph, post, requestParameterizedRender };
-        const app = React.createElement(ContextContainer, props, layoutElement);
+        const layout = paramorph.layouts[post.layout] as Layout;
 
-        return new Promise((resolve, reject) => {
-          ReactDom.hydrate(app, container, () => resolve());
+        const LayoutComponent = await paramorph.loadLayout(post.layout);
+        const PostComponent = await paramorph.loadContent(post.url);
+
+        const postElem = React.createElement(PostComponent);
+        const layoutElem = React.createElement(LayoutComponent, {}, postElem);
+        const appElem = React.createElement(ContextContainer, props, layoutElem);
+
+        return new Promise<void>((resolve, reject) => {
+          ReactDom.hydrate(appElem, container, () => resolve());
         });
       })
     ;
-  }
-
-  private async preloadContent(preloadUrls : string[]) {
-    const { paramorph } = this;
-
-    return Promise.all(preloadUrls.map(url => paramorph.loadContent(url)));
   }
 }
 

@@ -9,7 +9,7 @@ import { JSDOM } from 'jsdom';
 
 import * as model from '../model';
 import { RootProps } from '../react';
-import { ClientRenderer, Locals, HashMap, PostComponents } from '../boot';
+import { ClientRenderer, Locals, HashMap } from '../boot';
 
 function elem(tag : string, ...children : React.ReactNode[]) {
   return React.createElement(tag, children);
@@ -61,6 +61,7 @@ describe('ClientRenderer', () => {
   paramorph.addLayout(layout);
   paramorph.addCollection(collection);
   paramorph.addPost(post);
+  paramorph.addLayoutLoader(layout.name, () => Promise.resolve(LayoutComponent));
   paramorph.addContentLoader(post.url, () => Promise.resolve(PostComponent));
 
   let container : HTMLElement;
@@ -95,7 +96,7 @@ describe('ClientRenderer', () => {
     let renderPromise : Promise<void>;
 
     beforeEach(() => {
-      routerPromise = new FakePromise<PostComponents>();
+      routerPromise = new FakePromise<model.Post>();
       mocks.router.resolve.returns(routerPromise);
 
       renderPromise = testedRenderer.render(container, []);
@@ -103,10 +104,7 @@ describe('ClientRenderer', () => {
 
     describe('and after resoling router promise', () => {
       beforeEach(done => {
-        routerPromise.resolve({
-          LayoutComponent,
-          PostComponent,
-        });
+        routerPromise.resolve(post);
         setImmediate(done);
       });
 
