@@ -86,10 +86,7 @@ export class ServerRenderer {
       renderRequests.forEach(params => {
         const url = Object.keys(params)
           .reduce(
-            (result, key) => result
-              .replace(`:${key}?`, params[key])
-              .replace(`:${key}`, params[key])
-            ,
+            (result, key) => result.replace(new RegExp(`:${key}(\\(.*\\)\\?)?`), params[key]),
             post.permalink,
           )
           .replace(/\/:[^/:?]+\??(\/|$)/, '\/')
