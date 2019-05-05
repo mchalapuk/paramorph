@@ -16,60 +16,48 @@ export class ClientRenderer {
     private readonly paramorph : Paramorph
   ) {
   }
-  render(containerId : string) {
-    const container = document.getElementById(containerId);
-    const { history, pathParams, paramorph } = this;
 
-    const resolve = (post : Post) => {
-      this.router.resolve(post.url)
-        .then(({ PostComponent, LayoutComponent}) => {
-          const postElement = React.createElement(PostComponent);
-          const layoutElement = React.createElement(LayoutComponent, {}, postElement);
-
-          const props = { history, pathParams, paramorph, post, requestParameterizedRender };
-          const app = React.createElement(ContextContainer, props, layoutElement);
-          ReactDom.hydrate(app, container);
-        });
-    };
-
-    const { posts } = this.paramorph;
+  render(container : HTMLElement, preloadUrls : string[]) : Promise<void> {
+    const { history, paramorph } = this;
+    const { posts } = paramorph;
     const notFound = posts['/404/'] as Post;
 
-    const unlisten = this.history.listen(location => resolve(posts[location.pathname] || notFound));
-    window.addEventListener('unload', unlisten);
+    const unlisten = history.listen(location => {
+      this.resolve(posts[location.pathname] || notFound, container);
+    });
+    // window.addEventListener('unload', unlisten);
 
-    const initialPost = posts[location.pathname] || notFound;
+    const initialPost = posts[history.location.pathname] || notFound;
 
     // We need to wait for content from paramorph-preload meta tags to be loaded
     // (same as server-side) in order to hydrate initial post without a warning.
-    this.preloadContent()
-      .then(() => resolve(initialPost))
+    return this.preloadContent(preloadUrls)
+      .then(() => this.resolve(initialPost, container))
     ;
   }
 
-  private async preloadContent() {
-    const { paramorph } = this;
+  private resolve(post : Post, container : HTMLElement) : Promise<void> {
+    const { router, history, pathParams, paramorph } = this;
 
-    const preload = this.getPreloadUrls();
-    return Promise.all(preload.map(url => paramorph.loadContent(url)));
-  }
+    return router.resolve(post.url)
+      .then(({ PostComponent, LayoutComponent }) => {
+        const postElement = React.createElement(PostComponent);
+        const layoutElement = React.createElement(LayoutComponent, {}, postElement);
 
-  private getPreloadUrls() {
-    const { paramorph } = this;
+        const props = { history, pathParams, paramorph, post, requestParameterizedRender };
+        const app = React.createElement(ContextContainer, props, layoutElement);
 
-    const meta = document.getElementsByTagName('meta');
-
-    return Array.from(meta)
-      .filter(meta => meta.getAttribute('name') === 'paramorph-preload')
-      .map(meta => meta.content)
-      .filter(url => {
-        if (url in paramorph.posts) {
-          return true;
-        }
-        console.error(`unknown url found in paramorph-preload meta tag: ${url}`);
-        return false;
+        return new Promise((resolve, reject) => {
+          ReactDom.hydrate(app, container, () => resolve());
+        });
       })
     ;
+  }
+
+  private async preloadContent(preloadUrls : string[]) {
+    const { paramorph } = this;
+
+    return Promise.all(preloadUrls.map(url => paramorph.loadContent(url)));
   }
 }
 

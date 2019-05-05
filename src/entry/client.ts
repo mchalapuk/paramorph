@@ -16,11 +16,13 @@ const pathParams = new PathParams();
 const routeFactory = new RouteFactory();
 const routes = routeFactory.getRoutes(paramorph, pathParams);
 const router = new Router(routes);
+const history = createBrowserHistory();
+const preloadUrls = getPreloadUrls(paramorph);
 
 export function render() {
-  const history = createBrowserHistory();
   const renderer = new ClientRenderer(history, pathParams, router, paramorph);
-  renderer.render('root');
+  const container = document.getElementById('root');
+  renderer.render(container, preloadUrls);
 }
 
 export default render;
@@ -33,5 +35,21 @@ if (document.readyState === 'complete') {
 
 if (module.hot) {
   module.hot.accept('./route-factory', render);
+}
+
+function getPreloadUrls(paramorph : Paramorph) {
+  const meta = document.getElementsByTagName('meta');
+
+  return Array.from(meta)
+    .filter(meta => meta.getAttribute('name') === 'paramorph-preload')
+    .map(meta => meta.content)
+    .filter(url => {
+      if (url in paramorph.posts) {
+        return true;
+      }
+      console.error(`unknown url found in paramorph-preload meta tag: ${url}`);
+      return false;
+    })
+  ;
 }
 

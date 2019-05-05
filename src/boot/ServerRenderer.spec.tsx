@@ -88,9 +88,8 @@ describe('ServerRenderer', () => {
     let resultPromise : Promise<HashMap<string>>;
 
     beforeEach(() => {
-      const locals = {
-        Root,
-      } as Locals;
+      const locals = { Root } as Locals;
+
       const webpackStats = {
         compilation: {
           assets: {
