@@ -19,9 +19,15 @@ const router = new Router(routes);
 const history = createBrowserHistory();
 const preloadUrls = getPreloadUrls(paramorph);
 
+const CONTAINER_ID = 'root';
+
 export function render() {
   const renderer = new ClientRenderer(history, pathParams, router, paramorph);
-  const container = document.getElementById('root');
+
+  const container = document.getElementById(CONTAINER_ID);
+  if (container === null) {
+    throw new Error(`couldn't find element of id '${CONTAINER_ID}'`);
+  }
   renderer.render(container, preloadUrls);
 }
 
