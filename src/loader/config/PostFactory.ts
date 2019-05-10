@@ -54,8 +54,8 @@ export class PostFactory {
     }
 
     return new PostType(
-      matter.permalink
-        ? addTrailingSlash(matter.permalink)
+      matter.pathSpec
+        ? addTrailingSlash(matter.pathSpec)
         : createUrl(file.name),
       title,
       matter.description || '',
@@ -102,8 +102,8 @@ export function createUrl(maybeUrl : string) {
   }
 }
 
-function addTrailingSlash(permalink : string) {
-  return `${permalink}${permalink.match(/\/$/) ? '' : '/'}`;
+function addTrailingSlash(pathSpec : string) {
+  return `${pathSpec}${pathSpec.match(/\/$/) ? '' : '/'}`;
 }
 
 function defaultTitle(file : SourceFile) {

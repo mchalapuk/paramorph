@@ -86,7 +86,7 @@ describe('PostFactory', () => {
   });
 
   const fullMatter = {
-    permalink: '/link',
+    pathSpec: '/link',
     title: 'Title',
     description: 'Full defined post',
     image: 'image.jpg',

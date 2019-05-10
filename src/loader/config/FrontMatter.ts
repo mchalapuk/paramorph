@@ -57,7 +57,7 @@ function validate(fileName : string, matter : any) {
     )
     .and.fieldThat('title', title => title.is.aString.or.Undefined)
     .and.fieldThat('description', desc => desc.is.aString.or.Undefined)
-    .and.fieldThat('permalink', permalink => permalink.is.aString.or.Undefined)
+    .and.fieldThat('pathSpec', pathSpec => pathSpec.is.aString.or.Undefined)
     .and.fieldThat('layout', layout => layout.is.aString.or.Undefined)
     .and.fieldThat('image', image => image.is.aString.or.Undefined)
     .and.fieldThat('output', output => output.is.aBoolean.or.Undefined)

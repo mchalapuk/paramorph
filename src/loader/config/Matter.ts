@@ -4,7 +4,7 @@ export interface Matter {
   role ?: string;
   title ?: string;
   description ?: string;
-  permalink ?: string;
+  pathSpec ?: string;
   layout ?: string;
   image ?: string;
   output ?: boolean;

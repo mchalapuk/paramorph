@@ -5,7 +5,7 @@ export class Post {
   readonly url : string;
 
   constructor(
-    readonly permalink : string,
+    readonly pathSpec : string,
     readonly title : string,
     readonly description : string,
     readonly image : string | null,
@@ -19,7 +19,7 @@ export class Post {
     readonly tags : string[],
     readonly timestamp : number,
   ) {
-    this.url = removePathParams(permalink);
+    this.url = removePathParams(pathSpec);
   }
 
   compareTo(another : Post) : -1 | 1 {
@@ -35,8 +35,8 @@ export class Post {
 
 export default Post;
 
-function removePathParams(permalink : string) {
-  return permalink
+function removePathParams(pathSpec : string) {
+  return pathSpec
     .replace(/:[^\/$]+/g, '')
     .replace(/\/+/g, '/')
   ;

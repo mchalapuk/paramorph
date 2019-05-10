@@ -5,7 +5,7 @@ export class Category extends Post {
   readonly posts : Post[] = [];
 
   constructor(
-    permalink : string,
+    pathSpec : string,
     title : string,
     description : string,
     image : string | null,
@@ -20,7 +20,7 @@ export class Category extends Post {
     timestamp : number,
   ) {
     super(
-      permalink,
+      pathSpec,
       title,
       description,
       image,

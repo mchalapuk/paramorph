@@ -103,9 +103,9 @@ describe('FrontMatter,', () => {
       'posts[\'file.markdown\'].description must be a string or undefined (got null)',
     ],
     [
-      'permalink of type number',
-      '---\ndate: 2019-01-01\npermalink: 3.1415\n---\n',
-      'posts[\'file.markdown\'].permalink must be a string or undefined (got 3.1415)',
+      'pathSpec of type number',
+      '---\ndate: 2019-01-01\npathSpec: 3.1415\n---\n',
+      'posts[\'file.markdown\'].pathSpec must be a string or undefined (got 3.1415)',
     ],
     [
       'layout of type number',
@@ -196,7 +196,7 @@ describe('FrontMatter,', () => {
       fileSystem.writeFile(source.path, `---
 date: 1970-01-01 00:00:00 UTC
 role: category
-permalink: /link
+pathSpec: /link
 title: Title
 description: d e s c r i p t i o n
 image: ./image.jpg
@@ -214,7 +214,7 @@ limit: 10
           matter => {
             matter.date.should.equal('1970-01-01 00:00:00 UTC');
             (matter.role as string).should.equal('category');
-            (matter.permalink as string).should.equal('/link');
+            (matter.pathSpec as string).should.equal('/link');
             (matter.title as string).should.equal('Title');
             (matter.description as string).should.equal('d e s c r i p t i o n');
             (matter.image as string).should.equal('./image.jpg');

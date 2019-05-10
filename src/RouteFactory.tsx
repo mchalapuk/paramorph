@@ -13,7 +13,7 @@ export class RoutesFactory {
       throw new Error(`couldn't find post of url ${NOT_FOUND_URL}`);
     }
 
-    function createRoute(post : Post, path = post.permalink) : Route {
+    function createRoute(post : Post, path = post.pathSpec) : Route {
       return {
         path,
         action: async (context : ActionContext<{}>) => {

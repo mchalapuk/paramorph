@@ -6,7 +6,7 @@ export class Tag extends Post {
   readonly posts : Post[] = [];
 
   constructor(
-    permalink : string,
+    pathSpec : string,
     title : string,
     description : string,
     image : string | null,
@@ -17,7 +17,7 @@ export class Tag extends Post {
     timestamp : number,
   ) {
     super(
-      permalink,
+      pathSpec,
       `#${title}`,
       description,
       image,
