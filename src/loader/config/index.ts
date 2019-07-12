@@ -11,7 +11,6 @@ import ConfigLoader from './ConfigLoader';
 import ProjectStructure from './ProjectStructure';
 import FrontMatter from './FrontMatter';
 import PostFactory from './PostFactory';
-import EmptyContentLoader from './EmptyContentLoader';
 import FullContentLoader from './FullContentLoader';
 import uneval from './uneval';
 
@@ -32,7 +31,6 @@ function loader(this : webpack.loader.LoaderContext, source : string, map : any)
 
   const options = {
     debug: false,
-    shallow: false,
     policy: {},
     ...(utils.getOptions(this) || {}),
   };
@@ -60,10 +58,7 @@ function loader(this : webpack.loader.LoaderContext, source : string, map : any)
     new ProjectStructure(fs),
     new FrontMatter(fs),
     new PostFactory(),
-    options.shallow
-      ? new EmptyContentLoader()
-      : new FullContentLoader(this, policy, debug)
-    ,
+    new FullContentLoader(this, policy, debug)
   );
 
   loader.load(parser.parse(source))
