@@ -12,6 +12,7 @@ import ProjectStructure from './ProjectStructure';
 import FrontMatter from './FrontMatter';
 import PostFactory from './PostFactory';
 import FullContentLoader from './FullContentLoader';
+import sitemap from './sitemap';
 import uneval from './uneval';
 
 export = loader;
@@ -61,12 +62,16 @@ function loader(this : webpack.loader.LoaderContext, source : string, map : any)
     new FullContentLoader(this, policy, debug)
   );
 
+  const self = this;
+
   loader.load(parser.parse(source))
     .then(paramorph => {
       Object.keys(paramorph.posts)
         .map(url => path.join(process.cwd(), url))
         .forEach(url => this.addDependency(url))
       ;
+
+      self.emitFile('sitemap.xml', sitemap(paramorph), null);
 
       const source = 'const { Paramorph, Layout, Include, Post, Collection, Category, Tag } '
         +'= require(\'paramorph/model\');\n'
