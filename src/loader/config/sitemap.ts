@@ -12,7 +12,8 @@ export function sitemap(paramorph : Paramorph) : string {
   const indexPage = paramorph.posts['/'] as Post;
 
   const all = Object.keys(paramorph.posts)
-    .map(key => paramorph.posts[key] as Post);
+    .map(key => paramorph.posts[key] as Post)
+    .filter(post => post.output);
   all.splice(all.indexOf(indexPage), 1);
 
   all.forEach(post => {
