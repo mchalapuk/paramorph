@@ -7,7 +7,8 @@ export function rss(paramorph : Paramorph) : string {
 
   const posts = Object.keys(paramorph.posts)
     .map(key => paramorph.posts[key] as Post)
-    .filter(post => post.output && post.constructor === Post);
+    .filter(post => post.output && post.constructor === Post)
+    .sort((a, b) => a.timestamp - b.timestamp);
   posts.splice(posts.indexOf(indexPage), 1);
   posts.splice(posts.indexOf(notFoundPage), 1);
 
