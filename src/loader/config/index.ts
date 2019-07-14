@@ -12,7 +12,9 @@ import ProjectStructure from './ProjectStructure';
 import FrontMatter from './FrontMatter';
 import PostFactory from './PostFactory';
 import FullContentLoader from './FullContentLoader';
+
 import sitemap from './sitemap';
+import rss from './rss';
 import uneval from './uneval';
 
 export = loader;
@@ -71,6 +73,9 @@ function loader(this : webpack.loader.LoaderContext, source : string, map : any)
         .forEach(url => this.addDependency(url))
       ;
 
+      const feed = rss(paramorph);
+      self.emitFile('feed.rss', feed, null);
+      self.emitFile('rss.xml', feed, null);
       self.emitFile('sitemap.xml', sitemap(paramorph), null);
 
       const source = 'const { Paramorph, Layout, Include, Post, Collection, Category, Tag } '
