@@ -23,7 +23,7 @@ export class Content extends Component<Props, {} > {
     );
   }
 
-  private renderChildren(children : ReactNode) {
+  private renderChildren(children : ReactNode) : ReactNode[] {
     return Children.map(children, this.renderNode.bind(this));
   }
 
